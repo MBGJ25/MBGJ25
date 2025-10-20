@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// This is a template for how any state objects should be written.
+/// This is a template for how all state objects should be written.
 /// To use them, just add a Serialized Field reference in the game object that
 /// needs to reference it and subscribe to the `OnHealthChanged` event.
 /// </summary>
