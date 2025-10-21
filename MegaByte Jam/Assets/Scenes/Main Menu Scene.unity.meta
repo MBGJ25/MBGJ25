@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:MegaByte Jam/Assets/Scenes/Main Menu Scene.unity.meta
 guid: ba3479a17f8e99e4fa04b94edc3df7e8
+========
+guid: f83200dd95882427fb1bc5d4f014cccb
+>>>>>>>> ffdbdeb (setup initial prototyping scene):MegaByte Jam/Assets/Scenes/Prototype_Scene.unity.meta
 DefaultImporter:
   externalObjects: {}
   userData: 
