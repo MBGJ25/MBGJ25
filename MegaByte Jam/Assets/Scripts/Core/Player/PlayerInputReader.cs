@@ -77,7 +77,13 @@ public class PlayerInputReader : ScriptableObject, IPlayerCharacterActions, IMen
 
     #region Player Character Input Actions
     public event Action<Vector2> OnMoveEvent;
-    public event Action<Boolean> OnRunEvent;
+    public event Action OnRunEvent;
+    public event Action OnCrouchEvent;
+    public event Action OnJumpEvent;
+    public event Action OnAttackEvent;
+    public event Action OnResetCameraEvent;
+    public event Action OnLockOnEvent;
+    public event Action OnInteractEvent;
     
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -88,7 +94,45 @@ public class PlayerInputReader : ScriptableObject, IPlayerCharacterActions, IMen
 
     public void OnRun(InputAction.CallbackContext context)
     {
-        OnRunEvent?.Invoke(context.phase == InputActionPhase.Performed);
+        if (context.performed)
+            OnRunEvent?.Invoke();
+    }
+
+    public void OnCrouch(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            OnCrouchEvent?.Invoke();
+    }
+
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            OnJumpEvent?.Invoke();
+
+    }
+
+    public void OnAttack(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            OnAttackEvent?.Invoke();
+    }
+
+    public void OnResetCamera(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            OnResetCameraEvent?.Invoke();
+    }
+
+    public void OnLockOn(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            OnLockOnEvent?.Invoke();
+    }
+
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            OnLockOnEvent?.Invoke();
     }
     #endregion
 
