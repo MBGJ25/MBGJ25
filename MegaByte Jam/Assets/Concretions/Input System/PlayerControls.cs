@@ -163,6 +163,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ControlCamera"",
+                    ""type"": ""Value"",
+                    ""id"": ""fd732c51-4943-416d-aa54-39427eb39341"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -440,6 +449,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""36501ef8-c2a2-459f-b4c5-0613081725db"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Controller"",
+                    ""action"": ""ControlCamera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -689,6 +709,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_PlayerCharacter_ResetCamera = m_PlayerCharacter.FindAction("ResetCamera", throwIfNotFound: true);
         m_PlayerCharacter_LockOn = m_PlayerCharacter.FindAction("LockOn", throwIfNotFound: true);
         m_PlayerCharacter_Interact = m_PlayerCharacter.FindAction("Interact", throwIfNotFound: true);
+        m_PlayerCharacter_ControlCamera = m_PlayerCharacter.FindAction("ControlCamera", throwIfNotFound: true);
         // MenuNavigation
         m_MenuNavigation = asset.FindActionMap("MenuNavigation", throwIfNotFound: true);
         m_MenuNavigation_Confirm = m_MenuNavigation.FindAction("Confirm", throwIfNotFound: true);
@@ -783,6 +804,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerCharacter_ResetCamera;
     private readonly InputAction m_PlayerCharacter_LockOn;
     private readonly InputAction m_PlayerCharacter_Interact;
+    private readonly InputAction m_PlayerCharacter_ControlCamera;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerCharacter".
     /// </summary>
@@ -826,6 +848,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerCharacter/Interact".
         /// </summary>
         public InputAction @Interact => m_Wrapper.m_PlayerCharacter_Interact;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerCharacter/ControlCamera".
+        /// </summary>
+        public InputAction @ControlCamera => m_Wrapper.m_PlayerCharacter_ControlCamera;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -876,6 +902,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
+            @ControlCamera.started += instance.OnControlCamera;
+            @ControlCamera.performed += instance.OnControlCamera;
+            @ControlCamera.canceled += instance.OnControlCamera;
         }
 
         /// <summary>
@@ -911,6 +940,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
+            @ControlCamera.started -= instance.OnControlCamera;
+            @ControlCamera.performed -= instance.OnControlCamera;
+            @ControlCamera.canceled -= instance.OnControlCamera;
         }
 
         /// <summary>
@@ -1151,6 +1183,13 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnInteract(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ControlCamera" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnControlCamera(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "MenuNavigation" which allows adding and removing callbacks.
