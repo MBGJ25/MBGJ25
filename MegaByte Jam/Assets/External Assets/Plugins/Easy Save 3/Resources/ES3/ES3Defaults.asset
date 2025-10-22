@@ -37,6 +37,8 @@ MonoBehaviour:
     assemblyNames:
     - Assembly-CSharp
     - Cinemachine
+    - FMODUnity
+    - FMODUnityResonance
     - YarnSpinner.Unity
     showAdvancedSettings: 0
   addMgrToSceneAutomatically: 0
