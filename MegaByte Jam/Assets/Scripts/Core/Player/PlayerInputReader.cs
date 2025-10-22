@@ -84,11 +84,16 @@ public class PlayerInputReader : ScriptableObject, IPlayerCharacterActions, IMen
     public event Action OnResetCameraEvent;
     public event Action OnLockOnEvent;
     public event Action OnInteractEvent;
-    
+
     public void OnMove(InputAction.CallbackContext context)
     {
+        if (context.canceled)
+        {
+            OnMoveEvent?.Invoke(Vector2.zero);
+            return;
+        }
+
         Vector2 newMovementVector = context.ReadValue<Vector2>();
-        newMovementVector.Normalize();
         OnMoveEvent?.Invoke(newMovementVector);
     }
 
