@@ -460,6 +460,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""ControlCamera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""38bd0530-d1f6-48fb-9bb5-abe3b2f90083"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard and Mouse"",
+                    ""action"": ""ControlCamera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },

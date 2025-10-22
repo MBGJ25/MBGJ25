@@ -27,6 +27,18 @@ public class CameraController : MonoBehaviour
         playerInputReader.OnControlCameraEvent -= HandleControlCameraEvent;
     }
 
+    private void Start()
+    {
+        if (freeLookCamera != null)
+        {
+            // Disable automatic input on both axes
+            freeLookCamera.m_XAxis.m_InputAxisName = "";
+            freeLookCamera.m_XAxis.m_InputAxisValue = 0f;
+            freeLookCamera.m_YAxis.m_InputAxisName = "";
+            freeLookCamera.m_YAxis.m_InputAxisValue = 0f;
+        }
+    }
+
     private void Update()
     {
         if (freeLookCamera != null && cameraInputVector != Vector2.zero)

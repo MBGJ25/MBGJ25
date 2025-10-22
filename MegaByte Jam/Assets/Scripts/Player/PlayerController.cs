@@ -82,8 +82,6 @@ public class PlayerController : MonoBehaviour
 
         // Calculate movement direction relative to camera
         Vector3 moveDirection = (cameraRight * movement.x + cameraForward * movement.z).normalized;
-        Debug.Log("Move direction");
-        Debug.Log(moveDirection);
 
         // Apply movement
         float targetSpeed = movementSpeed * (isRunning ? runSpeedMultiplier : 1f);
