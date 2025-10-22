@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
         if (playerInputReader != null)
         {
             playerInputReader.OnMoveEvent += HandleMoveEvent;
+            playerInputReader.OnRunEvent += HandleRunEvent;
         }
         else
         {
@@ -56,6 +57,7 @@ public class PlayerController : MonoBehaviour
         if (playerInputReader != null)
         {
             playerInputReader.OnMoveEvent -= HandleMoveEvent;
+            playerInputReader.OnRunEvent -= HandleRunEvent;
         }
     }
     #endregion
@@ -94,6 +96,11 @@ public class PlayerController : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
             rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRotation, Time.fixedDeltaTime * rotationSpeed));
         }
+    }
+
+    private void HandleRunEvent(bool isPlayerRunning)
+    {
+        isRunning = isPlayerRunning;
     }
     #endregion
 }

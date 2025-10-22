@@ -77,7 +77,7 @@ public class PlayerInputReader : ScriptableObject, IPlayerCharacterActions, IMen
 
     #region Player Character Input Actions
     public event Action<Vector2> OnMoveEvent;
-    public event Action OnRunEvent;
+    public event Action<bool> OnRunEvent;
     public event Action OnCrouchEvent;
     public event Action OnJumpEvent;
     public event Action OnAttackEvent;
@@ -100,8 +100,7 @@ public class PlayerInputReader : ScriptableObject, IPlayerCharacterActions, IMen
 
     public void OnRun(InputAction.CallbackContext context)
     {
-        if (context.performed)
-            OnRunEvent?.Invoke();
+        OnRunEvent?.Invoke(context.performed);
     }
 
     public void OnCrouch(InputAction.CallbackContext context)
