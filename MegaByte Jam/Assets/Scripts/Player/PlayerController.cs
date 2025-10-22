@@ -79,22 +79,22 @@ public class PlayerController : MonoBehaviour
         cameraRight.y = 0;
         cameraForward.Normalize();
         cameraRight.Normalize();
-        cameraRight.Normalize();
 
         // Calculate movement direction relative to camera
         Vector3 moveDirection = (cameraRight * movement.x + cameraForward * movement.z).normalized;
+        Debug.Log("Move direction");
+        Debug.Log(moveDirection);
 
         // Apply movement
         float targetSpeed = movementSpeed * (isRunning ? runSpeedMultiplier : 1f);
-        Vector3 velocity = moveDirection * targetSpeed * Time.fixedDeltaTime;
-        rb.MovePosition(transform.position + velocity);
+        Vector3 targetVelocity = moveDirection * targetSpeed;
+        rb.velocity = new Vector3(targetVelocity.x, rb.velocity.y, targetVelocity.z);
 
         // Rotate character to face movement direction
         if (moveDirection.magnitude > 0.1f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-            Quaternion newRotation = Quaternion.Slerp(rb.rotation, targetRotation, Time.fixedDeltaTime * rotationSpeed);
-            rb.MoveRotation(newRotation); // USE THIS instead of transform.rotation
+            rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRotation, Time.fixedDeltaTime * rotationSpeed));
         }
     }
     #endregion
