@@ -77,18 +77,78 @@ public class PlayerInputReader : ScriptableObject, IPlayerCharacterActions, IMen
 
     #region Player Character Input Actions
     public event Action<Vector2> OnMoveEvent;
-    public event Action<Boolean> OnRunEvent;
-    
+    public event Action<bool> OnRunEvent;
+    public event Action OnCrouchEvent;
+    public event Action OnJumpEvent;
+    public event Action OnAttackEvent;
+    public event Action OnResetCameraEvent;
+    public event Action OnLockOnEvent;
+    public event Action OnInteractEvent;
+    public event Action<Vector2> OnControlCameraEvent;
+
     public void OnMove(InputAction.CallbackContext context)
     {
+        if (context.canceled)
+        {
+            OnMoveEvent?.Invoke(Vector2.zero);
+            return;
+        }
+
         Vector2 newMovementVector = context.ReadValue<Vector2>();
-        newMovementVector.Normalize();
         OnMoveEvent?.Invoke(newMovementVector);
     }
 
     public void OnRun(InputAction.CallbackContext context)
     {
-        OnRunEvent?.Invoke(context.phase == InputActionPhase.Performed);
+        OnRunEvent?.Invoke(context.performed);
+    }
+
+    public void OnCrouch(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            OnCrouchEvent?.Invoke();
+    }
+
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            OnJumpEvent?.Invoke();
+
+    }
+
+    public void OnAttack(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            OnAttackEvent?.Invoke();
+    }
+
+    public void OnResetCamera(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            OnResetCameraEvent?.Invoke();
+    }
+
+    public void OnLockOn(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            OnLockOnEvent?.Invoke();
+    }
+
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            OnLockOnEvent?.Invoke();
+    }
+
+    public void OnControlCamera(InputAction.CallbackContext context)
+    {
+        if (context.canceled)
+        {
+            OnControlCameraEvent?.Invoke(Vector2.zero);
+            return;
+        }
+        Vector2 newCameraVector = context.ReadValue<Vector2>();
+        OnControlCameraEvent?.Invoke(newCameraVector);  
     }
     #endregion
 
