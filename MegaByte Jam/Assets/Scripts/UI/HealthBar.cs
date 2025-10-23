@@ -24,7 +24,7 @@ public class HealthBar : MonoBehaviour
             playerStats.OnHealthChanged -= HandleHealthChanged;
     }
 
-    // Update slider value when health changes
+    // Update slider value when health changes test
     private void HandleHealthChanged()
     {
         slider.value = playerStats.Health;
