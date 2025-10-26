@@ -1,7 +1,0 @@
-# CODEOWNERS file
-# These users own all files in the repository.
-# Whenever a pull request modifies any file,
-# these users will automatically be requested to review it
-# and will receive email notifications from GitHub.
-
-*   @imcharliesparks @Kboyles138 @YosephAlex4nder @JeriamJito
