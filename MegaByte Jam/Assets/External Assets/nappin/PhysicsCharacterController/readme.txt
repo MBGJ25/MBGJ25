@@ -1,0 +1,1 @@
+﻿The latest documentation is always available on the support page: https://nappin.dev/details/physicsCharacterController.html
