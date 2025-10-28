@@ -1120,7 +1120,7 @@ MonoBehaviour:
   - actionType: 0
     sceneName: Player Controller Example Scene
   - actionType: 0
-    sceneName: Player Controller Human Example Scene
+    sceneName: Player Controller Human Exaxmple Scene
   selectedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   selectedScale: 5.5

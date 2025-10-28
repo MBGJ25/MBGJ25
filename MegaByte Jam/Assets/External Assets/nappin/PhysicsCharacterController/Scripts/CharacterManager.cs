@@ -477,7 +477,7 @@ namespace PhysicsCharacterController
         private void MoveJump()
         {
             //jumped
-            if (jump && isGrounded && ((isTouchingSlope && currentSurfaceAngle <= maxClimbableSlopeAngle) || !isTouchingSlope) && !isTouchingWall)
+            if (jump && isGrounded && ((isTouchingSlope && currentSurfaceAngle <= maxClimbableSlopeAngle) || !isTouchingSlope))
             {
                 rigidbody.velocity += Vector3.up * jumpVelocity;
                 isJumping = true;
