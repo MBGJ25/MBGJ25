@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 90985010}
   - component: {fileID: 90985009}
   m_Layer: 5
-  m_Name: Start Geometry Scene Button (1)
+  m_Name: Start Geometry Scene Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -300,7 +300,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Load Template Scene
+  m_text: Start Human Scene
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -615,7 +615,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Load Prototype Scene
+  m_text: Start Capsule Scene
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1118,9 +1118,9 @@ MonoBehaviour:
   - {fileID: 2013041485}
   menuActions:
   - actionType: 0
-    sceneName: Prototype Scene
+    sceneName: Player Controller Example Scene
   - actionType: 0
-    sceneName: Template Scene
+    sceneName: Player Controller Human Example Scene
   selectedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   selectedScale: 5.5
