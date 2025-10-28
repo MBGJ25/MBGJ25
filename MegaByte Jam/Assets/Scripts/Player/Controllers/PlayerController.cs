@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
     {
         if (playerInputReader != null)
         {
+            playerInputReader.SwitchToPlayerCharacterControls();
             playerInputReader.OnMoveEvent += HandleMoveEvent;
             playerInputReader.OnRunEvent += HandleRunEvent;
         }
