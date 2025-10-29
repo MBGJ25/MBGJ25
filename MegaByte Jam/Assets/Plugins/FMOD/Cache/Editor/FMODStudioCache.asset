@@ -71,6 +71,24 @@ MonoBehaviour:
   IsGlobal: 0
   Labels: []
   Exists: 1
+--- !u!114 &-6701534160200035166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Audio/FMOD Build/Desktop/Master.bank
+  Name: Master
+  StudioPath: bank:/Master
+  lastModified: 638972718085824147
+  FileSizes: []
+  Exists: 1
 --- !u!114 &-4617318446464656650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,26 +102,6 @@ MonoBehaviour:
   m_Name: bank:/Master.strings.bank
   m_EditorClassIdentifier: 
   Path: C:/Users/pichau/Downloads/drive-download-20251022T212244Z-1-001/Build/Desktop/Master.strings.bank
-  Name: Master.strings
-  StudioPath: bank:/Master.strings
-  lastModified: 638967558379731668
-  FileSizes:
-  - Name: 
-    Value: 1180
-  Exists: 1
---- !u!114 &-3585923199184425846
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Master.strings.bank
-  m_EditorClassIdentifier: 
-  Path: Assets/Plugins/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
   lastModified: 638967558379731668
@@ -130,7 +128,7 @@ MonoBehaviour:
     Data3: -865017179
     Data4: 22544069
   Banks:
-  - {fileID: 7546448427336851471}
+  - {fileID: -6701534160200035166}
   IsStream: 1
   Is3D: 0
   IsOneShot: 0
@@ -151,17 +149,17 @@ MonoBehaviour:
   m_Name: FMODStudioCache
   m_EditorClassIdentifier: 
   EditorBanks:
-  - {fileID: -3585923199184425846}
-  - {fileID: 7546448427336851471}
+  - {fileID: 8034736404994034956}
+  - {fileID: -6701534160200035166}
   EditorEvents:
   - {fileID: 4646000844865660407}
   - {fileID: -2032471832498344307}
   EditorParameters: []
   MasterBanks:
-  - {fileID: 7546448427336851471}
+  - {fileID: -6701534160200035166}
   StringsBanks:
-  - {fileID: -3585923199184425846}
-  cacheTime: 638967558379731668
+  - {fileID: 8034736404994034956}
+  cacheTime: 638972718085824147
   cacheVersion: 131632
 --- !u!114 &792466244193842122
 MonoBehaviour:
@@ -206,7 +204,7 @@ MonoBehaviour:
     Data3: 1731337632
     Data4: -599894896
   Banks:
-  - {fileID: 7546448427336851471}
+  - {fileID: -6701534160200035166}
   IsStream: 1
   Is3D: 0
   IsOneShot: 0
@@ -240,24 +238,6 @@ MonoBehaviour:
   IsGlobal: 0
   Labels: []
   Exists: 1
---- !u!114 &7546448427336851471
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Master.bank
-  m_EditorClassIdentifier: 
-  Path: Assets/Plugins/Build/Desktop/Master.bank
-  Name: Master
-  StudioPath: bank:/Master
-  lastModified: 638967558379711586
-  FileSizes: []
-  Exists: 1
 --- !u!114 &7940040836778732779
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -287,6 +267,26 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 275478
+--- !u!114 &8034736404994034956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.strings.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Audio/FMOD Build/Desktop/Master.strings.bank
+  Name: Master.strings
+  StudioPath: bank:/Master.strings
+  lastModified: 638972718085824147
+  FileSizes:
+  - Name: 
+    Value: 1180
+  Exists: 1
 --- !u!114 &9166800262374479536
 MonoBehaviour:
   m_ObjectHideFlags: 0
