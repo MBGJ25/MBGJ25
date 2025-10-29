@@ -386,7 +386,7 @@ public partial class @MovementActions: IInputActionCollection2, IDisposable
                     ""id"": ""4bde1122-00da-49fc-b7d5-1e79d2f32f5b"",
                     ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""InvertVector2(invertX=false)"",
                     ""groups"": ""Mouse"",
                     ""action"": ""Camera"",
                     ""isComposite"": false,
