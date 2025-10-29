@@ -16,7 +16,6 @@ namespace PhysicsCharacterController
         [Range(0.01f, 0.99f)]
         public float movementThrashold = 0.01f;
         [Space(10)]
-
         public float dampSpeedUp = 0.2f;
         public float dampSpeedDown = 0.1f;
 
@@ -30,7 +29,6 @@ namespace PhysicsCharacterController
         [Range(0.01f, 0.99f)]
         public float frictionAgainstWall = 0.839f;
         [Space(10)]
-
         public bool canLongJump = true;
 
 
@@ -39,12 +37,10 @@ namespace PhysicsCharacterController
         public float slopeCheckerThrashold = 0.51f;
         public float stepCheckerThrashold = 0.6f;
         [Space(10)]
-
         [Range(1f, 89f)]
         public float maxClimbableSlopeAngle = 53.6f;
         public float maxStepHeight = 0.74f;
         [Space(10)]
-
         public AnimationCurve speedMultiplierOnAngle = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
         [Range(0.01f, 1f)]
         public float canSlideMultiplierCurve = 0.061f;
@@ -53,12 +49,10 @@ namespace PhysicsCharacterController
         [Range(0.01f, 1f)]
         public float climbingStairsMultiplierCurve = 0.637f;
         [Space(10)]
-
         public float gravityMultiplier = 6f;
         public float gravityMultiplyerOnSlideChange = 3f;
         public float gravityMultiplierIfUnclimbableSlope = 30f;
         [Space(10)]
-
         public bool lockOnSlope = false;
 
 
@@ -66,7 +60,6 @@ namespace PhysicsCharacterController
         public float wallCheckerThrashold = 0.8f;
         public float hightWallCheckerChecker = 0.5f;
         [Space(10)]
-
         public float jumpFromWallMultiplier = 30f;
         public float multiplierVerticalLeap = 1f;
 
@@ -83,15 +76,12 @@ namespace PhysicsCharacterController
         public GameObject characterModel;
         public float characterModelRotationSmooth = 0.1f;
         [Space(10)]
-
         public GameObject meshCharacter;
         public GameObject meshCharacterCrouch;
         public Transform headPoint;
         [Space(10)]
-
         public InputReader input;
         [Space(10)]
-
         [HideInInspector]
         public bool debug = true;
 
@@ -99,26 +89,18 @@ namespace PhysicsCharacterController
         [Header("Events")]
         [SerializeField] UnityEvent OnJump;
         [Space(15)]
-
         public float minimumVerticalSpeedToLandEvent;
         [SerializeField] UnityEvent OnLand;
         [Space(15)]
-
         public float minimumHorizontalSpeedToFastEvent;
         [SerializeField] UnityEvent OnFast;
         [Space(15)]
-
         [SerializeField] UnityEvent OnWallSlide;
         [Space(15)]
-
         [SerializeField] UnityEvent OnSprint;
         [Space(15)]
-
         [SerializeField] UnityEvent OnCrouch;
         [Space(15)]
-
-
-
         private Vector3 forward;
         private Vector3 globalForward;
         private Vector3 reactionForward;
@@ -164,11 +146,13 @@ namespace PhysicsCharacterController
         /**/
 
         #region Grind Values
+
         private bool isGrinding = false;
         private GrindRail currentRail = null;
         private float grindPositionT = 0f;
         private Vector3 grindDirection = Vector3.zero;
         private float grindHeightOffset = 0.5f; // Height above rail
+
         #endregion
 
         private void Awake()
@@ -202,7 +186,7 @@ namespace PhysicsCharacterController
                 UpdateEvents(); // Keep events running
                 return; // Exit early - skip everything below
             }
-    
+
             //local vectors
             CheckGrounded();
             CheckStep();
@@ -227,7 +211,7 @@ namespace PhysicsCharacterController
         private void OnTriggerEnter(Collider other)
         {
             if (isGrinding) return;
-    
+
             GrindRail rail = other.GetComponent<GrindRail>();
             if (rail != null)
             {
@@ -512,7 +496,7 @@ namespace PhysicsCharacterController
                 isJumping = true;
                 return;
             }
-            
+
             //jumped
             if (jump && isGrounded && ((isTouchingSlope && currentSurfaceAngle <= maxClimbableSlopeAngle) || !isTouchingSlope))
             {
@@ -591,23 +575,39 @@ namespace PhysicsCharacterController
         {
             currentRail = rail;
             isGrinding = true;
-    
+
             // Find closest point on rail and starting position
             Vector3 closestPoint = rail.GetClosestPointOnRail(transform.position, out grindPositionT);
-    
+
             // Determine grind direction based on velocity
             grindDirection = rail.GetRailDirection();
             if (Vector3.Dot(rigidbody.velocity, grindDirection) < 0)
             {
                 grindDirection = -grindDirection;
             }
-    
-            // Set initial position
-            transform.position = closestPoint + Vector3.up * grindHeightOffset;
-    
-            // Lock rotation to rail direction
+
+            // Lock rotation to rail direction FIRST
             targetAngle = Mathf.Atan2(grindDirection.x, grindDirection.z) * Mathf.Rad2Deg;
-    
+            transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
+
+            // Calculate proper offset in WORLD SPACE based on character rotation
+            float colliderBottom = collider.center.y - (collider.height / 2f);
+            Vector3 colliderCenterWorld = transform.rotation * collider.center;
+
+            Vector3 properOffset = new Vector3(
+                -colliderCenterWorld.x,
+                grindHeightOffset - colliderBottom,
+                -colliderCenterWorld.z
+            );
+
+            Vector3 finalPosition = closestPoint + properOffset;
+
+            // ROUND X and Z to snap to rail
+            finalPosition.x = Mathf.Round(finalPosition.x);
+            finalPosition.z = Mathf.Round(finalPosition.z);
+
+            transform.position = finalPosition;
+
             Debug.Log("Started grinding on rail");
         }
 
@@ -618,41 +618,47 @@ namespace PhysicsCharacterController
                 StopGrinding();
                 return;
             }
-    
+
             // Move along rail
             float moveAmount = (currentRail.grindSpeed * Time.fixedDeltaTime) / currentRail.GetRailLength();
             grindPositionT += moveAmount;
-    
+
             // Check if reached end of rail
             if (grindPositionT >= 1f)
             {
                 StopGrinding();
                 return;
             }
-    
-            // Update position along rail
-            Vector3 railPosition = currentRail.GetPositionAtT(grindPositionT);
-            transform.position = railPosition + Vector3.up * grindHeightOffset;
-    
-            // Override velocity to move along rail
-            rigidbody.velocity = grindDirection * currentRail.grindSpeed;
-    
-            // Keep character facing grind direction
+
+            // Update rotation FIRST
             transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
             characterModel.transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
-        }
 
+            // Update position along rail
+            Vector3 railPosition = currentRail.GetPositionAtT(grindPositionT);
+
+            // Calculate proper offset in WORLD SPACE based on character rotation
+            float colliderBottom = collider.center.y - (collider.height / 2f);
+            Vector3 colliderCenterWorld = transform.rotation * collider.center;
+
+            Vector3 properOffset = new Vector3(
+                -colliderCenterWorld.x,
+                grindHeightOffset - colliderBottom,
+                -colliderCenterWorld.z
+            );
+
+            Vector3 finalPosition = railPosition + properOffset;
+            finalPosition.x = Mathf.Round(finalPosition.x);
+            transform.position = finalPosition;
+            rigidbody.velocity = grindDirection * currentRail.grindSpeed;
+        }
         private void StopGrinding()
         {
             if (!isGrinding) return;
-    
+
             isGrinding = false;
             currentRail = null;
-    
-            // Maintain forward velocity when exiting
             rigidbody.velocity = grindDirection * (currentRail != null ? currentRail.grindSpeed : movementSpeed);
-    
-            Debug.Log("Stopped grinding");
         }
 
         #endregion
@@ -697,17 +703,22 @@ namespace PhysicsCharacterController
 
         #region Getters & Setters
 
-        public bool GetGrounded() { return isGrounded; }
-        public bool GetTouchingSlope() { return isTouchingSlope; }
-        public bool GetTouchingStep() { return isTouchingStep; }
-        public bool GetTouchingWall() { return isTouchingWall; }
-        public bool GetJumping() { return isJumping; }
-        public bool GetCrouching() { return isCrouch; }
+        public bool  GetGrounded()               { return isGrounded; }
+        public bool  GetTouchingSlope()          { return isTouchingSlope; }
+        public bool  GetTouchingStep()           { return isTouchingStep; }
+        public bool  GetTouchingWall()           { return isTouchingWall; }
+        public bool  GetJumping()                { return isJumping; }
+        public bool  GetCrouching()              { return isCrouch; }
         public float GetOriginalColliderHeight() { return originalColliderHeight; }
 
-        public void SetLockRotation(bool _lock)         { lockRotation = _lock; }
-        public void SetLockToCamera(bool _lockToCamera) { lockToCamera = _lockToCamera; if (!_lockToCamera) targetAngle = characterModel.transform.eulerAngles.y; }
-        public bool GetGrinding()                       { return isGrinding; }
+        public void SetLockRotation(bool _lock) { lockRotation = _lock; }
+        public void SetLockToCamera(bool _lockToCamera)
+        {
+            lockToCamera = _lockToCamera;
+            if (!_lockToCamera) targetAngle = characterModel.transform.eulerAngles.y;
+        }
+        public bool GetGrinding() { return isGrinding; }
+
         #endregion
 
 
