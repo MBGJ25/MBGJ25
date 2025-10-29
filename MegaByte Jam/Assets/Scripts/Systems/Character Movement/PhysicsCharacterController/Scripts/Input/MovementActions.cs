@@ -115,7 +115,7 @@ public partial class @MovementActions: IInputActionCollection2, IDisposable
                     ""type"": ""PassThrough"",
                     ""id"": ""8725746c-06a8-441d-bf9c-5007f0e83960"",
                     ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
+                    ""processors"": ""InvertVector2(invertX=false)"",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
@@ -386,7 +386,7 @@ public partial class @MovementActions: IInputActionCollection2, IDisposable
                     ""id"": ""4bde1122-00da-49fc-b7d5-1e79d2f32f5b"",
                     ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
-                    ""processors"": ""InvertVector2(invertX=false)"",
+                    ""processors"": """",
                     ""groups"": ""Mouse"",
                     ""action"": ""Camera"",
                     ""isComposite"": false,

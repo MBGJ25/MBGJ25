@@ -163,6 +163,13 @@ namespace PhysicsCharacterController
 
         /**/
 
+        #region Grind Values
+        private bool isGrinding = false;
+        private GrindRail currentRail = null;
+        private float grindPositionT = 0f;
+        private Vector3 grindDirection = Vector3.zero;
+        private float grindHeightOffset = 0.5f; // Height above rail
+        #endregion
 
         private void Awake()
         {
@@ -188,6 +195,13 @@ namespace PhysicsCharacterController
 
         private void FixedUpdate()
         {
+            if (isGrinding)
+            {
+                UpdateGrinding();
+                UpdateEvents();
+                return;
+            }
+            
             //local vectors
             CheckGrounded();
             CheckStep();
@@ -208,6 +222,21 @@ namespace PhysicsCharacterController
 
             //events
             UpdateEvents();
+        }
+        
+        private void OnTriggerEnter(Collider other)
+        {
+            if (isGrinding) return;
+    
+            GrindRail rail = other.GetComponent<GrindRail>();
+            if (rail != null)
+            {
+                // Check if conditions are met to start grinding
+                if (rail.CanStartGrinding(rigidbody.velocity))
+                {
+                    StartGrinding(rail);
+                }
+            }
         }
 
 
@@ -476,6 +505,14 @@ namespace PhysicsCharacterController
 
         private void MoveJump()
         {
+            if (jump && isGrinding)
+            {
+                rigidbody.velocity = grindDirection * currentRail.grindSpeed + Vector3.up * jumpVelocity;
+                StopGrinding();
+                isJumping = true;
+                return;
+            }
+            
             //jumped
             if (jump && isGrounded && ((isTouchingSlope && currentSurfaceAngle <= maxClimbableSlopeAngle) || !isTouchingSlope))
             {
@@ -548,6 +585,77 @@ namespace PhysicsCharacterController
 
         #endregion
 
+        #region Grinding
+
+        private void StartGrinding(GrindRail rail)
+        {
+            currentRail = rail;
+            isGrinding = true;
+    
+            // Find closest point on rail and starting position
+            Vector3 closestPoint = rail.GetClosestPointOnRail(transform.position, out grindPositionT);
+    
+            // Determine grind direction based on velocity
+            grindDirection = rail.GetRailDirection();
+            if (Vector3.Dot(rigidbody.velocity, grindDirection) < 0)
+            {
+                grindDirection = -grindDirection;
+            }
+    
+            // Set initial position
+            transform.position = closestPoint + Vector3.up * grindHeightOffset;
+    
+            // Lock rotation to rail direction
+            targetAngle = Mathf.Atan2(grindDirection.x, grindDirection.z) * Mathf.Rad2Deg;
+    
+            Debug.Log("Started grinding on rail");
+        }
+
+        private void UpdateGrinding()
+        {
+            if (currentRail == null)
+            {
+                StopGrinding();
+                return;
+            }
+    
+            // Move along rail
+            float moveAmount = (currentRail.grindSpeed * Time.fixedDeltaTime) / currentRail.GetRailLength();
+            grindPositionT += moveAmount;
+    
+            // Check if reached end of rail
+            if (grindPositionT >= 1f)
+            {
+                StopGrinding();
+                return;
+            }
+    
+            // Update position along rail
+            Vector3 railPosition = currentRail.GetPositionAtT(grindPositionT);
+            transform.position = railPosition + Vector3.up * grindHeightOffset;
+    
+            // Override velocity to move along rail
+            rigidbody.velocity = grindDirection * currentRail.grindSpeed;
+    
+            // Keep character facing grind direction
+            transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
+            characterModel.transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
+        }
+
+        private void StopGrinding()
+        {
+            if (!isGrinding) return;
+    
+            isGrinding = false;
+            currentRail = null;
+    
+            // Maintain forward velocity when exiting
+            rigidbody.velocity = grindDirection * (currentRail != null ? currentRail.grindSpeed : movementSpeed);
+    
+            Debug.Log("Stopped grinding");
+        }
+
+        #endregion
 
         #region Events
 
@@ -587,7 +695,7 @@ namespace PhysicsCharacterController
         #endregion
 
 
-        #region GettersSetters
+        #region Getters & Setters
 
         public bool GetGrounded() { return isGrounded; }
         public bool GetTouchingSlope() { return isTouchingSlope; }
@@ -597,9 +705,9 @@ namespace PhysicsCharacterController
         public bool GetCrouching() { return isCrouch; }
         public float GetOriginalColliderHeight() { return originalColliderHeight; }
 
-        public void SetLockRotation(bool _lock) { lockRotation = _lock; }
+        public void SetLockRotation(bool _lock)         { lockRotation = _lock; }
         public void SetLockToCamera(bool _lockToCamera) { lockToCamera = _lockToCamera; if (!_lockToCamera) targetAngle = characterModel.transform.eulerAngles.y; }
-
+        public bool GetGrinding()                       { return isGrinding; }
         #endregion
 
 

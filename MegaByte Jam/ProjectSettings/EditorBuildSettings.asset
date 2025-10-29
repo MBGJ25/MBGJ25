@@ -15,10 +15,10 @@ EditorBuildSettings:
     path: Assets/Scenes/Template Scene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
-    path: Assets/Scenes/Player Controller Example Scene.unity
+    path: Assets/Scenes/Example Scenes/Player Controller Example Scene.unity
     guid: ef41c3b6ebd48614fa2493c1d5b1ec10
   - enabled: 1
-    path: Assets/Scenes/Player Controller Human Exaxmple Scene.unity
+    path: Assets/Scenes/Example Scenes/Player Controller Human Exaxmple Scene.unity
     guid: e169608a9e036d94785394ea2ac55f0a
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2667e473e2829e94a8562317d68d1290, type: 3}
