@@ -662,11 +662,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6008326136243875420, guid: 6171f7749248b2d4fa58bbcd91ba00db, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 726355945093737844, guid: 6171f7749248b2d4fa58bbcd91ba00db, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4932533822603032408}
   m_SourcePrefab: {fileID: 100100000, guid: 6171f7749248b2d4fa58bbcd91ba00db, type: 3}
+--- !u!1 &4932533822603032407 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 726355945093737844, guid: 6171f7749248b2d4fa58bbcd91ba00db, type: 3}
+  m_PrefabInstance: {fileID: 4932533822603032406}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4932533822603032408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4932533822603032407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26a2aeef5c05c6249bb80d7754cbdcc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thirdPartyAsset: {fileID: -944628639613478452, guid: 010bd85fdf203f34d94abf6f5ad3e876, type: 3}
+  myAsset: {fileID: -944628639613478452, guid: 2667e473e2829e94a8562317d68d1290, type: 3}
 --- !u!1001 &8256459534195127423
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -784,6 +807,10 @@ PrefabInstance:
       propertyPath: menuButtons.Array.data[1]
       value: 
       objectReference: {fileID: 2013041485}
+    - target: {fileID: 1452537716002045907, guid: 7fea08af779172c4ea222a230dff9b13, type: 3}
+      propertyPath: menuActions.Array.data[1].sceneName
+      value: Player Controller Human Example Scene
+      objectReference: {fileID: 0}
     - target: {fileID: 8987766144689883764, guid: 7fea08af779172c4ea222a230dff9b13, type: 3}
       propertyPath: m_LocalPosition.x
       value: 634.06335

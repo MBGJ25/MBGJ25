@@ -7,58 +7,77 @@ public class SceneControllerManager : SingletonMonoBehavior<SceneControllerManag
     [SerializeField] private InputActionAsset thirdPartyAsset;
     [SerializeField] private InputActionAsset myAsset;
 
-    private InputActionMap myMap;
-    private InputActionMap thirdPartyMap;
-
     protected override void Awake()
     {
         base.Awake();
-        myMap = myAsset.FindActionMap("PlayerControls");
-        thirdPartyMap = thirdPartyAsset.FindActionMap("MovementActions");
+    
+        // Debug what action maps are available
+        Debug.Log("=== My Asset Action Maps ===");
+        foreach (var map in myAsset.actionMaps)
+        {
+            Debug.Log($"Found action map: '{map.name}'");
+        }
+    
+        Debug.Log("=== Third Party Asset Action Maps ===");
+        foreach (var map in thirdPartyAsset.actionMaps)
+        {
+            Debug.Log($"Found action map: '{map.name}'");
+        }
 
-        // Subscribe to scene loaded event
+        // Verify assets are assigned
+        if (myAsset == null)
+            Debug.LogError("myAsset is not assigned!");
+        if (thirdPartyAsset == null)
+            Debug.LogError("thirdPartyAsset is not assigned!");
+
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnDestroy()
     {
-        // Always unsubscribe to avoid memory leaks
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Switch based on the scene name
+        Debug.Log($"Scene loaded: {scene.name}");
+        
         switch (scene.name)
         {
             case "Start Scene":
-                SwitchToMyMap();
+                SwitchToMyAsset();
                 break;
             default:
-                SwitchToThirdPartyMap();
+                SwitchToThirdPartyAsset();
                 break;
         }
     }
 
-    public void SwitchToMyMap()
+    public void SwitchToMyAsset()
     {
-        if (thirdPartyMap is { enabled: true })
-            thirdPartyMap.Disable();
+        Debug.Log("SwitchToMyAsset called");
+        
+        // Just disable and enable unconditionally
+        thirdPartyAsset.Disable();
+        Debug.Log("Disabled third party asset");
+        
+        myAsset.Enable();
+        Debug.Log("Enabled my asset");
 
-        if (myMap != null && !myMap.enabled)
-            myMap.Enable();
-
-        Debug.Log("Switched to My Input Map");
+        Debug.Log("Switched to My Input Asset");
     }
 
-    public void SwitchToThirdPartyMap()
+    public void SwitchToThirdPartyAsset()
     {
-        if (myMap is { enabled: true })
-            myMap.Disable();
+        Debug.Log("SwitchToThirdPartyAsset called");
+        
+        // Just disable and enable unconditionally
+        myAsset.Disable();
+        Debug.Log("Disabled my asset");
+        
+        thirdPartyAsset.Enable();
+        Debug.Log("Enabled third party asset");
 
-        if (thirdPartyMap is { enabled: false })
-            thirdPartyMap.Enable();
-
-        Debug.Log("Switched to Third Party Input Map");
+        Debug.Log("Switched to Third Party Input Asset");
     }
 }
