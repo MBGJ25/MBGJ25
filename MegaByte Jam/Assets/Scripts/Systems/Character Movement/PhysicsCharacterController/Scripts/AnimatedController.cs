@@ -39,10 +39,19 @@ namespace PhysicsCharacterController
 
         private void Update()
         {
+            if (characterManager.GetGrinding())
+            {
+                anim.SetBool("isGrounded", false);
+                anim.SetBool("isJumping", true);
+                return;
+            }
+            
             anim.SetFloat("velocity", rigidbodyCharacter.velocity.magnitude * velocityAnimationMultiplier);
 
             anim.SetBool("isGrounded", CheckAnimationGrounded());
 
+            // CS TODO: Eventually remove when we have an actual grind animation
+            // anim.SetBool("isJump", characterManager.GetJumping() || characterManager.GetGrinding());
             anim.SetBool("isJump", characterManager.GetJumping());
 
             anim.SetBool("isTouchWall", characterManager.GetTouchingWall());
