@@ -20,6 +20,33 @@ MonoBehaviour:
   - Name: 
     Value: 3469344
   Exists: 1
+--- !u!114 &-8825257976622043085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/Movement/Footsteps_Concrete
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/Movement/Footsteps_Concrete
+  Guid:
+    Data1: -1572027271
+    Data2: 1306855916
+    Data3: 977131699
+    Data4: 723866364
+  Banks:
+  - {fileID: -8113383383493620727}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 220
 --- !u!114 &-8205641245281735177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47,6 +74,52 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 58434
+--- !u!114 &-8113383383493620727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Audio/FMOD Build/Desktop/Master.bank
+  Name: Master
+  StudioPath: bank:/Master
+  lastModified: 638973070746490742
+  FileSizes: []
+  Exists: 1
+--- !u!114 &-8072744942210125246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Music/Level1
+  m_EditorClassIdentifier: 
+  Path: event:/Music/Level1
+  Guid:
+    Data1: 1824325830
+    Data2: 1081474981
+    Data3: -73006975
+    Data4: -2098773921
+  Banks:
+  - {fileID: -8113383383493620727}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: -3469525929732490661}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 58434
 --- !u!114 &-7550907842946750735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,7 +144,7 @@ MonoBehaviour:
   IsGlobal: 0
   Labels: []
   Exists: 1
---- !u!114 &-6701534160200035166
+--- !u!114 &-5897305424659888754
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -80,14 +153,47 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Master.bank
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/Movement/Crouch
   m_EditorClassIdentifier: 
-  Path: Assets/Audio/FMOD Build/Desktop/Master.bank
-  Name: Master
-  StudioPath: bank:/Master
-  lastModified: 638972718085824147
-  FileSizes: []
+  Path: event:/SFX/Movement/Crouch
+  Guid:
+    Data1: -1340511332
+    Data2: 1094640729
+    Data3: -1844928101
+    Data4: 941372003
+  Banks:
+  - {fileID: -8113383383493620727}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 473
+--- !u!114 &-5764322928421589869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Heelies_Rolling/Is Idle
+  m_EditorClassIdentifier: 
+  Name: Is Idle
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 3512452601
+    data2: 2601336257
+  Type: 0
+  IsGlobal: 0
+  Labels: []
   Exists: 1
 --- !u!114 &-4617318446464656650
 MonoBehaviour:
@@ -109,6 +215,54 @@ MonoBehaviour:
   - Name: 
     Value: 1180
   Exists: 1
+--- !u!114 &-3973555038684082017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Old_Music_System/Zombies!
+  m_EditorClassIdentifier: 
+  Name: Zombies!
+  StudioPath: 
+  Min: 0
+  Max: 2
+  Default: 0
+  ID:
+    data1: 2800259281
+    data2: 1621018702
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
+--- !u!114 &-3469525929732490661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Level1/Zombies!
+  m_EditorClassIdentifier: 
+  Name: Zombies!
+  StudioPath: 
+  Min: 0
+  Max: 2
+  Default: 0
+  ID:
+    data1: 2800259281
+    data2: 1621018702
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
 --- !u!114 &-2032471832498344307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128,14 +282,93 @@ MonoBehaviour:
     Data3: -865017179
     Data4: 22544069
   Banks:
-  - {fileID: -6701534160200035166}
+  - {fileID: -8113383383493620727}
   IsStream: 1
   Is3D: 0
   IsOneShot: 0
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 58434
+  Length: 126000
+--- !u!114 &-1855425257150243039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Music/GameOver
+  m_EditorClassIdentifier: 
+  Path: event:/Music/GameOver
+  Guid:
+    Data1: -1091529342
+    Data2: 1211300098
+    Data3: -1853237868
+    Data4: -458657308
+  Banks:
+  - {fileID: -8113383383493620727}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 123600
+--- !u!114 &-1352726662293078852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Heelies_Grinding/Is Idle
+  m_EditorClassIdentifier: 
+  Name: Is Idle
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 3512452601
+    data2: 2601336257
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
+--- !u!114 &-596948299008963600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/Movement/Jump
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/Movement/Jump
+  Guid:
+    Data1: -800212225
+    Data2: 1281956549
+    Data3: 104091552
+    Data4: 456499582
+  Banks:
+  - {fileID: -8113383383493620727}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters:
+  - {fileID: 8128768583830322416}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 3566
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -149,43 +382,27 @@ MonoBehaviour:
   m_Name: FMODStudioCache
   m_EditorClassIdentifier: 
   EditorBanks:
-  - {fileID: 8034736404994034956}
-  - {fileID: -6701534160200035166}
+  - {fileID: 8538905158116974900}
+  - {fileID: -8113383383493620727}
   EditorEvents:
-  - {fileID: 4646000844865660407}
   - {fileID: -2032471832498344307}
+  - {fileID: -8825257976622043085}
+  - {fileID: 2341896070072770506}
+  - {fileID: -1855425257150243039}
+  - {fileID: 7388485637605873555}
+  - {fileID: 2207768184491393555}
+  - {fileID: 2604640823580957307}
+  - {fileID: -5897305424659888754}
+  - {fileID: -8072744942210125246}
+  - {fileID: -596948299008963600}
   EditorParameters: []
   MasterBanks:
-  - {fileID: -6701534160200035166}
+  - {fileID: -8113383383493620727}
   StringsBanks:
-  - {fileID: 8034736404994034956}
-  cacheTime: 638972718085824147
+  - {fileID: 8538905158116974900}
+  cacheTime: 638973070746500894
   cacheVersion: 131632
---- !u!114 &792466244193842122
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/Gameplay_Music/MusicState
-  m_EditorClassIdentifier: 
-  Name: MusicState
-  StudioPath: 
-  Min: 0
-  Max: 5
-  Default: 0
-  ID:
-    data1: 4159657584
-    data2: 2355119852
-  Type: 1
-  IsGlobal: 0
-  Labels: []
-  Exists: 1
---- !u!114 &4646000844865660407
+--- !u!114 &2207768184491393555
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -195,25 +412,103 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/Music/Gameplay_Music
+  m_Name: event:/SFX/Movement/Stand
   m_EditorClassIdentifier: 
-  Path: event:/Music/Gameplay_Music
+  Path: event:/SFX/Movement/Stand
   Guid:
-    Data1: -114802042
-    Data2: 1162392740
-    Data3: 1731337632
-    Data4: -599894896
+    Data1: -1025362806
+    Data2: 1127273189
+    Data3: -931251820
+    Data4: 2027784053
   Banks:
-  - {fileID: -6701534160200035166}
-  IsStream: 1
+  - {fileID: -8113383383493620727}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 475
+--- !u!114 &2341896070072770506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/Movement/Heelies_Grinding
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/Movement/Heelies_Grinding
+  Guid:
+    Data1: -2086269826
+    Data2: 1155417916
+    Data3: 728233623
+    Data4: -1727304602
+  Banks:
+  - {fileID: -8113383383493620727}
+  IsStream: 0
   Is3D: 0
   IsOneShot: 0
   Parameters:
-  - {fileID: 792466244193842122}
-  - {fileID: 9166800262374479536}
+  - {fileID: -1352726662293078852}
   MinDistance: 1
   MaxDistance: 20
-  Length: 275478
+  Length: 1810
+--- !u!114 &2604640823580957307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/Movement/Heelies_Rolling
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/Movement/Heelies_Rolling
+  Guid:
+    Data1: 1470495376
+    Data2: 1149641835
+    Data3: 108949145
+    Data4: -1624452001
+  Banks:
+  - {fileID: -8113383383493620727}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: -5764322928421589869}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 2368
+--- !u!114 &4139113448603063227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Old_Music_System/MusicState
+  m_EditorClassIdentifier: 
+  Name: MusicState
+  StudioPath: 
+  Min: 0
+  Max: 7
+  Default: 0
+  ID:
+    data1: 4159657584
+    data2: 2355119852
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
 --- !u!114 &4960726043543739270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -238,6 +533,35 @@ MonoBehaviour:
   IsGlobal: 0
   Labels: []
   Exists: 1
+--- !u!114 &7388485637605873555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Music/Old_Music_System
+  m_EditorClassIdentifier: 
+  Path: event:/Music/Old_Music_System
+  Guid:
+    Data1: -114802042
+    Data2: 1162392740
+    Data3: 1731337632
+    Data4: -599894896
+  Banks:
+  - {fileID: -8113383383493620727}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: 4139113448603063227}
+  - {fileID: -3973555038684082017}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 434600
 --- !u!114 &7940040836778732779
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -267,7 +591,31 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 275478
---- !u!114 &8034736404994034956
+--- !u!114 &8128768583830322416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Jump/Has Landed
+  m_EditorClassIdentifier: 
+  Name: Has Landed
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 1038796941
+    data2: 4065982749
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
+--- !u!114 &8538905158116974900
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -282,32 +630,8 @@ MonoBehaviour:
   Path: Assets/Audio/FMOD Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638972718085824147
+  lastModified: 638973070746500894
   FileSizes:
   - Name: 
-    Value: 1180
-  Exists: 1
---- !u!114 &9166800262374479536
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/Gameplay_Music/Zombies!
-  m_EditorClassIdentifier: 
-  Name: Zombies!
-  StudioPath: 
-  Min: 0
-  Max: 2
-  Default: 0
-  ID:
-    data1: 2800259281
-    data2: 1621018702
-  Type: 0
-  IsGlobal: 0
-  Labels: []
+    Value: 1628
   Exists: 1
