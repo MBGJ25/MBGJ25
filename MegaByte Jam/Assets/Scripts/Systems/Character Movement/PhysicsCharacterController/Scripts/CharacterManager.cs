@@ -177,10 +177,11 @@ namespace PhysicsCharacterController
 
         private void FixedUpdate()
         {
-            // If grinding we don't process other movement
+            // If grinding we don't process other movement except listening for jump
             if (isGrinding)
             {
                 UpdateGrinding();
+                MoveJump();
                 UpdateEvents();
                 return;
             }
@@ -412,7 +413,7 @@ namespace PhysicsCharacterController
         }
 
         #endregion
-
+        
 
         #region Move
 
@@ -486,7 +487,11 @@ namespace PhysicsCharacterController
         {
             if (jump && isGrinding)
             {
-                rigidbody.velocity = grindDirection * currentRail.grindSpeed + Vector3.up * jumpVelocity;
+                // Forward boost from rail direction
+                float boostMultiplier = 1.2f;
+                rigidbody.velocity = grindDirection * (currentRail.grindSpeed * boostMultiplier)
+                    + Vector3.up * jumpVelocity;
+
                 StopGrinding();
                 isJumping = true;
                 return;
@@ -529,7 +534,7 @@ namespace PhysicsCharacterController
 
         #endregion
 
-
+    
         #region Gravity
 
         private void ApplyGravity()
