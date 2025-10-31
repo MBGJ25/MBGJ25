@@ -1,3 +1,3 @@
-### Tech Debt
+### Initial Setup
 
-- [ ] Rename and/or consolidate action maps
+- [ ] Create game bootstrapper and start Service Locator
