@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 
 public class Zombie : MonoBehaviour
 {
@@ -19,8 +20,10 @@ public class Zombie : MonoBehaviour
     #region AI Components
     [Header("AI Components")]
     public NavMeshAgent agent;
-    public Transform player;
+    [FormerlySerializedAs("player")]
+    public Transform playerObject;
     public LayerMask whatIsGround, whatIsPlayer;
+    private Player player;
     #endregion
 
     #region Patrolling
@@ -45,8 +48,9 @@ public class Zombie : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.Find("Player Character").transform;
+        playerObject = GameObject.Find("Player Character").transform;
         agent = GetComponent<NavMeshAgent>();
+        player = playerObject.GetComponent<Player>();
         
         // Initialize health
         CurrentHealth = stats.MaxHealth;
@@ -94,15 +98,16 @@ public class Zombie : MonoBehaviour
 
     private void ChasePlayer()
     {
-        agent.SetDestination(player.position);
+        agent.SetDestination(playerObject.position);
     }
 
-    private void AttackPlayer()
+    // CS TODO: Use this one if we want projectiles
+    private void ProjectileAttackPlayer()
     {
         //Make sure enemy doesn't move
         agent.SetDestination(transform.position);
 
-        transform.LookAt(player);
+        transform.LookAt(playerObject);
 
         if (!alreadyAttacked)
         {
@@ -112,6 +117,25 @@ public class Zombie : MonoBehaviour
             rb.AddForce(transform.forward * 32f, ForceMode.Impulse);
             rb.AddForce(transform.up * 8f, ForceMode.Impulse);
             ///End of attack code
+
+            alreadyAttacked = true;
+            Invoke(nameof(ResetAttack), timeBetweenAttacks);
+        }
+    }
+    
+    private void AttackPlayer()
+    {
+        agent.SetDestination(transform.position);
+        transform.LookAt(playerObject);
+
+        if (!alreadyAttacked)
+        {
+            // CS TODO: Add any attack effects we'd like
+            // Deal damage directly to player
+            if (player != null)
+            {
+                player.TakeDamage(stats.AttackDamage);
+            }
 
             alreadyAttacked = true;
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
