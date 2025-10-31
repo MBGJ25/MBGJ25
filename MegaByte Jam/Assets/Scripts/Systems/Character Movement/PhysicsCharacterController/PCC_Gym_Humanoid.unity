@@ -1366,11 +1366,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7823351806016652939, guid: 60542c78ea7861c4381d91d66fa28c9a, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000017075541
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7823351806016652939, guid: 60542c78ea7861c4381d91d66fa28c9a, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.000000001126333
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7823351806585649516, guid: 60542c78ea7861c4381d91d66fa28c9a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1438,11 +1438,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7823351806666410936, guid: 60542c78ea7861c4381d91d66fa28c9a, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000017025833
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7823351806666410936, guid: 60542c78ea7861c4381d91d66fa28c9a, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0000000017215551
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7823351807152869080, guid: 60542c78ea7861c4381d91d66fa28c9a, type: 3}
       propertyPath: m_Follow
@@ -1470,11 +1470,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7823351807199473168, guid: 60542c78ea7861c4381d91d66fa28c9a, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000017052313
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7823351807199473168, guid: 60542c78ea7861c4381d91d66fa28c9a, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0000000014357474
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7823351807975455078, guid: 60542c78ea7861c4381d91d66fa28c9a, type: 3}
       propertyPath: m_Name
@@ -3723,9 +3723,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1630257605654801738, guid: a1d3cb48893d68f47a9b787bf5935917, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.814
+      objectReference: {fileID: 0}
+    - target: {fileID: 1630257605654801738, guid: a1d3cb48893d68f47a9b787bf5935917, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.7146
+      objectReference: {fileID: 0}
     - target: {fileID: 2921179766854205570, guid: a1d3cb48893d68f47a9b787bf5935917, type: 3}
       propertyPath: m_Name
       value: Grind Rail 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4918109189229118271, guid: a1d3cb48893d68f47a9b787bf5935917, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.785
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
