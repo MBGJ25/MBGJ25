@@ -487,12 +487,14 @@ namespace PhysicsCharacterController
         {
             if (jump && isGrinding)
             {
-                // Forward boost from rail direction
-                float boostMultiplier = 1.2f;
-                rigidbody.velocity = grindDirection * (currentRail.grindSpeed * boostMultiplier)
-                    + Vector3.up * jumpVelocity;
+                // Slight slowdown and upward pop
+                float horizontalSpeed = currentRail.grindSpeed * 0.8f; // 20% slowdown
+                Vector3 jumpVel = grindDirection * horizontalSpeed + Vector3.up * jumpVelocity;
 
-                StopGrinding();
+                // Exit grinding cleanly *before* setting velocity
+                StopGrinding(true);
+
+                rigidbody.velocity = jumpVel;
                 isJumping = true;
                 return;
             }
@@ -663,13 +665,18 @@ namespace PhysicsCharacterController
             rigidbody.velocity = grindDirection * currentRail.grindSpeed;
         }
         
-        private void StopGrinding()
+        private void StopGrinding(bool jumpedOff = false)
         {
             if (!isGrinding) return;
 
             isGrinding = false;
+            var prevRail = currentRail;
             currentRail = null;
-            rigidbody.velocity = grindDirection * (currentRail != null ? currentRail.grindSpeed : movementSpeed);
+            
+            if (!jumpedOff && prevRail != null)
+            {
+                rigidbody.velocity = grindDirection * prevRail.grindSpeed;
+            }
         }
 
         #endregion
