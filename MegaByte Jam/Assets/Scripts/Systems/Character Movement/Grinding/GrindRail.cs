@@ -71,14 +71,20 @@ public class GrindRail : MonoBehaviour
     }
 
     // Check if character's velocity is compatible with grinding
-    public bool CanStartGrinding(Vector3 velocity)
+    public bool CanStartGrinding(Vector3 velocity, Vector3 playerForward, out Vector3 preferredDirection)
     {
         if (velocity.magnitude < minEntrySpeed)
+        {
+            preferredDirection = railDirection;
             return false;
+        }
 
-        // Check if moving roughly in rail direction
-        float angle = Vector3.Angle(velocity.normalized, railDirection);
-        return angle <= maxEntryAngle;
+        // Determine which rail direction is closer to player's facing
+        float dotForward = Vector3.Dot(playerForward, railDirection);
+        float dotBackward = Vector3.Dot(playerForward, -railDirection);
+    
+        preferredDirection = (dotForward >= dotBackward) ? railDirection : -railDirection;
+        return true; // CS TODO: Add angle check if needed
     }
 
     private void OnDrawGizmos()

@@ -146,13 +146,12 @@ namespace PhysicsCharacterController
         /**/
 
         #region Grind Values
-
         private bool isGrinding = false;
         private GrindRail currentRail = null;
         private float grindPositionT = 0f;
         private Vector3 grindDirection = Vector3.zero;
-        private float grindHeightOffset = 0.5f; // Height above rail
-
+        private float grindHeightOffset = 0.5f;
+        private bool grindingForward = true;
         #endregion
 
         private void Awake()
@@ -215,10 +214,10 @@ namespace PhysicsCharacterController
             GrindRail rail = other.GetComponent<GrindRail>();
             if (rail != null)
             {
-                // Check if conditions are met to start grinding
-                if (rail.CanStartGrinding(rigidbody.velocity))
+                Vector3 preferredDirection;
+                if (rail.CanStartGrinding(rigidbody.velocity, transform.forward, out preferredDirection))
                 {
-                    StartGrinding(rail);
+                    StartGrinding(rail, preferredDirection);
                 }
             }
         }
@@ -571,7 +570,7 @@ namespace PhysicsCharacterController
 
         #region Grinding
 
-        private void StartGrinding(GrindRail rail)
+        private void StartGrinding(GrindRail rail, Vector3 direction)
         {
             currentRail = rail;
             isGrinding = true;
@@ -579,12 +578,11 @@ namespace PhysicsCharacterController
             // Find closest point on rail and starting position
             Vector3 closestPoint = rail.GetClosestPointOnRail(transform.position, out grindPositionT);
 
-            // Determine grind direction based on velocity
-            grindDirection = rail.GetRailDirection();
-            if (Vector3.Dot(rigidbody.velocity, grindDirection) < 0)
-            {
-                grindDirection = -grindDirection;
-            }
+            // Use the provided direction (based on player's facing)
+            grindDirection = direction;
+    
+            // Determine if we're grinding forward (towards end) or backward (towards start)
+            grindingForward = Vector3.Dot(direction, rail.GetRailDirection()) > 0;
 
             // Lock rotation to rail direction FIRST
             targetAngle = Mathf.Atan2(grindDirection.x, grindDirection.z) * Mathf.Rad2Deg;
@@ -601,14 +599,10 @@ namespace PhysicsCharacterController
             );
 
             Vector3 finalPosition = closestPoint + properOffset;
-
-            // ROUND X and Z to snap to rail
             finalPosition.x = Mathf.Round(finalPosition.x);
             finalPosition.z = Mathf.Round(finalPosition.z);
 
             transform.position = finalPosition;
-
-            Debug.Log("Started grinding on rail");
         }
 
         private void UpdateGrinding()
@@ -619,15 +613,30 @@ namespace PhysicsCharacterController
                 return;
             }
 
-            // Move along rail
+            // Move along rail (forward or backward based on grindingForward)
             float moveAmount = (currentRail.grindSpeed * Time.fixedDeltaTime) / currentRail.GetRailLength();
-            grindPositionT += moveAmount;
-
-            // Check if reached end of rail
-            if (grindPositionT >= 1f)
+    
+            if (grindingForward)
             {
-                StopGrinding();
-                return;
+                grindPositionT += moveAmount;
+        
+                // Check if reached end of rail
+                if (grindPositionT >= 1f)
+                {
+                    StopGrinding();
+                    return;
+                }
+            }
+            else
+            {
+                grindPositionT -= moveAmount;
+        
+                // Check if reached start of rail
+                if (grindPositionT <= 0f)
+                {
+                    StopGrinding();
+                    return;
+                }
             }
 
             // Update rotation FIRST
@@ -652,6 +661,7 @@ namespace PhysicsCharacterController
             transform.position = finalPosition;
             rigidbody.velocity = grindDirection * currentRail.grindSpeed;
         }
+        
         private void StopGrinding()
         {
             if (!isGrinding) return;
