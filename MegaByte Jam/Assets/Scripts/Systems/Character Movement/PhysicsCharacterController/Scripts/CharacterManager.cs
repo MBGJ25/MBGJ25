@@ -18,6 +18,7 @@ namespace PhysicsCharacterController
         [Space(10)]
         public float dampSpeedUp = 0.2f;
         public float dampSpeedDown = 0.1f;
+        public bool airCrouchCompleteStop = true;
 
 
         [Header("Jump and gravity specifics")]
@@ -30,6 +31,7 @@ namespace PhysicsCharacterController
         public float frictionAgainstWall = 0.839f;
         [Space(10)]
         public bool canLongJump = true;
+        public float airCrouchGravityMultiplier = 24f;
 
 
         [Header("Slope and step specifics")]
@@ -136,6 +138,8 @@ namespace PhysicsCharacterController
         private Rigidbody rigidbody;
         private CapsuleCollider collider;
         private float originalColliderHeight;
+        private float originalGravityMultiplier;
+        private float originalCrouchSpeedMultiplier;
 
         private Vector3 currVelocity = Vector3.zero;
         private float turnSmoothVelocity;
@@ -160,6 +164,8 @@ namespace PhysicsCharacterController
             rigidbody = this.GetComponent<Rigidbody>();
             collider = this.GetComponent<CapsuleCollider>();
             originalColliderHeight = collider.height;
+            originalGravityMultiplier = gravityMultiplier;
+            originalCrouchSpeedMultiplier = crouchSpeedMultiplier;
 
             SetFriction(frictionAgainstFloor, true);
             currentLockOnSlope = lockOnSlope;
@@ -344,7 +350,10 @@ namespace PhysicsCharacterController
                     globalForward = forward;
                     reactionForward = forward;
 
-                    SetFriction(frictionAgainstFloor, true);
+                    if (!isCrouch)
+                    {
+                        SetFriction(frictionAgainstFloor, true);
+                    }
                     currentLockOnSlope = lockOnSlope;
 
                     currentSurfaceAngle = 0f;
@@ -365,7 +374,10 @@ namespace PhysicsCharacterController
                         globalForward = tmpGlobalForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * canSlideMultiplierCurve) + 1f);
                         reactionForward = tmpReactionForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * canSlideMultiplierCurve) + 1f);
 
-                        SetFriction(frictionAgainstFloor, true);
+                        if (!isCrouch)
+                        {
+                            SetFriction(frictionAgainstFloor, true);
+                        }
                         currentLockOnSlope = lockOnSlope;
                     }
                     else if (isTouchingStep)
@@ -375,7 +387,10 @@ namespace PhysicsCharacterController
                         globalForward = tmpGlobalForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * climbingStairsMultiplierCurve) + 1f);
                         reactionForward = tmpReactionForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * climbingStairsMultiplierCurve) + 1f);
 
-                        SetFriction(frictionAgainstFloor, true);
+                        if (!isCrouch)
+                        {
+                            SetFriction(frictionAgainstFloor, true);
+                        }
                         currentLockOnSlope = true;
                     }
                     else
@@ -421,6 +436,7 @@ namespace PhysicsCharacterController
 
         #region Move
 
+        //Edit this for surfing/skiing/slide mechanic
         private void MoveCrouch()
         {
             if (crouch && isGrounded)
@@ -433,13 +449,44 @@ namespace PhysicsCharacterController
                 collider.height = newHeight;
                 collider.center = new Vector3(0f, -newHeight * crouchHeightMultiplier, 0f);
 
+                crouchSpeedMultiplier = originalCrouchSpeedMultiplier;
+                gravityMultiplier = originalGravityMultiplier;
+
                 headPoint.position = new Vector3(transform.position.x + POV_crouchHeadHeight.x, transform.position.y + POV_crouchHeadHeight.y, transform.position.z + POV_crouchHeadHeight.z);
+            }
+            //Air Crouch
+            else if (crouch && !isGrounded)
+            {
+                isCrouch = true;
+
+                if (meshCharacterCrouch != null && meshCharacter != null) meshCharacter.SetActive(false);
+                if (meshCharacterCrouch != null) meshCharacterCrouch.SetActive(true);
+
+                float newHeight = originalColliderHeight * crouchHeightMultiplier;
+                collider.height = newHeight;
+                collider.center = new Vector3(0f, -newHeight * crouchHeightMultiplier, 0f);
+
+                headPoint.position = new Vector3(transform.position.x + POV_crouchHeadHeight.x, transform.position.y + POV_crouchHeadHeight.y, transform.position.z + POV_crouchHeadHeight.z);
+
+                //change majority of vilocity to down
+                crouchSpeedMultiplier = 0f;
+
+                currVelocity = new Vector3(0f, currVelocity.y - Mathf.Abs(currVelocity.x) - Mathf.Abs(currVelocity.z), 0f);
+                if (airCrouchCompleteStop)
+                {
+                    rigidbody.velocity = new Vector3(0f, rigidbody.velocity.y - Mathf.Abs(rigidbody.velocity.x / 2) - Mathf.Abs(rigidbody.velocity.z / 2), 0f);
+                }
+                gravityMultiplier = airCrouchGravityMultiplier;
             }
             else
             {
                 isCrouch = false;
+
                 if (meshCharacterCrouch != null && meshCharacter != null) meshCharacter.SetActive(true);
                 if (meshCharacterCrouch != null) meshCharacterCrouch.SetActive(false);
+
+                crouchSpeedMultiplier = originalCrouchSpeedMultiplier;
+                gravityMultiplier = originalGravityMultiplier;
 
                 collider.height = originalColliderHeight;
                 collider.center = Vector3.zero;
@@ -457,7 +504,6 @@ namespace PhysicsCharacterController
             if (axisInput.magnitude > movementThrashold)
             {
                 targetAngle = Mathf.Atan2(axisInput.x, axisInput.y) * Mathf.Rad2Deg + characterCamera.transform.eulerAngles.y;
-
                 if (!sprint) rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, forward * movementSpeed * crouchMultiplier, ref currVelocity, dampSpeedUp);
                 else rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, forward * sprintSpeed * crouchMultiplier, ref currVelocity, dampSpeedUp);
             }
@@ -515,7 +561,6 @@ namespace PhysicsCharacterController
                 globalForward = forward;
                 reactionForward = forward;
             }
-
             //is falling
             if (rigidbody.velocity.y < 0 && !isGrounded) coyoteJumpMultiplier = fallMultiplier;
             else if (rigidbody.velocity.y > 0.1f && (currentSurfaceAngle <= maxClimbableSlopeAngle || isTouchingStep))
