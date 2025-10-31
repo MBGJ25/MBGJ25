@@ -3723,56 +3723,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1630257605654801738, guid: a1d3cb48893d68f47a9b787bf5935917, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.814
-      objectReference: {fileID: 0}
-    - target: {fileID: 1630257605654801738, guid: a1d3cb48893d68f47a9b787bf5935917, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 1.7146
-      objectReference: {fileID: 0}
     - target: {fileID: 2921179766854205570, guid: a1d3cb48893d68f47a9b787bf5935917, type: 3}
       propertyPath: m_Name
       value: Grind Rail 1
       objectReference: {fileID: 0}
-    - target: {fileID: 4918109189229118271, guid: a1d3cb48893d68f47a9b787bf5935917, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.785
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2921179766854205570, guid: a1d3cb48893d68f47a9b787bf5935917, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1242014404}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1d3cb48893d68f47a9b787bf5935917, type: 3}
---- !u!1 &1242014403 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2921179766854205570, guid: a1d3cb48893d68f47a9b787bf5935917, type: 3}
-  m_PrefabInstance: {fileID: 1242014402}
-  m_PrefabAsset: {fileID: 0}
---- !u!65 &1242014404
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1242014403}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.111971736, y: 0.29018885, z: 3.4617612}
-  m_Center: {x: 0.35975146, y: 0.7211299, z: -0.011297822}
 --- !u!1 &1264204404
 GameObject:
   m_ObjectHideFlags: 0

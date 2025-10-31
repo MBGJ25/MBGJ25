@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2383808582394415791}
   - component: {fileID: 8023719208463032908}
   - component: {fileID: 5409606530646954821}
+  - component: {fileID: 3210180195075285870}
   m_Layer: 0
   m_Name: Grind Rail 1
   m_TagString: Untagged
@@ -30,7 +31,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2921179766854205570}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 10}
   m_ConstrainProportionsScale: 0
@@ -169,6 +170,27 @@ MonoBehaviour:
   grindSpeed: 18
   minEntrySpeed: 2
   maxEntryAngle: 90
+--- !u!65 &3210180195075285870
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2921179766854205570}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.111971736, y: 0.29018885, z: 3.4617612}
+  m_Center: {x: 0.35975146, y: 0.7211299, z: -0.011297822}
 --- !u!1 &5904771372530505399
 GameObject:
   m_ObjectHideFlags: 0
@@ -194,7 +216,7 @@ Transform:
   m_GameObject: {fileID: 5904771372530505399}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.17005685, y: 0.55, z: 1.688}
+  m_LocalPosition: {x: 0.17005685, y: 0.814, z: 1.7146}
   m_LocalScale: {x: 1, y: 1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -225,7 +247,7 @@ Transform:
   m_GameObject: {fileID: 8895581705528828825}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.17005685, y: 0.4351412, z: -1.749}
+  m_LocalPosition: {x: 0.17005685, y: 0.785, z: -1.749}
   m_LocalScale: {x: 1, y: 1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
