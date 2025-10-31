@@ -5,5 +5,6 @@ using UnityEngine;
 public class EnemyStats : ScriptableObject
 {
     [SerializeField] private int maxHealth = 100;
+    [SerializeField] private int attackDamage = 1;
     public int MaxHealth => maxHealth;
 }

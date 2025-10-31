@@ -10,7 +10,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Player Stats", menuName = "Scriptable Objects/State/New Player Stats")]
 public class PlayerStats : ScriptableObject 
 {
-
     #region Events
     public event Action OnHealthChanged;
     #endregion

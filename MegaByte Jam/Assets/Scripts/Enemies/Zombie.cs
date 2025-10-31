@@ -106,6 +106,7 @@ public class Zombie : MonoBehaviour
 
         if (!alreadyAttacked)
         {
+            // CS TODO: Add call to take damage here and use Stats.AttackDamage
             ///Attack code here
             Rigidbody rb = Instantiate(projectile, transform.position, Quaternion.identity).GetComponent<Rigidbody>();
             rb.AddForce(transform.forward * 32f, ForceMode.Impulse);
