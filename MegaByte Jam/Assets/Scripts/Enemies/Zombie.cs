@@ -1,39 +1,61 @@
-
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class Zombie : MonoBehaviour
 {
+    #region Health System
+    [Header("Stats")]
+    [SerializeField] private EnemyStats stats;
+    
+    public event Action<int> OnDamageTaken;
+    public event Action OnDeath;
+
+    public int CurrentHealth { get; private set; }
+    public bool IsAlive => CurrentHealth > 0;
+    public float HealthPercentage => (float)CurrentHealth / stats.MaxHealth;
+    #endregion
+
+    #region AI Components
+    [Header("AI Components")]
     public NavMeshAgent agent;
-
     public Transform player;
-
     public LayerMask whatIsGround, whatIsPlayer;
+    #endregion
 
-    public float health;
-
-    //Patroling
+    #region Patrolling
+    [Header("Patrolling")]
     public Vector3 walkPoint;
     bool walkPointSet;
     public float walkPointRange;
+    #endregion
 
-    //Attacking
+    #region Attacking
+    [Header("Attacking")]
     public float timeBetweenAttacks;
     bool alreadyAttacked;
     public GameObject projectile;
+    #endregion
 
-    //States
+    #region States
+    [Header("Detection")]
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
+    #endregion
 
     private void Awake()
     {
         player = GameObject.Find("Player Character").transform;
         agent = GetComponent<NavMeshAgent>();
+        
+        // Initialize health
+        CurrentHealth = stats.MaxHealth;
     }
 
     private void Update()
     {
+        if (!IsAlive) return; // Don't update AI if dead
+
         //Check for sight and attack range
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
@@ -43,6 +65,7 @@ public class Zombie : MonoBehaviour
         if (playerInAttackRange && playerInSightRange) AttackPlayer();
     }
 
+    #region AI Behavior
     private void Patroling()
     {
         if (!walkPointSet) SearchWalkPoint();
@@ -56,11 +79,12 @@ public class Zombie : MonoBehaviour
         if (distanceToWalkPoint.magnitude < 1f)
             walkPointSet = false;
     }
+
     private void SearchWalkPoint()
     {
         //Calculate random point in range
-        float randomZ = Random.Range(-walkPointRange, walkPointRange);
-        float randomX = Random.Range(-walkPointRange, walkPointRange);
+        float randomZ = UnityEngine.Random.Range(-walkPointRange, walkPointRange);
+        float randomX = UnityEngine.Random.Range(-walkPointRange, walkPointRange);
 
         walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
 
@@ -92,21 +116,48 @@ public class Zombie : MonoBehaviour
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
     }
+
     private void ResetAttack()
     {
         alreadyAttacked = false;
     }
+    #endregion
 
+    #region Health System
     public void TakeDamage(int damage)
     {
-        health -= damage;
+        if (!IsAlive || damage <= 0) return;
 
-        if (health <= 0) Invoke(nameof(DestroyEnemy), 0.5f);
+        int actualDamage = Mathf.Min(damage, CurrentHealth);
+        CurrentHealth -= actualDamage;
+        
+        OnDamageTaken?.Invoke(actualDamage);
+
+        if (CurrentHealth <= 0)
+        {
+            CurrentHealth = 0;
+            Die();
+        }
     }
+
+    private void Die()
+    {
+        OnDeath?.Invoke();
+        
+        // Disable AI
+        agent.enabled = false;
+        
+        // CS TODO: Add death animation and any eventing we need here
+        // animator.SetTrigger("Death");
+        
+        Invoke(nameof(DestroyEnemy), 0.5f);
+    }
+
     private void DestroyEnemy()
     {
         Destroy(gameObject);
     }
+    #endregion
 
     private void OnDrawGizmosSelected()
     {

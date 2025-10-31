@@ -7,7 +7,7 @@ using UnityEngine;
 /// needs to reference it and subscribe to the `OnHealthChanged` event.
 /// </summary>
 
-[CreateAssetMenu(fileName = "Player Stats", menuName = "Scriptable Objects/State/PlayerStats")]
+[CreateAssetMenu(fileName = "Player Stats", menuName = "Scriptable Objects/State/New Player Stats")]
 public class PlayerStats : ScriptableObject 
 {
 
