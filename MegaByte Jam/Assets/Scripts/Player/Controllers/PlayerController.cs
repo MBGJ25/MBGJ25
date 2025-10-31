@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
         
         if (cameraTransform == null)
         {
-            Debug.LogError("No cinemachine brain transform attached to PlayerController.cs");
+            Debug.LogError("No Cinemachine brain transform attached to PlayerController.cs");
         }
     }
 
