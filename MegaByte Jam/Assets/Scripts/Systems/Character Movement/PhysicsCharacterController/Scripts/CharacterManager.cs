@@ -146,13 +146,12 @@ namespace PhysicsCharacterController
         /**/
 
         #region Grind Values
-
         private bool isGrinding = false;
         private GrindRail currentRail = null;
         private float grindPositionT = 0f;
         private Vector3 grindDirection = Vector3.zero;
-        private float grindHeightOffset = 0.5f; // Height above rail
-
+        private float grindHeightOffset = 0.5f;
+        private bool grindingForward = true;
         #endregion
 
         private void Awake()
@@ -168,7 +167,6 @@ namespace PhysicsCharacterController
 
         private void Update()
         {
-            //input
             axisInput = input.axisInput;
             jump = input.jump;
             jumpHold = input.jumpHold;
@@ -179,12 +177,12 @@ namespace PhysicsCharacterController
 
         private void FixedUpdate()
         {
-            // Check if grinding - skip ALL normal movement and gravity
+            // If grinding we don't process other movement
             if (isGrinding)
             {
                 UpdateGrinding();
-                UpdateEvents(); // Keep events running
-                return; // Exit early - skip everything below
+                UpdateEvents();
+                return;
             }
 
             //local vectors
@@ -215,10 +213,10 @@ namespace PhysicsCharacterController
             GrindRail rail = other.GetComponent<GrindRail>();
             if (rail != null)
             {
-                // Check if conditions are met to start grinding
-                if (rail.CanStartGrinding(rigidbody.velocity))
+                Vector3 preferredDirection;
+                if (rail.CanStartGrinding(rigidbody.velocity, transform.forward, out preferredDirection))
                 {
-                    StartGrinding(rail);
+                    StartGrinding(rail, preferredDirection);
                 }
             }
         }
@@ -244,7 +242,6 @@ namespace PhysicsCharacterController
                 RaycastHit stepUpperHit;
                 if (RoundValue(stepLowerHit.normal.y) == 0 && !Physics.Raycast(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), globalForward, out stepUpperHit, stepCheckerThrashold + 0.05f, groundMask))
                 {
-                    //rigidbody.position -= new Vector3(0f, -stepSmooth, 0f);
                     tmpStep = true;
                 }
             }
@@ -255,7 +252,6 @@ namespace PhysicsCharacterController
                 RaycastHit stepUpperHit45;
                 if (RoundValue(stepLowerHit45.normal.y) == 0 && !Physics.Raycast(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), Quaternion.AngleAxis(45, Vector3.up) * globalForward, out stepUpperHit45, stepCheckerThrashold + 0.05f, groundMask))
                 {
-                    //rigidbody.position -= new Vector3(0f, -stepSmooth, 0f);
                     tmpStep = true;
                 }
             }
@@ -266,7 +262,6 @@ namespace PhysicsCharacterController
                 RaycastHit stepUpperHitMinus45;
                 if (RoundValue(stepLowerHitMinus45.normal.y) == 0 && !Physics.Raycast(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), Quaternion.AngleAxis(-45, Vector3.up) * globalForward, out stepUpperHitMinus45, stepCheckerThrashold + 0.05f, groundMask))
                 {
-                    //rigidbody.position -= new Vector3(0f, -stepSmooth, 0f);
                     tmpStep = true;
                 }
             }
@@ -541,10 +536,10 @@ namespace PhysicsCharacterController
         {
             Vector3 gravity = Vector3.zero;
 
-            if ((currentLockOnSlope && isGrounded) || isTouchingStep) gravity = down * gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier;
-            else if (currentLockOnSlope && !isGrounded) gravity = new Vector3(0f, down.y, 0f) * gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier;
+            if ((currentLockOnSlope && isGrounded) || isTouchingStep) gravity = down * (gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier);
+            else if (currentLockOnSlope && !isGrounded) gravity = new Vector3(0f, down.y, 0f) * (gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier);
 
-            else gravity = globalDown * gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier;
+            else gravity = globalDown * (gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier);
 
             //avoid little jump
             if (groundNormal.y != 1 && groundNormal.y != 0 && isTouchingSlope && prevGroundNormal != groundNormal)
@@ -557,7 +552,7 @@ namespace PhysicsCharacterController
             if (groundNormal.y != 1 && groundNormal.y != 0 && (currentSurfaceAngle > maxClimbableSlopeAngle && !isTouchingStep))
             {
                 //Debug.Log("Slope angle too high, character is sliding");
-                if (currentSurfaceAngle > 0f && currentSurfaceAngle <= 30f) gravity = globalDown * gravityMultiplierIfUnclimbableSlope * -Physics.gravity.y;
+                if (currentSurfaceAngle > 0f && currentSurfaceAngle <= 30f) gravity = globalDown * (gravityMultiplierIfUnclimbableSlope * -Physics.gravity.y);
                 else if (currentSurfaceAngle > 30f && currentSurfaceAngle <= 89f) gravity = globalDown * gravityMultiplierIfUnclimbableSlope / 2f * -Physics.gravity.y;
             }
 
@@ -571,7 +566,7 @@ namespace PhysicsCharacterController
 
         #region Grinding
 
-        private void StartGrinding(GrindRail rail)
+        private void StartGrinding(GrindRail rail, Vector3 direction)
         {
             currentRail = rail;
             isGrinding = true;
@@ -579,12 +574,11 @@ namespace PhysicsCharacterController
             // Find closest point on rail and starting position
             Vector3 closestPoint = rail.GetClosestPointOnRail(transform.position, out grindPositionT);
 
-            // Determine grind direction based on velocity
-            grindDirection = rail.GetRailDirection();
-            if (Vector3.Dot(rigidbody.velocity, grindDirection) < 0)
-            {
-                grindDirection = -grindDirection;
-            }
+            // Use the provided direction (based on player's facing)
+            grindDirection = direction;
+    
+            // Determine if we're grinding forward (towards end) or backward (towards start)
+            grindingForward = Vector3.Dot(direction, rail.GetRailDirection()) > 0;
 
             // Lock rotation to rail direction FIRST
             targetAngle = Mathf.Atan2(grindDirection.x, grindDirection.z) * Mathf.Rad2Deg;
@@ -601,14 +595,10 @@ namespace PhysicsCharacterController
             );
 
             Vector3 finalPosition = closestPoint + properOffset;
-
-            // ROUND X and Z to snap to rail
             finalPosition.x = Mathf.Round(finalPosition.x);
             finalPosition.z = Mathf.Round(finalPosition.z);
 
             transform.position = finalPosition;
-
-            Debug.Log("Started grinding on rail");
         }
 
         private void UpdateGrinding()
@@ -619,15 +609,30 @@ namespace PhysicsCharacterController
                 return;
             }
 
-            // Move along rail
+            // Move along rail (forward or backward based on grindingForward)
             float moveAmount = (currentRail.grindSpeed * Time.fixedDeltaTime) / currentRail.GetRailLength();
-            grindPositionT += moveAmount;
-
-            // Check if reached end of rail
-            if (grindPositionT >= 1f)
+    
+            if (grindingForward)
             {
-                StopGrinding();
-                return;
+                grindPositionT += moveAmount;
+        
+                // Check if reached end of rail
+                if (grindPositionT >= 1f)
+                {
+                    StopGrinding();
+                    return;
+                }
+            }
+            else
+            {
+                grindPositionT -= moveAmount;
+        
+                // Check if reached start of rail
+                if (grindPositionT <= 0f)
+                {
+                    StopGrinding();
+                    return;
+                }
             }
 
             // Update rotation FIRST
@@ -652,6 +657,7 @@ namespace PhysicsCharacterController
             transform.position = finalPosition;
             rigidbody.velocity = grindDirection * currentRail.grindSpeed;
         }
+        
         private void StopGrinding()
         {
             if (!isGrinding) return;
