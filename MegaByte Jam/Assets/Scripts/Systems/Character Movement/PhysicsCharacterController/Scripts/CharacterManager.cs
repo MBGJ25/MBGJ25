@@ -167,7 +167,6 @@ namespace PhysicsCharacterController
 
         private void Update()
         {
-            //input
             axisInput = input.axisInput;
             jump = input.jump;
             jumpHold = input.jumpHold;
@@ -178,12 +177,12 @@ namespace PhysicsCharacterController
 
         private void FixedUpdate()
         {
-            // Check if grinding - skip ALL normal movement and gravity
+            // If grinding we don't process other movement
             if (isGrinding)
             {
                 UpdateGrinding();
-                UpdateEvents(); // Keep events running
-                return; // Exit early - skip everything below
+                UpdateEvents();
+                return;
             }
 
             //local vectors
@@ -243,7 +242,6 @@ namespace PhysicsCharacterController
                 RaycastHit stepUpperHit;
                 if (RoundValue(stepLowerHit.normal.y) == 0 && !Physics.Raycast(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), globalForward, out stepUpperHit, stepCheckerThrashold + 0.05f, groundMask))
                 {
-                    //rigidbody.position -= new Vector3(0f, -stepSmooth, 0f);
                     tmpStep = true;
                 }
             }
@@ -254,7 +252,6 @@ namespace PhysicsCharacterController
                 RaycastHit stepUpperHit45;
                 if (RoundValue(stepLowerHit45.normal.y) == 0 && !Physics.Raycast(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), Quaternion.AngleAxis(45, Vector3.up) * globalForward, out stepUpperHit45, stepCheckerThrashold + 0.05f, groundMask))
                 {
-                    //rigidbody.position -= new Vector3(0f, -stepSmooth, 0f);
                     tmpStep = true;
                 }
             }
@@ -265,7 +262,6 @@ namespace PhysicsCharacterController
                 RaycastHit stepUpperHitMinus45;
                 if (RoundValue(stepLowerHitMinus45.normal.y) == 0 && !Physics.Raycast(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), Quaternion.AngleAxis(-45, Vector3.up) * globalForward, out stepUpperHitMinus45, stepCheckerThrashold + 0.05f, groundMask))
                 {
-                    //rigidbody.position -= new Vector3(0f, -stepSmooth, 0f);
                     tmpStep = true;
                 }
             }
@@ -540,10 +536,10 @@ namespace PhysicsCharacterController
         {
             Vector3 gravity = Vector3.zero;
 
-            if ((currentLockOnSlope && isGrounded) || isTouchingStep) gravity = down * gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier;
-            else if (currentLockOnSlope && !isGrounded) gravity = new Vector3(0f, down.y, 0f) * gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier;
+            if ((currentLockOnSlope && isGrounded) || isTouchingStep) gravity = down * (gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier);
+            else if (currentLockOnSlope && !isGrounded) gravity = new Vector3(0f, down.y, 0f) * (gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier);
 
-            else gravity = globalDown * gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier;
+            else gravity = globalDown * (gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier);
 
             //avoid little jump
             if (groundNormal.y != 1 && groundNormal.y != 0 && isTouchingSlope && prevGroundNormal != groundNormal)
@@ -556,7 +552,7 @@ namespace PhysicsCharacterController
             if (groundNormal.y != 1 && groundNormal.y != 0 && (currentSurfaceAngle > maxClimbableSlopeAngle && !isTouchingStep))
             {
                 //Debug.Log("Slope angle too high, character is sliding");
-                if (currentSurfaceAngle > 0f && currentSurfaceAngle <= 30f) gravity = globalDown * gravityMultiplierIfUnclimbableSlope * -Physics.gravity.y;
+                if (currentSurfaceAngle > 0f && currentSurfaceAngle <= 30f) gravity = globalDown * (gravityMultiplierIfUnclimbableSlope * -Physics.gravity.y);
                 else if (currentSurfaceAngle > 30f && currentSurfaceAngle <= 89f) gravity = globalDown * gravityMultiplierIfUnclimbableSlope / 2f * -Physics.gravity.y;
             }
 

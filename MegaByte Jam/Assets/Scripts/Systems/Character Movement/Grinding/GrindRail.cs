@@ -52,15 +52,13 @@ public class GrindRail : MonoBehaviour
     {
         return endPoint.position;
     }
-
-    // Get position along rail (0 = start, 1 = end)
+    
     public Vector3 GetPositionAtT(float t)
     {
         t = Mathf.Clamp01(t);
         return Vector3.Lerp(startPoint.position, endPoint.position, t);
     }
-
-    // Get closest point on rail to a world position
+    
     public Vector3 GetClosestPointOnRail(Vector3 worldPosition, out float tValue)
     {
         Vector3 startToPoint = worldPosition - startPoint.position;
