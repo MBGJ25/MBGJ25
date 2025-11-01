@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3988220200234196540}
   - component: {fileID: 1385608946983359757}
-  m_Layer: 0
+  - component: {fileID: 8971392566231437490}
+  m_Layer: 10
   m_Name: Interactable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,6 +56,22 @@ CapsuleCollider:
   m_Height: 2.4518213
   m_Direction: 1
   m_Center: {x: 0.5226275, y: 0, z: 0.20328331}
+--- !u!114 &8971392566231437490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3054072920981487945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c0a02a14349baa7625335c1c92361, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireParticles: {fileID: 0}
+  fireLight: {fileID: 0}
+  lightLanternSound: {fileID: 0}
+  interactionPrompt: Press F/Y to Light Lantern
 --- !u!1001 &7829949249772349940
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -65,15 +82,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: fbe9d0bd7de012e40a636fa67e7f8c16, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0
+      value: -90.64378
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fbe9d0bd7de012e40a636fa67e7f8c16, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 11.21
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fbe9d0bd7de012e40a636fa67e7f8c16, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -58.592304
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fbe9d0bd7de012e40a636fa67e7f8c16, type: 3}
       propertyPath: m_LocalRotation.w
