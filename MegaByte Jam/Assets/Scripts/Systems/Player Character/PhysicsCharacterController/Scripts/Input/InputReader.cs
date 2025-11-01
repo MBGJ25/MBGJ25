@@ -13,10 +13,11 @@ namespace PhysicsCharacterController
     {
         Vector2 GetMovement();
         Vector2 GetCameraDelta();
-        bool GetJumpDown();
-        bool GetJumpUp();
-        bool GetSprint();
-        bool GetCrouch();
+        bool    GetJumpDown();
+        bool    GetJumpUp();
+        bool    GetSprint();
+        bool    GetCrouch();
+        bool    GetInteractDown();
 
         bool IsMouseKeyboard();
 
@@ -26,6 +27,7 @@ namespace PhysicsCharacterController
         bool ToggleCameraPressed();
         bool ToggleDebugPressed();
     }
+    #endregion
 
 
     // -----------------------
@@ -49,34 +51,36 @@ namespace PhysicsCharacterController
             actions.Gameplay.Jump.started += ctx => lastControl = ctx.control;
             actions.Gameplay.Sprint.started += ctx => lastControl = ctx.control;
             actions.Gameplay.Crouch.started += ctx => lastControl = ctx.control;
+            actions.Gameplay.Interact.started += ctx => lastControl = ctx.control;
 
             actions.Enable();
         }
 
 
-        public Vector2 GetMovement() => actions.Gameplay.Movement.ReadValue<Vector2>();
+        public Vector2 GetMovement()    => actions.Gameplay.Movement.ReadValue<Vector2>();
         public Vector2 GetCameraDelta() => actions.Gameplay.Camera.ReadValue<Vector2>();
 
 
-        public bool GetJumpDown() => actions.Gameplay.Jump.WasPressedThisFrame();
-        public bool GetJumpUp() => actions.Gameplay.Jump.WasReleasedThisFrame();
-        public bool GetSprint() => actions.Gameplay.Sprint.IsPressed();
-        public bool GetCrouch() => actions.Gameplay.Crouch.IsPressed();
+        public bool GetJumpDown()     => actions.Gameplay.Jump.WasPressedThisFrame();
+        public bool GetJumpUp()       => actions.Gameplay.Jump.WasReleasedThisFrame();
+        public bool GetSprint()       => actions.Gameplay.Sprint.IsPressed();
+        public bool GetCrouch()       => actions.Gameplay.Crouch.IsPressed();
+        public bool GetInteractDown() => actions.Gameplay.Interact.WasPressedThisFrame();
 
 
         public bool IsMouseKeyboard()
         {
-            if (lastControl == null) return true; // default
+            if (lastControl == null) return true;
             return lastControl.device is Keyboard || lastControl.device is Mouse;
         }
 
 
-        public void Enable() => actions.Enable();
+        public void Enable()  => actions.Enable();
         public void Disable() => actions.Disable();
 
 
         public bool ToggleCameraPressed() => Keyboard.current.mKey.wasPressedThisFrame;
-        public bool ToggleDebugPressed() => Keyboard.current.nKey.wasPressedThisFrame;
+        public bool ToggleDebugPressed()  => Keyboard.current.nKey.wasPressedThisFrame;
     }
 
     #endif
@@ -85,7 +89,7 @@ namespace PhysicsCharacterController
     // -----------------------
     // Old Input System
     // -----------------------
-    #if ENABLE_LEGACY_INPUT_MANAGER
+#if ENABLE_LEGACY_INPUT_MANAGER
 
     public class OldInputBackend : IInputBackend
     {
@@ -110,25 +114,24 @@ namespace PhysicsCharacterController
         }
 
 
-        public bool GetJumpDown() => Input.GetButtonDown("Jump");
-        public bool GetJumpUp() => Input.GetButtonUp("Jump");
-        public bool GetSprint() => Input.GetButton("Fire3");
-        public bool GetCrouch() => Input.GetButton("Fire1");
+        public bool GetJumpDown()     => Input.GetButtonDown("Jump");
+        public bool GetJumpUp()       => Input.GetButtonUp("Jump");
+        public bool GetSprint()       => Input.GetButton("Fire3");
+        public bool GetCrouch()       => Input.GetButton("Fire1");
+        public bool GetInteractDown() => Input.GetKeyDown(KeyCode.F);
 
         public bool IsMouseKeyboard() => lastWasMouseKeyboard;
 
 
-        public void Enable() { }
+        public void Enable()  { }
         public void Disable() { }
 
 
         public bool ToggleCameraPressed() => Input.GetKeyDown(KeyCode.M);
-        public bool ToggleDebugPressed() => Input.GetKeyDown(KeyCode.N);
+        public bool ToggleDebugPressed()  => Input.GetKeyDown(KeyCode.N);
     }
 
-    #endif
-
-    #endregion
+#endif
 
 
     public class InputReader : MonoBehaviour
@@ -150,6 +153,7 @@ namespace PhysicsCharacterController
         public bool enableJump = true;
         public bool enableCrouch = true;
         public bool enableSprint = true;
+        public bool enableInteract = true;
 
         [HideInInspector] public Vector2 axisInput;
         [HideInInspector] public Vector2 cameraDelta;
@@ -157,11 +161,13 @@ namespace PhysicsCharacterController
         [HideInInspector] public bool jumpHold;
         [HideInInspector] public bool sprint;
         [HideInInspector] public bool crouch;
+        [HideInInspector] public bool interact;
 
 
         private IInputBackend backend;
         private bool lastWasMouseKeyboard = true;
         private bool jumpBuffered;
+        private bool interactBuffered;
 
 
         /**/
@@ -208,6 +214,12 @@ namespace PhysicsCharacterController
             // Sprint and Crouch
             if (enableSprint) sprint = backend.GetSprint();
             if (enableCrouch) crouch = backend.GetCrouch();
+            
+            // Interactions
+            if (enableInteract)
+            {
+                if (backend.GetInteractDown()) interactBuffered = true;
+            }
 
 
             // Toggle camera & Debug
@@ -224,6 +236,8 @@ namespace PhysicsCharacterController
             // Expose buffered jump for this physics step
             jump = jumpBuffered;
             jumpBuffered = false;
+            interact = interactBuffered;
+            interactBuffered = false;
         }
 
 
