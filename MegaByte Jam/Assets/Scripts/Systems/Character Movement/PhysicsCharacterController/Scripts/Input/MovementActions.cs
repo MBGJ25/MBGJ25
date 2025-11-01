@@ -472,7 +472,7 @@ public partial class @MovementActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""0eb7b1d4-7193-4ea0-a009-73b6d6924991"",
-                    ""path"": ""<Keyboard>/ctrl"",
+                    ""path"": ""<Keyboard>/c"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
@@ -483,7 +483,7 @@ public partial class @MovementActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""80b03b73-ee97-46c3-a00a-598aa4029cbb"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""GamePad"",

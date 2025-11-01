@@ -14,8 +14,8 @@ public class HealthBar : MonoBehaviour
         playerStats.OnHealthChanged += HandleHealthChanged;
 
         // Initialize the slider to current health
-        slider.maxValue = playerStats.Health;
-        slider.value = playerStats.Health;
+        slider.maxValue = playerStats.MaxHealth;
+        slider.value = playerStats.CurrentHealth;
     }
 
     private void OnDisable()
@@ -27,6 +27,6 @@ public class HealthBar : MonoBehaviour
     // Update slider value when health changes
     private void HandleHealthChanged()
     {
-        slider.value = playerStats.Health;
+        slider.value = playerStats.CurrentHealth;
     }
 }
