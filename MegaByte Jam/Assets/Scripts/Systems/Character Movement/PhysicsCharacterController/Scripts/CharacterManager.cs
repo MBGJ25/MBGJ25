@@ -539,8 +539,6 @@ namespace PhysicsCharacterController
         
 
         #region Move
-
-        //Edit this for surfing/skiing/slide mechanic
         private void MoveCrouch()
         {
             if (crouch && isGrounded)
