@@ -124,6 +124,14 @@ namespace PhysicsCharacterController
         private bool isTouchingWall = false;
         private bool isJumping = false;
         private bool isCrouch = false;
+        
+        public enum MovementMode
+        {
+            Physics,
+            Manual,
+            Hybrid
+        }
+        public MovementMode movementMode = MovementMode.Hybrid;
 
         private Vector2 axisInput;
         private bool jump;
@@ -177,38 +185,56 @@ namespace PhysicsCharacterController
 
         private void FixedUpdate()
         {
-            // If grinding we don't process other movement
-            if (isGrinding)
+            // 1️⃣ Handle which movement logic to run (Manual, Physics, Hybrid)
+            switch (movementMode)
             {
-                UpdateGrinding();
-                UpdateEvents();
-                return;
+                case MovementMode.Manual:
+                    ManualUpdate();
+                    break;
+                case MovementMode.Physics:
+                    PhysicsUpdate();
+                    break;
+                case MovementMode.Hybrid:
+                    HybridUpdate();
+                    break;
             }
 
-            //local vectors
+            // ✅ NEW: If grinding, the mode-specific method already handled everything - exit early!
+            if (isGrinding) return;
+
+            // 2️⃣ Gather state information before applying movement
             CheckGrounded();
             CheckStep();
             CheckWall();
             CheckSlopeAndDirections();
 
-            //movement
+            // 3️⃣ Handle input-dependent motion
             MoveCrouch();
             MoveWalk();
 
-            if (!lockToCamera) MoveRotation();
-            else ForceRotation();
-
+            // 4️⃣ Handle jump (including rail jump)
             MoveJump();
 
-            //gravity
+            // 5️⃣ Rotation should come *after* horizontal/vertical movement,
+            // so it's aligned with where the player actually went.
+            if (!lockToCamera)
+                MoveRotation();
+            else
+                ForceRotation();
+
+            // 6️⃣ Apply gravity AFTER movement, so it integrates properly.
             ApplyGravity();
 
-            //events
+            // 7️⃣ Send out events last, so they reflect the final frame state.
             UpdateEvents();
         }
         private void OnTriggerEnter(Collider other)
         {
             if (isGrinding) return;
+
+            // 🔹 Require the player to be in the air and moving fast enough
+            if (isGrounded || rigidbody.velocity.magnitude < 5f)
+                return;
 
             GrindRail rail = other.GetComponent<GrindRail>();
             if (rail != null)
@@ -220,6 +246,89 @@ namespace PhysicsCharacterController
                 }
             }
         }
+
+        
+        private void PhysicsUpdate()
+        {
+            if (isGrinding)
+            {
+                UpdateGrinding();
+                MoveJump();
+                UpdateEvents();
+                return;
+            }
+
+            CheckGrounded();
+            CheckStep();
+            CheckWall();
+            CheckSlopeAndDirections();
+
+            MoveCrouch();
+            MoveWalk();
+
+            if (!lockToCamera) MoveRotation();
+            else ForceRotation();
+
+            MoveJump();
+            ApplyGravity();
+            UpdateEvents();
+        }
+
+        private void ManualUpdate()
+        {
+            // Read input and move transform directly (no physics)
+            Vector3 moveDir = new Vector3(axisInput.x, 0, axisInput.y);
+            if (moveDir.sqrMagnitude > movementThrashold)
+            {
+                float targetAngle = Mathf.Atan2(moveDir.x, moveDir.z) * Mathf.Rad2Deg + characterCamera.transform.eulerAngles.y;
+                Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+
+                transform.position += moveDirection * movementSpeed * Time.fixedDeltaTime;
+                transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
+            }
+        }
+
+        private void HybridUpdate()
+        {
+            if (isGrinding)
+            {
+                UpdateGrinding();
+                MoveJump();
+                UpdateEvents();
+                return;
+            }
+
+            // Update physics interactions
+            CheckGrounded();
+            CheckSlopeAndDirections();
+            MoveCrouch();
+
+            // Instead of full physics-based movement, directly set the desired velocity
+            Vector3 inputDir = new Vector3(axisInput.x, 0, axisInput.y);
+            if (inputDir.magnitude > movementThrashold)
+            {
+                float targetAngle = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg + characterCamera.transform.eulerAngles.y;
+                Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+
+                // Preserve vertical velocity from physics, apply manual horizontal
+                Vector3 desiredVelocity = moveDir * (sprint ? sprintSpeed : movementSpeed);
+                desiredVelocity.y = rigidbody.velocity.y;
+
+                // Smooth damping for nice transitions
+                rigidbody.velocity = Vector3.Lerp(rigidbody.velocity, desiredVelocity, Time.fixedDeltaTime * 10f);
+
+                // Smooth rotation
+                float smoothAngle = Mathf.SmoothDampAngle(characterModel.transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, characterModelRotationSmooth);
+                transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
+                characterModel.transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
+            }
+
+            // Apply jump and gravity naturally
+            MoveJump();
+            ApplyGravity();
+            UpdateEvents();
+        }
+
 
 
         #region Checks
@@ -412,7 +521,7 @@ namespace PhysicsCharacterController
         }
 
         #endregion
-
+        
 
         #region Move
 
@@ -462,10 +571,12 @@ namespace PhysicsCharacterController
 
         private void MoveRotation()
         {
+            if (isGrinding) return;
             float angle = Mathf.SmoothDampAngle(characterModel.transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, characterModelRotationSmooth);
             transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
 
-            if (!lockRotation) characterModel.transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            if (!lockRotation)
+                characterModel.transform.rotation = Quaternion.Euler(0f, angle, 0f);
             else
             {
                 var lookPos = -wallNormal;
@@ -484,52 +595,69 @@ namespace PhysicsCharacterController
 
         private void MoveJump()
         {
+            // 🔹 1. Handle jump from grinding FIRST (highest priority)
             if (jump && isGrinding)
             {
-                rigidbody.velocity = grindDirection * currentRail.grindSpeed + Vector3.up * jumpVelocity;
-                StopGrinding();
+                // Forward boost from rail direction with a bit of lift
+                float boostMultiplier = 1.2f; // tweak feel
+                Vector3 jumpVel = grindDirection * (currentRail.grindSpeed * boostMultiplier)
+                    + Vector3.up * jumpVelocity;
+
+                // Stop grinding before modifying velocity
+                StopGrinding(true);
+
+                rigidbody.velocity = jumpVel;
                 isJumping = true;
-                return;
+                return; // ✅ Important: exit early so regular jump code doesn’t run
             }
 
-            //jumped
+            // 🔹 2. Ground jump
             if (jump && isGrounded && ((isTouchingSlope && currentSurfaceAngle <= maxClimbableSlopeAngle) || !isTouchingSlope))
             {
                 rigidbody.velocity += Vector3.up * jumpVelocity;
                 isJumping = true;
             }
-            //jumped from wall
+
+            // 🔹 3. Wall jump
             else if (jump && !isGrounded && isTouchingWall)
             {
-                rigidbody.velocity += wallNormal * jumpFromWallMultiplier + (Vector3.up * jumpFromWallMultiplier) * multiplierVerticalLeap;
+                rigidbody.velocity += wallNormal * jumpFromWallMultiplier
+                    + (Vector3.up * jumpFromWallMultiplier) * multiplierVerticalLeap;
                 isJumping = true;
 
                 targetAngle = Mathf.Atan2(wallNormal.x, wallNormal.z) * Mathf.Rad2Deg;
-
                 forward = wallNormal;
                 globalForward = forward;
                 reactionForward = forward;
             }
 
-            //is falling
-            if (rigidbody.velocity.y < 0 && !isGrounded) coyoteJumpMultiplier = fallMultiplier;
+            // 🔹 4. Manage jump/fall multipliers
+            if (rigidbody.velocity.y < 0 && !isGrounded)
+            {
+                coyoteJumpMultiplier = fallMultiplier;
+            }
             else if (rigidbody.velocity.y > 0.1f && (currentSurfaceAngle <= maxClimbableSlopeAngle || isTouchingStep))
             {
-                //is short jumping
-                if (!jumpHold || !canLongJump) coyoteJumpMultiplier = 1f;
-                //is long jumping
-                else coyoteJumpMultiplier = 1f / holdJumpMultiplier;
+                // is short jumping
+                if (!jumpHold || !canLongJump)
+                    coyoteJumpMultiplier = 1f;
+                // is long jumping
+                else
+                    coyoteJumpMultiplier = 1f / holdJumpMultiplier;
             }
             else
             {
                 isJumping = false;
                 coyoteJumpMultiplier = 1f;
             }
+            
+            jump = false;
         }
+
 
         #endregion
 
-
+    
         #region Gravity
 
         private void ApplyGravity()
@@ -658,13 +786,18 @@ namespace PhysicsCharacterController
             rigidbody.velocity = grindDirection * currentRail.grindSpeed;
         }
         
-        private void StopGrinding()
+        private void StopGrinding(bool jumpedOff = false)
         {
             if (!isGrinding) return;
 
             isGrinding = false;
+            var prevRail = currentRail;
             currentRail = null;
-            rigidbody.velocity = grindDirection * (currentRail != null ? currentRail.grindSpeed : movementSpeed);
+            
+            if (!jumpedOff && prevRail != null)
+            {
+                rigidbody.velocity = grindDirection * prevRail.grindSpeed;
+            }
         }
 
         #endregion
