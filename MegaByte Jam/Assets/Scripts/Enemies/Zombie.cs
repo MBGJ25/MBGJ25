@@ -46,11 +46,13 @@ public class Zombie : MonoBehaviour
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
     
-    // ✨ NEW: Lantern fear settings
     [Header("Lantern Avoidance")]
-    [SerializeField] private float fleeDistance = 15f; // How far to flee from player
-    [SerializeField] private float fleeSpeed = 5f; // Speed when fleeing (can be faster than normal)
-    private float normalSpeed; // Store original speed
+    [Tooltip("The range at which the Zombie will stop fleeing when lantern is lit")]
+    [SerializeField] private float panicRange = 10f;
+    [Tooltip("Flee speed overrides normal movement speed when scared")]
+    [SerializeField] private float fleeSpeed = 5f;
+    [SerializeField] private float fleeDistance = 15f;
+    private float normalSpeed;
     #endregion
 
     private void Awake()
@@ -59,11 +61,7 @@ public class Zombie : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         player = playerObject.GetComponent<Player>();
         playerInteraction = playerObject.GetComponent<PlayerInteraction>(); // ✨ NEW
-        
-        // ✨ NEW: Store original speed
         normalSpeed = agent.speed;
-        
-        // Initialize health
         CurrentHealth = stats.MaxHealth;
     }
 
@@ -75,13 +73,11 @@ public class Zombie : MonoBehaviour
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
-        // ✨ NEW: Check if player has lit lantern
+        // ✨ Check if player has lit lantern
         bool playerHasLitLantern = playerInteraction != null && playerInteraction.HasLitLantern;
-
-        // ✨ MODIFIED: AI behavior based on lantern status
+        
         if (playerHasLitLantern && playerInSightRange)
         {
-            // Zombie is afraid! Flee from player
             FleeFromPlayer();
         }
         else
@@ -96,7 +92,7 @@ public class Zombie : MonoBehaviour
     #region AI Behavior
     private void Patroling()
     {
-        agent.speed = normalSpeed; // Ensure normal speed
+        agent.speed = normalSpeed;
         
         if (!walkPointSet) SearchWalkPoint();
 
@@ -122,14 +118,13 @@ public class Zombie : MonoBehaviour
 
     private void ChasePlayer()
     {
-        agent.speed = normalSpeed; // Ensure normal speed
+        agent.speed = normalSpeed;
         agent.SetDestination(playerObject.position);
     }
-
-    // ✨ NEW: Flee behavior when player has lit lantern
+    
     private void FleeFromPlayer()
     {
-        agent.speed = fleeSpeed; // Can flee faster if you want
+        agent.speed = fleeSpeed;
         
         // Calculate direction away from player
         Vector3 directionAwayFromPlayer = (transform.position - playerObject.position).normalized;
@@ -149,13 +144,13 @@ public class Zombie : MonoBehaviour
             agent.SetDestination(transform.position + directionAwayFromPlayer * 5f);
         }
         
-        // Optional: Look at player while fleeing (shows fear/awareness)
+        // CS TODO: Remove Optional if not wanted--looks at player while fleeing
         transform.LookAt(new Vector3(playerObject.position.x, transform.position.y, playerObject.position.z));
     }
 
     private void AttackPlayer()
     {
-        agent.speed = normalSpeed; // Ensure normal speed
+        agent.speed = normalSpeed;
         agent.SetDestination(transform.position);
         transform.LookAt(playerObject);
 
@@ -214,7 +209,7 @@ public class Zombie : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, sightRange);
         
-        // ✨ NEW: Show flee distance
+        // Flee Distance Gizmos
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, fleeDistance);
     }
