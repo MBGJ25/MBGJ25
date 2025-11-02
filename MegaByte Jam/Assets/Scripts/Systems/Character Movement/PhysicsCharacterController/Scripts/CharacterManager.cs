@@ -846,7 +846,7 @@ namespace PhysicsCharacterController
 
             Vector3 finalPosition = railPosition + properOffset;
             finalPosition.x = Mathf.Round(finalPosition.x);
-            //transform.position = finalPosition;
+            transform.position = finalPosition;
             rigidbody.velocity = grindDirection * rigidbody.velocity.magnitude;
         }
         
