@@ -218,7 +218,6 @@ namespace PhysicsCharacterController
 
             // 3️⃣ Handle input-dependent motion
             MoveWalk();
-            //MoveCrouch needs to be after MoveWalk so air crouch can be calculated 
             MoveCrouch();
             // 4️⃣ Handle jump (including rail jump)
             MoveJump();
@@ -238,7 +237,6 @@ namespace PhysicsCharacterController
         }
         private void OnTriggerEnter(Collider other)
         {
-            Debug.Log(rigidbody.velocity + " | " + rigidbody.velocity.magnitude + " | " + isGrounded + " | " + other.GetComponent<GrindRail>());
             if (isGrinding) return;
 
             // 🔹 Require the player to be in the air and moving fast enough
@@ -270,7 +268,6 @@ namespace PhysicsCharacterController
             CheckStep();
             CheckWall();
             CheckSlopeAndDirections();
-            //UpdateBoundingBox();
 
             MoveWalk();
             MoveCrouch();
@@ -346,14 +343,12 @@ namespace PhysicsCharacterController
             RaycastHit hit;
             if(dir.y < 0 &&  Physics.SphereCast(transform.position, GetComponent<Collider>().bounds.size.y/2, dir, out hit, dist * Time.fixedDeltaTime))
             {
-                Debug.Log(hit.collider.gameObject.name + " | " + dir + " | " + dist);
                 GrindRail rail = hit.collider.gameObject.GetComponent<GrindRail>();
                 if (rail != null)
                 {
                     Vector3 preferredDirection;
                     if (rail.CanStartGrinding(rigidbody.velocity, transform.forward, out preferredDirection))
                     {
-                        Debug.Log("Start Grinding");
                         StartGrinding(rail, preferredDirection);
                     }
                 }
@@ -563,7 +558,6 @@ namespace PhysicsCharacterController
 
         #region Move
 
-        //Edit this for surfing/skiing/slide mechanic
         private void MoveCrouch()
         {
             if (crouch && isGrounded)
@@ -623,6 +617,8 @@ namespace PhysicsCharacterController
 
         private void MoveWalk()
         {
+            // Todo: make actual surfing
+            // currently allows for magnitude to be transalted into forward motion
             if (isCrouch) {
                 targetAngle = Mathf.Atan2(axisInput.x, axisInput.y) * Mathf.Rad2Deg + characterCamera.transform.eulerAngles.y;
                 rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, forward * rigidbody.velocity.magnitude, ref currVelocity, dampSpeedUp);
@@ -736,7 +732,6 @@ namespace PhysicsCharacterController
             else if (currentLockOnSlope && !isGrounded) gravity = new Vector3(0f, down.y, 0f) * (gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier);
 
             else gravity = globalDown * (gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier);
-            //Debug.Log(gravity + " | " + gravityMultiplier);
 
             //avoid little jump
             if (groundNormal.y != 1 && groundNormal.y != 0 && isTouchingSlope && prevGroundNormal != groundNormal)
@@ -853,7 +848,6 @@ namespace PhysicsCharacterController
             finalPosition.x = Mathf.Round(finalPosition.x);
             //transform.position = finalPosition;
             rigidbody.velocity = grindDirection * rigidbody.velocity.magnitude;
-            Debug.Log(grindDirection + " | " + rigidbody.velocity.magnitude);
         }
         
         private void StopGrinding(bool jumpedOff = false)
