@@ -30,16 +30,22 @@ public class PlayerInteraction : MonoBehaviour
     #endregion
 
     #region Lifecycle Methods
+    private void OnEnable()
+    {
+        if (input != null)
+            input.InteractEvent += HandleInteract;
+    }
+
+    private void OnDisable()
+    {
+        if (input != null)
+            input.InteractEvent -= HandleInteract;
+    }
+
     private void Update()
     {
         // Check for interactables every frame
         CheckForInteractable();
-        
-        // Handle interaction immediately when input is pressed
-        if (input.interact && currentInteractable != null) 
-        {
-            currentInteractable.Interact(gameObject);
-        }
 
         // Count down lantern timer
         if (hasLitLantern && lanternTimeRemaining > 0f)
@@ -57,6 +63,14 @@ public class PlayerInteraction : MonoBehaviour
     
     
     #region Methods
+    private void HandleInteract()
+    {
+        if (currentInteractable != null)
+        {
+            currentInteractable.Interact(gameObject);
+        }
+    }
+
     private void CheckForInteractable()
     {
         Collider[] hits = Physics.OverlapSphere(transform.position, interactionRange, interactionLayer);
