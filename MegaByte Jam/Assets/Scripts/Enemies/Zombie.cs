@@ -18,7 +18,9 @@ public class Zombie : MonoBehaviour
     #endregion
 
     #region AI Components
+
     [Header("AI Components")]
+    [SerializeField] private bool attackPlayer = true;
     public NavMeshAgent agent;
     [FormerlySerializedAs("player")]
     public Transform playerObject;
@@ -57,7 +59,7 @@ public class Zombie : MonoBehaviour
 
     private void Awake()
     {
-        playerObject = GameObject.Find("Player Character").transform;
+        playerObject = GameObject.FindGameObjectWithTag("Player").transform;
         agent = GetComponent<NavMeshAgent>();
         player = playerObject.GetComponent<Player>();
         playerInteraction = playerObject.GetComponent<PlayerInteraction>();
@@ -67,7 +69,7 @@ public class Zombie : MonoBehaviour
 
     private void Update()
     {
-        if (!IsAlive) return;
+        if (!IsAlive || !attackPlayer) return;
 
         // Check for sight and attack range
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);

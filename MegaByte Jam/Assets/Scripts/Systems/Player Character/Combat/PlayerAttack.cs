@@ -11,7 +11,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private PlayerStats stats;
     
     [Header("Attack Settings")]
-    [SerializeField] private Transform attackPoint; // Assign a child object as attack origin
+    [SerializeField] private Transform attackPoint;
     [SerializeField] private LayerMask enemyLayer;
     
     [Header("Visual Feedback (Optional)")]
@@ -27,7 +27,7 @@ public class PlayerAttack : MonoBehaviour
     private float lastComboTime;
     
     // Events
-    public event Action<int> OnAttackPerformed; // Passes combo count
+    public event Action<int> OnAttackPerformed;
     public event Action<Zombie> OnEnemyHit;
     
     // Public properties
@@ -82,26 +82,12 @@ public class PlayerAttack : MonoBehaviour
         canAttack = false;
         lastAttackTime = Time.time;
         
-        // Update combo count
-        if (Time.time - lastComboTime <= stats.ComboWindow)
-        {
-            currentComboCount = Mathf.Min(currentComboCount + 1, stats.MaxComboCount);
-        }
-        else
-        {
-            currentComboCount = 1; // Start new combo
-        }
-        lastComboTime = Time.time;
-        
-        Debug.Log($"Player attacking! Combo: {currentComboCount}");
-        
-        // Invoke event
-        OnAttackPerformed?.Invoke(currentComboCount);
+        Debug.Log($"Player attacking!");
         
         // Visual/Audio feedback
         PlayAttackFeedback();
         
-        // Detect and damage enemies
+        // Detect and damage enemies (this will handle combo incrementing)
         DetectAndDamageEnemies();
         
         // Reset attack cooldown
@@ -128,20 +114,54 @@ public class PlayerAttack : MonoBehaviour
             Debug.Log($"Detected {hitEnemies.Length} potential targets");
         }
         
+        bool hitAnyEnemy = false;
+        
         foreach (Collider enemy in hitEnemies)
         {
             Zombie zombie = enemy.GetComponent<Zombie>();
             if (zombie != null && zombie.IsAlive)
             {
-                // Calculate damage (could scale with combo in the future)
                 int damage = CalculateDamage();
-                
                 zombie.TakeDamage(damage);
                 OnEnemyHit?.Invoke(zombie);
                 
-                Debug.Log($"Hit {enemy.name} for {damage} damage! Combo: {currentComboCount}");
+                hitAnyEnemy = true;
+                
+                #if UNITY_EDITOR
+                Debug.Log($"Hit {enemy.name} for {damage} damage!");
+                #endif
             }
         }
+        
+        // Only increment combo if we actually hit an enemy
+        if (hitAnyEnemy)
+        {
+            IncrementCombo();
+        }
+        else
+        {
+            Debug.Log("Attack missed - no combo increment");
+        }
+    }
+    
+    private void IncrementCombo()
+    {
+        if (Time.time - lastComboTime <= stats.ComboWindow)
+        {
+            currentComboCount = Mathf.Min(currentComboCount + 1, stats.MaxComboCount);
+        }
+        else
+        {
+            currentComboCount = 1;
+        }
+        lastComboTime = Time.time;
+        
+        #if UNITY_EDITOR
+        Debug.Log($"Combo: {currentComboCount}");
+        #endif
+        
+        // Invoke event with updated combo count
+        OnAttackPerformed?.Invoke(currentComboCount);
     }
     
     private int CalculateDamage()
@@ -164,7 +184,7 @@ public class PlayerAttack : MonoBehaviour
         }
         
         // Play sound
-        if (attackSound != null && attackSound != null)
+        if (attackSound != null)
         {
             AudioSource.PlayClipAtPoint(attackSound, transform.position);
         }
