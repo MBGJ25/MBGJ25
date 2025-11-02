@@ -12,8 +12,13 @@
 [Uu]ser[Ss]ettings/
 
 # Game Assets
-/[Aa]ssets/Game Assets/
-/[Aa]ssets/Game Assets.meta
+# /[Aa]ssets/Game Assets/
+# /[Aa]ssets/Game Assets.meta
+
+# FMOD
+fmod_editor.log
+MegaByte Jam/Assets/Plugins/FMOD/Cache/Editor/FMODStudioCache.asset
+MegaByte Jam/Assets/Plugins/FMOD/Cache/Editor/FMODStudioCache.asset
 
 # MemoryCaptures can get excessive in size
 [Mm]emoryCaptures/

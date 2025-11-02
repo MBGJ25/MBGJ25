@@ -240,7 +240,7 @@ namespace PhysicsCharacterController
             if (isGrinding) return;
 
             // 🔹 Require the player to be in the air and moving fast enough
-            if (isGrounded || rigidbody.velocity.magnitude < 5f)
+            if (isGrounded || rigidbody.velocity.magnitude < 5f || !isJumping)
                 return;
 
             GrindRail rail = other.GetComponent<GrindRail>();
@@ -557,7 +557,6 @@ namespace PhysicsCharacterController
         #endregion
 
         #region Move
-
         private void MoveCrouch()
         {
             if (crouch && isGrounded)
