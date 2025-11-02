@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.InputSystem;
-using System;
 #if ENABLE_INPUT_SYSTEM
     using UnityEngine.InputSystem;
 #endif
@@ -28,6 +26,7 @@ namespace PhysicsCharacterController
         bool ToggleCameraPressed();
         bool ToggleDebugPressed();
         event Action AttackEvent;
+        event Action InteractEvent;
     }
 
 
@@ -43,7 +42,9 @@ namespace PhysicsCharacterController
         
         #region Custom Events
         public event Action AttackEvent;
+        public event Action InteractEvent;
         #endregion
+
 
 
         public NewInputBackend()
@@ -59,6 +60,7 @@ namespace PhysicsCharacterController
             
             // Custom Actions
             actions.Gameplay.Attack.performed += ctx => AttackEvent?.Invoke();
+            actions.Gameplay.Interact.started += ctx => InteractEvent?.Invoke();
 
             actions.Enable();
         }
@@ -76,7 +78,7 @@ namespace PhysicsCharacterController
 
         public bool IsMouseKeyboard()
         {
-            if (lastControl == null) return true; // default
+            if (lastControl == null) return true;
             return lastControl.device is Keyboard || lastControl.device is Mouse;
         }
 
@@ -92,55 +94,6 @@ namespace PhysicsCharacterController
     #endif
 
 
-    // -----------------------
-    // Old Input System
-    // -----------------------
-    #if ENABLE_LEGACY_INPUT_MANAGER
-
-    public class OldInputBackend : IInputBackend
-    {
-        private bool lastWasMouseKeyboard = true;
-        public event Action AttackEvent;
-
-        public Vector2 GetMovement()
-        {
-            Vector2 value = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-            if (Mathf.Abs(value.x) > 0.01f || Mathf.Abs(value.y) > 0.01f)
-                lastWasMouseKeyboard = Input.GetJoystickNames().Length == 0;
-            return value;
-        }
-
-
-        public Vector2 GetCameraDelta()
-        {
-            Vector2 value = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-            if (Mathf.Abs(value.x) > 0.01f || Mathf.Abs(value.y) > 0.01f)
-                lastWasMouseKeyboard = true;
-            return value;
-        }
-
-
-        public bool GetJumpDown() => Input.GetButtonDown("Jump");
-        public bool GetJumpUp() => Input.GetButtonUp("Jump");
-        public bool GetSprint() => Input.GetButton("Fire3");
-        public bool GetCrouch() => Input.GetButton("Fire1");
-
-        public bool IsMouseKeyboard() => lastWasMouseKeyboard;
-
-
-        public void Enable() { }
-        public void Disable() { }
-
-
-        public bool ToggleCameraPressed() => Input.GetKeyDown(KeyCode.M);
-        public bool ToggleDebugPressed() => Input.GetKeyDown(KeyCode.N);
-    }
-
-    #endif
-
-    #endregion
-
-
     public class InputReader : MonoBehaviour
     {
         [Header("Events")]
@@ -154,7 +107,7 @@ namespace PhysicsCharacterController
         [Space(15)]
 
         public UnityEvent toggledDebug;
-
+        public event Action InteractEvent;
         public event Action AttackEvent;
         [Space(15)]
 
@@ -162,6 +115,7 @@ namespace PhysicsCharacterController
         public bool enableJump = true;
         public bool enableCrouch = true;
         public bool enableSprint = true;
+        public bool enableInteract = true;
 
         [HideInInspector] public Vector2 axisInput;
         [HideInInspector] public Vector2 cameraDelta;
@@ -169,11 +123,14 @@ namespace PhysicsCharacterController
         [HideInInspector] public bool jumpHold;
         [HideInInspector] public bool sprint;
         [HideInInspector] public bool crouch;
+        [HideInInspector] public bool interact;
 
 
         private IInputBackend backend;
         private bool lastWasMouseKeyboard = true;
         private bool jumpBuffered;
+        private bool interactBuffered;
+
 
         /**/
 
@@ -182,18 +139,9 @@ namespace PhysicsCharacterController
 
         private void Awake()
         {
-            #if ENABLE_INPUT_SYSTEM
-                backend = new NewInputBackend();   // new system takes priority if both enabled
-            #elif ENABLE_LEGACY_INPUT_MANAGER
-                backend = new OldInputBackend();
-            #else
-                Debug.LogError("No input system enabled in Player Settings.");
-            #endif
-
-            if (backend != null)
-            {
-                backend.AttackEvent += HandleBackendAttackEvent;
-            }
+            backend = new NewInputBackend();
+            backend.InteractEvent += HandleInteractEvent;
+            backend.AttackEvent += HandleBackendAttackEvent;
         }
 
 
@@ -225,6 +173,12 @@ namespace PhysicsCharacterController
             if (enableSprint) sprint = backend.GetSprint();
             if (enableCrouch) crouch = backend.GetCrouch();
 
+            // Interactions
+            if (enableInteract)
+            {
+                if (backend.GetInteractDown()) interactBuffered = true;
+            }
+
 
             // Toggle camera & Debug
             if (backend.ToggleCameraPressed()) toggledCamera.Invoke();
@@ -240,6 +194,8 @@ namespace PhysicsCharacterController
             // Expose buffered jump for this physics step
             jump = jumpBuffered;
             jumpBuffered = false;
+            interact = interactBuffered;
+            interactBuffered = false;
         }
 
 
@@ -259,6 +215,11 @@ namespace PhysicsCharacterController
         private void HandleBackendAttackEvent()
         {
             AttackEvent?.Invoke();
+        }
+
+        private void HandleInteractEvent()
+        {
+            InteractEvent?.Invoke();
         }
 
         #endregion
