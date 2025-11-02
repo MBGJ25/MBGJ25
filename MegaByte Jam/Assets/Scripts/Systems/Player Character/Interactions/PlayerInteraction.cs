@@ -20,10 +20,13 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private GameObject lanternLight;
     [SerializeField] private ParticleSystem lanternParticles;
     [SerializeField] private GameObject temporaryFireVFX;
+    [SerializeField] private float lanternBurnoutTime = 60f; // ✨ Default 60 seconds
 
     private IInteractable currentInteractable;
     private bool hasLitLantern = false;
+    private float lanternTimeRemaining;
     public bool HasLitLantern => hasLitLantern;
+    public float LanternTimeRemaining => lanternTimeRemaining;
     #endregion
 
     #region Lifecycle Methods
@@ -36,6 +39,18 @@ public class PlayerInteraction : MonoBehaviour
         if (input.interact && currentInteractable != null) 
         {
             currentInteractable.Interact(gameObject);
+        }
+
+        // ✨Count down lantern timer
+        if (hasLitLantern && lanternTimeRemaining > 0f)
+        {
+            lanternTimeRemaining -= Time.deltaTime;
+            
+            if (lanternTimeRemaining <= 0f)
+            {
+                lanternTimeRemaining = 0f;
+                ExtinguishLantern();
+            }
         }
     }
     #endregion
@@ -78,6 +93,7 @@ public class PlayerInteraction : MonoBehaviour
     public void LightLantern()
     {
         hasLitLantern = true;
+        lanternTimeRemaining = lanternBurnoutTime;
     
         if (lanternLight != null)
             lanternLight.SetActive(true);
@@ -99,7 +115,24 @@ public class PlayerInteraction : MonoBehaviour
         }
     
         #if UNITY_EDITOR
-        Debug.Log("We lit babyyyy");
+        Debug.Log($"Lantern lit! Will burn out in {lanternBurnoutTime} seconds");
+        #endif
+    }
+
+    // ✨Extinguish the lantern
+    private void ExtinguishLantern()
+    {
+        hasLitLantern = false;
+        lanternTimeRemaining = 0f;
+        
+        if (lanternLight != null)
+            lanternLight.SetActive(false);
+        
+        if (lanternParticles != null)
+            lanternParticles.Stop();
+        
+        #if UNITY_EDITOR
+        Debug.Log("Lantern burned out!");
         #endif
     }
 

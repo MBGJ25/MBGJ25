@@ -8185,6 +8185,7 @@ MonoBehaviour:
   lanternLight: {fileID: 0}
   lanternParticles: {fileID: 0}
   temporaryFireVFX: {fileID: 1564426580}
+  lanternBurnoutTime: 30
 --- !u!4 &6212462411358609126 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 468307785458387721, guid: cf4b3ff444aac3d479825f1fa43b6237, type: 3}
