@@ -19,26 +19,25 @@ public class PlayerInteraction : MonoBehaviour
     [Header("Lantern References")]
     [SerializeField] private GameObject lanternLight;
     [SerializeField] private ParticleSystem lanternParticles;
+    [SerializeField] private GameObject temporaryFireVFX;
 
     private IInteractable currentInteractable;
     private bool hasLitLantern = false;
-    private bool interact;
     public bool HasLitLantern => hasLitLantern;
     #endregion
 
     #region Lifecycle Methods
     private void Update()
     {
-        interact = input.interact;
+        // ✨ Check for interactables every frame
         CheckForInteractable();
-    }
-
-    private void FixedUpdate()
-    {
-        if (interact && currentInteractable != null) 
+        
+        // ✨ Handle interaction immediately when input is pressed
+        if (input.interact && currentInteractable != null) 
+        {
             currentInteractable.Interact(gameObject);
+        }
     }
-    
     #endregion
     
     
@@ -67,7 +66,6 @@ public class PlayerInteraction : MonoBehaviour
         
         currentInteractable = closestInteractableObject;
         
-        // CS TODO: Updating the UI--Reinstate when we have UI
         if (interactionTextPrompt != null)
         {
             if (currentInteractable != null)
@@ -80,16 +78,35 @@ public class PlayerInteraction : MonoBehaviour
     public void LightLantern()
     {
         hasLitLantern = true;
-        
+    
         if (lanternLight != null)
             lanternLight.SetActive(true);
-        
+    
         if (lanternParticles != null)
             lanternParticles.Play();
-        
+    
+        if (temporaryFireVFX != null)
+        {
+            temporaryFireVFX.SetActive(true);
+            
+            ParticleSystem vfxParticles = temporaryFireVFX.GetComponent<ParticleSystem>();
+            if (vfxParticles != null)
+            {
+                vfxParticles.Play();
+                float vfxDuration = 3f;
+                Invoke(nameof(DisableTemporaryVFX), vfxDuration);
+            }
+        }
+    
         #if UNITY_EDITOR
         Debug.Log("We lit babyyyy");
         #endif
+    }
+
+    private void DisableTemporaryVFX()
+    {
+        if (temporaryFireVFX != null)
+            temporaryFireVFX.SetActive(false);
     }
 
     private void OnDrawGizmosSelected()
