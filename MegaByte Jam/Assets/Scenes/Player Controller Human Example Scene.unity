@@ -8142,6 +8142,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 468307785458387723, guid: cf4b3ff444aac3d479825f1fa43b6237, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6212462411358609125}
+    - targetCorrespondingSourceObject: {fileID: 468307785458387723, guid: cf4b3ff444aac3d479825f1fa43b6237, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6212462411358609129}
   m_SourcePrefab: {fileID: 100100000, guid: cf4b3ff444aac3d479825f1fa43b6237, type: 3}
 --- !u!1 &5785114338120635886 stripped
 GameObject:
@@ -8191,6 +8194,26 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 468307785458387721, guid: cf4b3ff444aac3d479825f1fa43b6237, type: 3}
   m_PrefabInstance: {fileID: 5785114338120635885}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6212462411358609129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5785114338120635886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93f59d94ab3717742a44a2ce705caa9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputReader: {fileID: 1422722680}
+  stats: {fileID: 11400000, guid: 2029be1983c4df4488ab81875c96bd1d, type: 2}
+  attackPoint: {fileID: 0}
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 2048
+  attackEffect: {fileID: 0}
+  attackSound: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

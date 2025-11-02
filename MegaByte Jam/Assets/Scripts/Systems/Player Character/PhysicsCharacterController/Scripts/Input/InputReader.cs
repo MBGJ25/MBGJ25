@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
-#if ENABLE_INPUT_SYSTEM
-    using UnityEngine.InputSystem;
-#endif
+using UnityEngine.InputSystem;
+using System;
 
 
 namespace PhysicsCharacterController
@@ -13,10 +12,10 @@ namespace PhysicsCharacterController
     {
         Vector2 GetMovement();
         Vector2 GetCameraDelta();
-        bool GetJumpDown();
-        bool GetJumpUp();
-        bool GetSprint();
-        bool GetCrouch();
+        bool    GetJumpDown();
+        bool    GetJumpUp();
+        bool    GetSprint();
+        bool    GetCrouch();
 
         bool IsMouseKeyboard();
 
@@ -29,22 +28,25 @@ namespace PhysicsCharacterController
         event Action InteractEvent;
     }
 
+    #endregion
+
 
     // -----------------------
     // New Input System
     // -----------------------
     #if ENABLE_INPUT_SYSTEM
-    
+
     public class NewInputBackend : IInputBackend
     {
         private MovementActions actions;
         private InputControl lastControl;
-        
+
         #region Custom Events
+
         public event Action AttackEvent;
         public event Action InteractEvent;
-        #endregion
 
+        #endregion
 
 
         public NewInputBackend()
@@ -57,7 +59,7 @@ namespace PhysicsCharacterController
             actions.Gameplay.Jump.started += ctx => lastControl = ctx.control;
             actions.Gameplay.Sprint.started += ctx => lastControl = ctx.control;
             actions.Gameplay.Crouch.started += ctx => lastControl = ctx.control;
-            
+
             // Custom Actions
             actions.Gameplay.Attack.performed += ctx => AttackEvent?.Invoke();
             actions.Gameplay.Interact.started += ctx => InteractEvent?.Invoke();
@@ -66,14 +68,14 @@ namespace PhysicsCharacterController
         }
 
 
-        public Vector2 GetMovement() => actions.Gameplay.Movement.ReadValue<Vector2>();
+        public Vector2 GetMovement()    => actions.Gameplay.Movement.ReadValue<Vector2>();
         public Vector2 GetCameraDelta() => actions.Gameplay.Camera.ReadValue<Vector2>();
 
 
         public bool GetJumpDown() => actions.Gameplay.Jump.WasPressedThisFrame();
-        public bool GetJumpUp() => actions.Gameplay.Jump.WasReleasedThisFrame();
-        public bool GetSprint() => actions.Gameplay.Sprint.IsPressed();
-        public bool GetCrouch() => actions.Gameplay.Crouch.IsPressed();
+        public bool GetJumpUp()   => actions.Gameplay.Jump.WasReleasedThisFrame();
+        public bool GetSprint()   => actions.Gameplay.Sprint.IsPressed();
+        public bool GetCrouch()   => actions.Gameplay.Crouch.IsPressed();
 
 
         public bool IsMouseKeyboard()
@@ -83,12 +85,12 @@ namespace PhysicsCharacterController
         }
 
 
-        public void Enable() => actions.Enable();
+        public void Enable()  => actions.Enable();
         public void Disable() => actions.Disable();
 
 
         public bool ToggleCameraPressed() => Keyboard.current.mKey.wasPressedThisFrame;
-        public bool ToggleDebugPressed() => Keyboard.current.nKey.wasPressedThisFrame;
+        public bool ToggleDebugPressed()  => Keyboard.current.nKey.wasPressedThisFrame;
     }
 
     #endif
@@ -99,18 +101,14 @@ namespace PhysicsCharacterController
         [Header("Events")]
         public UnityEvent changedInputToMouseAndKeyboard;
         [Space(15)]
-
         public UnityEvent changedInputToGamepad;
         [Space(15)]
-
         public UnityEvent toggledCamera;
         [Space(15)]
-
         public UnityEvent toggledDebug;
         public event Action InteractEvent;
         public event Action AttackEvent;
         [Space(15)]
-
         [Header("Enable inputs")]
         public bool enableJump = true;
         public bool enableCrouch = true;
@@ -145,7 +143,7 @@ namespace PhysicsCharacterController
         }
 
 
-        private void OnEnable() => backend?.Enable();
+        private void OnEnable()  => backend?.Enable();
         private void OnDisable() => backend?.Disable();
 
         #endregion
@@ -172,13 +170,7 @@ namespace PhysicsCharacterController
             // Sprint and Crouch
             if (enableSprint) sprint = backend.GetSprint();
             if (enableCrouch) crouch = backend.GetCrouch();
-
-            // Interactions
-            if (enableInteract)
-            {
-                if (backend.GetInteractDown()) interactBuffered = true;
-            }
-
+            
 
             // Toggle camera & Debug
             if (backend.ToggleCameraPressed()) toggledCamera.Invoke();
