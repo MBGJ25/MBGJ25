@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
+using System;
 #if ENABLE_INPUT_SYSTEM
     using UnityEngine.InputSystem;
 #endif
@@ -25,6 +27,7 @@ namespace PhysicsCharacterController
 
         bool ToggleCameraPressed();
         bool ToggleDebugPressed();
+        event Action AttackEvent;
     }
 
 
@@ -37,6 +40,10 @@ namespace PhysicsCharacterController
     {
         private MovementActions actions;
         private InputControl lastControl;
+        
+        #region Custom Events
+        public event Action AttackEvent;
+        #endregion
 
 
         public NewInputBackend()
@@ -49,6 +56,9 @@ namespace PhysicsCharacterController
             actions.Gameplay.Jump.started += ctx => lastControl = ctx.control;
             actions.Gameplay.Sprint.started += ctx => lastControl = ctx.control;
             actions.Gameplay.Crouch.started += ctx => lastControl = ctx.control;
+            
+            // Custom Actions
+            actions.Gameplay.Attack.performed += ctx => AttackEvent?.Invoke();
 
             actions.Enable();
         }
@@ -90,7 +100,7 @@ namespace PhysicsCharacterController
     public class OldInputBackend : IInputBackend
     {
         private bool lastWasMouseKeyboard = true;
-
+        public event Action AttackEvent;
 
         public Vector2 GetMovement()
         {
@@ -144,6 +154,8 @@ namespace PhysicsCharacterController
         [Space(15)]
 
         public UnityEvent toggledDebug;
+
+        public event Action AttackEvent;
         [Space(15)]
 
         [Header("Enable inputs")]
@@ -163,7 +175,6 @@ namespace PhysicsCharacterController
         private bool lastWasMouseKeyboard = true;
         private bool jumpBuffered;
 
-
         /**/
 
 
@@ -178,6 +189,11 @@ namespace PhysicsCharacterController
             #else
                 Debug.LogError("No input system enabled in Player Settings.");
             #endif
+
+            if (backend != null)
+            {
+                backend.AttackEvent += HandleBackendAttackEvent;
+            }
         }
 
 
@@ -238,6 +254,11 @@ namespace PhysicsCharacterController
 
                 Debug.Log("Input device was changed");
             }
+        }
+
+        private void HandleBackendAttackEvent()
+        {
+            AttackEvent?.Invoke();
         }
 
         #endregion
