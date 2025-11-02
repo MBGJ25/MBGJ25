@@ -20,7 +20,7 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private GameObject lanternLight;
     [SerializeField] private ParticleSystem lanternParticles;
     [SerializeField] private GameObject temporaryFireVFX;
-    [SerializeField] private float lanternBurnoutTime = 60f; // ✨ Default 60 seconds
+    [SerializeField] private float lanternBurnoutTime = 60f;
 
     private IInteractable currentInteractable;
     private bool hasLitLantern = false;
@@ -32,16 +32,16 @@ public class PlayerInteraction : MonoBehaviour
     #region Lifecycle Methods
     private void Update()
     {
-        // ✨ Check for interactables every frame
+        // Check for interactables every frame
         CheckForInteractable();
         
-        // ✨ Handle interaction immediately when input is pressed
+        // Handle interaction immediately when input is pressed
         if (input.interact && currentInteractable != null) 
         {
             currentInteractable.Interact(gameObject);
         }
 
-        // ✨Count down lantern timer
+        // Count down lantern timer
         if (hasLitLantern && lanternTimeRemaining > 0f)
         {
             lanternTimeRemaining -= Time.deltaTime;
@@ -118,8 +118,7 @@ public class PlayerInteraction : MonoBehaviour
         Debug.Log($"Lantern lit! Will burn out in {lanternBurnoutTime} seconds");
         #endif
     }
-
-    // ✨Extinguish the lantern
+    
     private void ExtinguishLantern()
     {
         hasLitLantern = false;

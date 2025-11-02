@@ -24,7 +24,7 @@ public class Zombie : MonoBehaviour
     public Transform playerObject;
     public LayerMask whatIsGround, whatIsPlayer;
     private Player player;
-    private PlayerInteraction playerInteraction; // ✨ NEW
+    private PlayerInteraction playerInteraction;
     #endregion
 
     #region Patrolling
@@ -60,7 +60,7 @@ public class Zombie : MonoBehaviour
         playerObject = GameObject.Find("Player Character").transform;
         agent = GetComponent<NavMeshAgent>();
         player = playerObject.GetComponent<Player>();
-        playerInteraction = playerObject.GetComponent<PlayerInteraction>(); // ✨ NEW
+        playerInteraction = playerObject.GetComponent<PlayerInteraction>();
         normalSpeed = agent.speed;
         CurrentHealth = stats.MaxHealth;
     }
@@ -73,7 +73,7 @@ public class Zombie : MonoBehaviour
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
-        // ✨ Check if player has lit lantern
+        // Check if player has lit lantern
         bool playerHasLitLantern = playerInteraction != null && playerInteraction.HasLitLantern;
         
         if (playerHasLitLantern && playerInSightRange)
