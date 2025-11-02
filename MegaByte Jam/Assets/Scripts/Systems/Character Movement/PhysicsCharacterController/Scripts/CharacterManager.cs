@@ -845,7 +845,8 @@ namespace PhysicsCharacterController
 
             Vector3 finalPosition = railPosition + properOffset;
             finalPosition.x = Mathf.Round(finalPosition.x);
-            transform.position = finalPosition;
+            //currently stops magnitude from being translated on the rail, if this is needed for something else we'll need to rework it
+            //transform.position = finalPosition;
             rigidbody.velocity = grindDirection * rigidbody.velocity.magnitude;
         }
         
