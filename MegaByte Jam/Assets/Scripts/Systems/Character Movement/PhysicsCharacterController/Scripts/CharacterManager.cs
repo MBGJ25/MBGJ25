@@ -20,6 +20,9 @@ namespace PhysicsCharacterController
         public float dampSpeedDown = 0.1f;
         public bool airCrouchCompleteStop = true;
 
+        [Header("Audio")]
+        [SerializeField]
+        private PlayerSounds playerSounds;
 
         [Header("Jump and gravity specifics")]
         public float jumpVelocity = 20f;
@@ -254,6 +257,8 @@ namespace PhysicsCharacterController
             }
         }
         
+
+
         private void PhysicsUpdate()
         {
             if (isGrinding)
@@ -353,6 +358,11 @@ namespace PhysicsCharacterController
                     }
                 }
             }
+        }
+
+        private void PlayFootstep()
+        {
+            playerSounds.PlayFootsteps();
         }
 
 
