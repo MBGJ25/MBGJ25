@@ -801,7 +801,7 @@ namespace PhysicsCharacterController
             }
 
             // Move along rail (forward or backward based on grindingForward)
-            float moveAmount = (currentRail.grindSpeed * Time.fixedDeltaTime) / currentRail.GetRailLength();
+            float moveAmount = (rigidbody.velocity.magnitude * Time.fixedDeltaTime) / currentRail.GetRailLength();
     
             if (grindingForward)
             {
@@ -846,7 +846,7 @@ namespace PhysicsCharacterController
             Vector3 finalPosition = railPosition + properOffset;
             finalPosition.x = Mathf.Round(finalPosition.x);
             //currently stops magnitude from being translated on the rail, if this is needed for something else we'll need to rework it
-            //transform.position = finalPosition;
+            transform.position = finalPosition;
             rigidbody.velocity = grindDirection * rigidbody.velocity.magnitude;
         }
         
