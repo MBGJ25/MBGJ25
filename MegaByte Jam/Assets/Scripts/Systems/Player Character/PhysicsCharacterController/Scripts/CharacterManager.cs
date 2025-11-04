@@ -154,7 +154,6 @@ namespace PhysicsCharacterController
         private bool lockRotation = false;
         private bool lockToCamera = false;
 
-
         /**/
 
         #region Grind Values
@@ -191,6 +190,9 @@ namespace PhysicsCharacterController
 
         private void FixedUpdate()
         {
+            // Detect if any interactable object would be collided with in the next movement calculation, if so start interaction process.
+            PreemptiveInteraction();
+
             // 1️⃣ Handle which movement logic to run (Manual, Physics, Hybrid)
             switch (movementMode)
             {
@@ -215,12 +217,11 @@ namespace PhysicsCharacterController
             CheckSlopeAndDirections();
 
             // 3️⃣ Handle input-dependent motion
-            MoveCrouch();
             MoveWalk();
-
+            MoveCrouch();
             // 4️⃣ Handle jump (including rail jump)
             MoveJump();
-
+            
             // 5️⃣ Rotation should come *after* horizontal/vertical movement,
             // so it's aligned with where the player actually went.
             if (!lockToCamera)
@@ -252,7 +253,6 @@ namespace PhysicsCharacterController
                 }
             }
         }
-
         
         private void PhysicsUpdate()
         {
@@ -269,8 +269,8 @@ namespace PhysicsCharacterController
             CheckWall();
             CheckSlopeAndDirections();
 
-            MoveCrouch();
             MoveWalk();
+            MoveCrouch();
 
             if (!lockToCamera) MoveRotation();
             else ForceRotation();
@@ -335,6 +335,25 @@ namespace PhysicsCharacterController
             UpdateEvents();
         }
 
+        private void PreemptiveInteraction()
+        {
+            Vector3 dir = rigidbody.velocity.normalized;
+            float dist = rigidbody.velocity.magnitude;
+
+            RaycastHit hit;
+            if(dir.y < 0 &&  Physics.SphereCast(transform.position, GetComponent<Collider>().bounds.size.y/2, dir, out hit, dist * Time.fixedDeltaTime))
+            {
+                GrindRail rail = hit.collider.gameObject.GetComponent<GrindRail>();
+                if (rail != null)
+                {
+                    Vector3 preferredDirection;
+                    if (rail.CanStartGrinding(rigidbody.velocity, transform.forward, out preferredDirection))
+                    {
+                        StartGrinding(rail, preferredDirection);
+                    }
+                }
+            }
+        }
 
 
         #region Checks
@@ -536,7 +555,6 @@ namespace PhysicsCharacterController
         }
 
         #endregion
-        
 
         #region Move
         private void MoveCrouch()
@@ -572,11 +590,9 @@ namespace PhysicsCharacterController
 
                 //change majority of vilocity to down
                 crouchSpeedMultiplier = 0f;
-
-                currVelocity = new Vector3(0f, currVelocity.y - Mathf.Abs(currVelocity.x) - Mathf.Abs(currVelocity.z), 0f);
                 if (airCrouchCompleteStop)
                 {
-                    rigidbody.velocity = new Vector3(0f, rigidbody.velocity.y - Mathf.Abs(rigidbody.velocity.x / 2) - Mathf.Abs(rigidbody.velocity.z / 2), 0f);
+                    rigidbody.velocity = new Vector3(0f, -rigidbody.velocity.magnitude, 0f);
                 }
                 gravityMultiplier = airCrouchGravityMultiplier;
             }
@@ -600,16 +616,19 @@ namespace PhysicsCharacterController
 
         private void MoveWalk()
         {
-            float crouchMultiplier = 1f;
-            if (isCrouch) crouchMultiplier = crouchSpeedMultiplier;
-
-            if (axisInput.magnitude > movementThrashold)
+            // Todo: make actual surfing
+            // currently allows for magnitude to be transalted into forward motion
+            if (isCrouch) {
+                targetAngle = Mathf.Atan2(axisInput.x, axisInput.y) * Mathf.Rad2Deg + characterCamera.transform.eulerAngles.y;
+                rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, forward * rigidbody.velocity.magnitude, ref currVelocity, dampSpeedUp);
+            }
+            else if (axisInput.magnitude > movementThrashold)
             {
                 targetAngle = Mathf.Atan2(axisInput.x, axisInput.y) * Mathf.Rad2Deg + characterCamera.transform.eulerAngles.y;
-                if (!sprint) rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, forward * movementSpeed * crouchMultiplier, ref currVelocity, dampSpeedUp);
-                else rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, forward * sprintSpeed * crouchMultiplier, ref currVelocity, dampSpeedUp);
+                if (!sprint) rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, forward * movementSpeed, ref currVelocity, dampSpeedUp);
+                else rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, forward * sprintSpeed, ref currVelocity, dampSpeedUp);
             }
-            else rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, Vector3.zero * crouchMultiplier, ref currVelocity, dampSpeedDown);
+            else rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, Vector3.zero, ref currVelocity, dampSpeedDown);
         }
 
 
@@ -827,7 +846,7 @@ namespace PhysicsCharacterController
             Vector3 finalPosition = railPosition + properOffset;
             finalPosition.x = Mathf.Round(finalPosition.x);
             transform.position = finalPosition;
-            rigidbody.velocity = grindDirection * currentRail.grindSpeed;
+            rigidbody.velocity = grindDirection * rigidbody.velocity.magnitude;
         }
         
         private void StopGrinding(bool jumpedOff = false)
@@ -840,7 +859,7 @@ namespace PhysicsCharacterController
             
             if (!jumpedOff && prevRail != null)
             {
-                rigidbody.velocity = grindDirection * prevRail.grindSpeed;
+                rigidbody.velocity = grindDirection * rigidbody.velocity.magnitude;
             }
         }
 
