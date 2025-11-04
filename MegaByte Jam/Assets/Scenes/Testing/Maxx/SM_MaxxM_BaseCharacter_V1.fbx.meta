@@ -8,12 +8,12 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: lambert3
-    second: {fileID: 2100000, guid: 537edd67970bc44e5a1ba4618794ffc4, type: 2}
+    second: {fileID: 8368722655750445499, guid: fd2dfa1ad9f2c794fb252462f547034d, type: 3}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: openPBR_shader1
-    second: {fileID: 2100000, guid: c89816c2186624708adac9f4b59cbb50, type: 2}
+    second: {fileID: 2100000, guid: a3b9e5552ebac4f72938dd575d92306d, type: 2}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
