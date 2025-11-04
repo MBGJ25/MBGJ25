@@ -360,9 +360,10 @@ namespace PhysicsCharacterController
             }
         }
 
-        private void PlayFootstep()
+        private void PlayFootsteps()
         {
-            playerSounds.PlayFootsteps();
+            Debug.Log("In play footsteps");
+            playerSounds.PlayFootstep();
         }
 
 

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerSounds : MonoBehaviour
@@ -15,12 +13,22 @@ public class PlayerSounds : MonoBehaviour
         }
     }
 
-    public void PlayFootsteps()
+    public void PlayFootstep()
     {
         if (footsteps.isValid())
         {
             FMODUnity.RuntimeManager.AttachInstanceToGameObject(footsteps, transform);
             footsteps.start();
+        }
+    }
+
+    private void OnDestroy()
+    {
+        // Clean up FMOD instance
+        if (footsteps.isValid())
+        {
+            footsteps.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            footsteps.release();
         }
     }
 }

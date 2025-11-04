@@ -1897,6 +1897,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 434293611}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &435136718 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5379935114436101137, guid: cf4b3ff444aac3d479825f1fa43b6237, type: 3}
+  m_PrefabInstance: {fileID: 5785114338120635885}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3445486e366b51f40a22f0a98cf1c50d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &503671057
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5841,6 +5852,56 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6759159107829199444, guid: 9433a9dacb6dfee438b9eecbbd6f56b9, type: 3}
   m_PrefabInstance: {fileID: 1613773234}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1673470215
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1673470217}
+  - component: {fileID: 1673470216}
+  m_Layer: 0
+  m_Name: Player Sound Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1673470216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1673470215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2cd3f562e307b24797ff73042f432af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 1422722680}
+  characterManager: {fileID: 6212462411358609121}
+  playerSounds: {fileID: 435136718}
+  walkFootstepInterval: 0.5
+  sprintFootstepInterval: 0.3
+  movementThreshold: 0.01
+--- !u!4 &1673470217
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1673470215}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -80.145, y: 13.155972, z: -59.289528}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1680697076
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7950,3 +8011,4 @@ SceneRoots:
   - {fileID: 196168793}
   - {fileID: 1799189771}
   - {fileID: 210739889}
+  - {fileID: 1673470217}
