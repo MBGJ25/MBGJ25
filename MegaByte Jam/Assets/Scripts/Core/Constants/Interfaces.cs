@@ -25,5 +25,6 @@ public interface IInteractable
     void   Interact(GameObject player);
     string GetInteractionPrompt();
     bool   CanInteract(GameObject player);
+    PlayerInteractables GetInteractableType();
 }
 #endregion
