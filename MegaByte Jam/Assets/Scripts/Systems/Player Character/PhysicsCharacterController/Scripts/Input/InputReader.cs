@@ -1,7 +1,7 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using System;
 
 
 namespace PhysicsCharacterController
@@ -16,7 +16,6 @@ namespace PhysicsCharacterController
         bool    GetJumpUp();
         bool    GetSprint();
         bool    GetCrouch();
-        bool    GetInteractDown();
 
         bool IsMouseKeyboard();
 
@@ -25,6 +24,7 @@ namespace PhysicsCharacterController
 
         bool ToggleCameraPressed();
         bool ToggleDebugPressed();
+        event Action AttackEvent;
         event Action InteractEvent;
     }
 
@@ -41,7 +41,12 @@ namespace PhysicsCharacterController
         private MovementActions actions;
         private InputControl lastControl;
 
+        #region Custom Events
+
+        public event Action AttackEvent;
         public event Action InteractEvent;
+
+        #endregion
 
 
         public NewInputBackend()
@@ -54,6 +59,9 @@ namespace PhysicsCharacterController
             actions.Gameplay.Jump.started += ctx => lastControl = ctx.control;
             actions.Gameplay.Sprint.started += ctx => lastControl = ctx.control;
             actions.Gameplay.Crouch.started += ctx => lastControl = ctx.control;
+
+            // Custom Actions
+            actions.Gameplay.Attack.performed += ctx => AttackEvent?.Invoke();
             actions.Gameplay.Interact.started += ctx => InteractEvent?.Invoke();
 
             actions.Enable();
@@ -64,11 +72,10 @@ namespace PhysicsCharacterController
         public Vector2 GetCameraDelta() => actions.Gameplay.Camera.ReadValue<Vector2>();
 
 
-        public bool GetJumpDown()     => actions.Gameplay.Jump.WasPressedThisFrame();
-        public bool GetJumpUp()       => actions.Gameplay.Jump.WasReleasedThisFrame();
-        public bool GetSprint()       => actions.Gameplay.Sprint.IsPressed();
-        public bool GetCrouch()       => actions.Gameplay.Crouch.IsPressed();
-        public bool GetInteractDown() => actions.Gameplay.Interact.WasPressedThisFrame();
+        public bool GetJumpDown() => actions.Gameplay.Jump.WasPressedThisFrame();
+        public bool GetJumpUp()   => actions.Gameplay.Jump.WasReleasedThisFrame();
+        public bool GetSprint()   => actions.Gameplay.Sprint.IsPressed();
+        public bool GetCrouch()   => actions.Gameplay.Crouch.IsPressed();
 
 
         public bool IsMouseKeyboard()
@@ -100,6 +107,7 @@ namespace PhysicsCharacterController
         [Space(15)]
         public UnityEvent toggledDebug;
         public event Action InteractEvent;
+        public event Action AttackEvent;
         [Space(15)]
         [Header("Enable inputs")]
         public bool enableJump = true;
@@ -131,8 +139,10 @@ namespace PhysicsCharacterController
         {
             backend = new NewInputBackend();
             backend.InteractEvent += HandleInteractEvent;
+            backend.AttackEvent += HandleBackendAttackEvent;
         }
-        
+
+
         private void OnEnable()  => backend?.Enable();
         private void OnDisable() => backend?.Disable();
 
@@ -160,13 +170,7 @@ namespace PhysicsCharacterController
             // Sprint and Crouch
             if (enableSprint) sprint = backend.GetSprint();
             if (enableCrouch) crouch = backend.GetCrouch();
-
-            // Interactions
-            if (enableInteract)
-            {
-                if (backend.GetInteractDown()) interactBuffered = true;
-            }
-
+            
 
             // Toggle camera & Debug
             if (backend.ToggleCameraPressed()) toggledCamera.Invoke();
@@ -198,6 +202,11 @@ namespace PhysicsCharacterController
 
                 Debug.Log("Input device was changed");
             }
+        }
+
+        private void HandleBackendAttackEvent()
+        {
+            AttackEvent?.Invoke();
         }
 
         private void HandleInteractEvent()

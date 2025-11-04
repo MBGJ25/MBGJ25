@@ -52,9 +52,18 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Attack",
+                    "type": "Button",
+                    "id": "11aa3645-f1b8-448a-8dcd-62319903684d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Interact",
                     "type": "Button",
-                    "id": "47e763ce-0974-4e05-8760-e97630be9e26",
+                    "id": "3097517f-0860-4a02-9f49-e8ac7da7574c",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -416,8 +425,30 @@
                 },
                 {
                     "name": "",
-                    "id": "608c42fb-ed0f-4df2-83c3-103b271fcf69",
-                    "path": "<Keyboard>/f",
+                    "id": "6b82ce44-3de4-4965-8e9b-40442270f9cd",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";GamePad",
+                    "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ff11d17e-4da3-44c0-8e48-c917a3adb1f4",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Mouse",
+                    "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9c8a122b-1bc6-44a5-b756-1906756ed3f2",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard",
@@ -427,7 +458,7 @@
                 },
                 {
                     "name": "",
-                    "id": "207f4ebe-1e5d-4dcd-af0b-a192a7b4f969",
+                    "id": "72669ad5-5621-47c1-9229-c5713c77fa0c",
                     "path": "<Gamepad>/buttonNorth",
                     "interactions": "",
                     "processors": "",

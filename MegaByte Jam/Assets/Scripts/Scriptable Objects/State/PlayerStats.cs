@@ -12,9 +12,18 @@ public class PlayerStats : ScriptableObject
     #endregion
 
     #region Serialized Fields
+    [Header("Health")]
     [SerializeField] private int maxHealth = 100;
+    
+    [Header("Attack")]
     [SerializeField] private int attackDamage = 10;
+    [SerializeField] private float attackRange = 2f;
     [SerializeField] private float attackCooldown = 0.5f;
+    
+    // NOTE: These are unused currently
+    [Header("Combo System")]
+    public int MaxComboCount = 3;
+    public float ComboWindow = 1.5f;
     #endregion
 
     #region Properties
@@ -23,6 +32,7 @@ public class PlayerStats : ScriptableObject
     public bool IsAlive => CurrentHealth > 0;
     public float HealthPercentage => (float)CurrentHealth / maxHealth;
     public int AttackDamage => attackDamage;
+    public float AttackRange => attackRange;
     public float AttackCooldown => attackCooldown;
     #endregion
 
