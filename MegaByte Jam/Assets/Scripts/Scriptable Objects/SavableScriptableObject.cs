@@ -13,6 +13,24 @@ public abstract class SavableScriptableObject : ScriptableObject
     public abstract string SaveKey { get; }
     
     /// <summary>
+    /// Serializes this ScriptableObject to JSON format.
+    /// Override this if you need custom serialization logic.
+    /// </summary>
+    public virtual string SerializeToJson()
+    {
+        return JsonUtility.ToJson(this);
+    }
+    
+    /// <summary>
+    /// Deserializes JSON data into this ScriptableObject.
+    /// Override this if you need custom deserialization logic.
+    /// </summary>
+    public virtual void DeserializeFromJson(string json)
+    {
+        JsonUtility.FromJsonOverwrite(json, this);
+    }
+    
+    /// <summary>
     /// Called after data is loaded into this ScriptableObject.
     /// Override this if you need to perform any initialization after loading.
     /// </summary>

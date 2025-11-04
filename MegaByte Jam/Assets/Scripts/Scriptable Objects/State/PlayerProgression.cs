@@ -1,14 +1,17 @@
 ﻿using UnityEngine;
-using Unity;
-using System;
 
-
-/// <summary>
-/// This is an example of how to write a savable piece of state and does not
-/// actually  need to be used at the moment.
-/// </summary>
-[CreateAssetMenu(fileName = "Player Progression",  menuName = "Scriptable Objects/State/Player Progression")]
-public class PlayerProgression : ScriptableObject
+[CreateAssetMenu(fileName = "Player Progression", menuName = "Scriptable Objects/State/New Player Progression")]
+public class PlayerProgression : SavableScriptableObject
 {
     [SerializeField] private int currentLevel = 1;
+    
+    // Unique key for saving/loading - make sure this is unique across all SOs
+    public override string SaveKey => "PlayerProgression";
+    
+    // Public property to access the level
+    public int CurrentLevel 
+    { 
+        get => currentLevel; 
+        set => currentLevel = value; 
+    }
 }

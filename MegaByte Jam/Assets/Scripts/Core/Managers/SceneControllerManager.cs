@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-public class SceneControllerManager : SingletonMonoBehavior<SceneControllerManager>
+public class SceneControllerManager : SingletonMonoBehaviour<SceneControllerManager>
 {
     [SerializeField] private InputActionAsset thirdPartyAsset;
     [SerializeField] private InputActionAsset myAsset;

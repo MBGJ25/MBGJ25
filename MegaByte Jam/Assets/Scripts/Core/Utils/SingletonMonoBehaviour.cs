@@ -14,7 +14,7 @@ using UnityEngine;
 /// - Override OnDestroySingleton() instead of OnDestroy()
 /// - Set ShouldPersistAcrossScenes = false if you want scene-specific singletons
 /// </summary>
-public abstract class SingletonMonoBehavior<T> : MonoBehaviour where T : MonoBehaviour
+public abstract class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBehaviour
 {
     #region Configuration
 
