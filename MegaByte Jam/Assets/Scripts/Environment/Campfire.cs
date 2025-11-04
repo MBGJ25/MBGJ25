@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
 
-public class Campfire : MonoBehaviour, IInteractable
+public class Campfire : PlayerInteractableBase
 {
     [Header("Campfire Settings")]
     [SerializeField] private ParticleSystem fireParticles;
     [SerializeField] private Light fireLight;
     [SerializeField] private AudioClip lightLanternSound;
-    [SerializeField] private string interactionPrompt = "Press F/Y to Light Lantern";
     
     private AudioSource audioSource;
     private bool isLit = true;
@@ -16,7 +15,7 @@ public class Campfire : MonoBehaviour, IInteractable
         audioSource = GetComponent<AudioSource>();
     }
 
-    public void Interact(GameObject player)
+    public override void Interact(GameObject player)
     {
         PlayerInteraction playerInteraction = player.GetComponent<PlayerInteraction>();
         if (playerInteraction != null && !playerInteraction.HasLitLantern)
@@ -32,16 +31,21 @@ public class Campfire : MonoBehaviour, IInteractable
         }
     }
     
-    public string GetInteractionPrompt()
+    public override string GetInteractionPrompt()
     {
         return interactionPrompt;
     }
 
-    public bool CanInteract(GameObject player)
+    public override bool CanInteract(GameObject player)
     {
         if (!isLit) return false;
 
         PlayerInteraction playerInteraction = player.GetComponent<PlayerInteraction>();
         return playerInteraction != null && !playerInteraction.HasLitLantern;
+    }
+
+    public override PlayerInteractables GetInteractableType()
+    {
+        return interactableType;
     }
 }

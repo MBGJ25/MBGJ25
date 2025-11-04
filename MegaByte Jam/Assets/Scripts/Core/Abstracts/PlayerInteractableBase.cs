@@ -2,9 +2,9 @@
 
 public abstract class PlayerInteractableBase : MonoBehaviour, IInteractable
 {
-    [Header("Interactable Type")]
-    [SerializeField] private PlayerInteractables interactableType;
-    [SerializeField] private string interactablePrompt;
+    [Header("Interactable Settings")]
+    [SerializeField] protected PlayerInteractables interactableType;
+    [SerializeField] protected string interactionPrompt;
     
     public abstract bool CanInteract(GameObject player);
     public abstract void Interact(GameObject player);
