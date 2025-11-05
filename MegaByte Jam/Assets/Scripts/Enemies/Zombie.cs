@@ -18,12 +18,15 @@ public class Zombie : MonoBehaviour
     #endregion
 
     #region AI Components
+
     [Header("AI Components")]
+    [SerializeField] private bool attackPlayer = true;
     public NavMeshAgent agent;
     [FormerlySerializedAs("player")]
     public Transform playerObject;
     public LayerMask whatIsGround, whatIsPlayer;
     private Player player;
+    private PlayerInteraction playerInteraction;
     #endregion
 
     #region Patrolling
@@ -44,34 +47,55 @@ public class Zombie : MonoBehaviour
     [Header("Detection")]
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
+    
+    [Header("Lantern Avoidance")]
+    [Tooltip("The range at which the Zombie will stop fleeing when lantern is lit")]
+    [SerializeField] private float panicRange = 10f;
+    [Tooltip("Flee speed overrides normal movement speed when scared")]
+    [SerializeField] private float fleeSpeed = 5f;
+    [SerializeField] private float fleeDistance = 15f;
+    private float normalSpeed;
     #endregion
 
     private void Awake()
     {
-        playerObject = GameObject.Find("Player Character").transform;
+        playerObject = GameObject.FindGameObjectWithTag("Player").transform;
         agent = GetComponent<NavMeshAgent>();
         player = playerObject.GetComponent<Player>();
-        
-        // Initialize health
+        playerInteraction = playerObject.GetComponent<PlayerInteraction>();
+        normalSpeed = agent.speed;
         CurrentHealth = stats.MaxHealth;
     }
 
     private void Update()
     {
-        if (!IsAlive) return; // Don't update AI if dead
+        if (!IsAlive || !attackPlayer) return;
 
-        //Check for sight and attack range
+        // Check for sight and attack range
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
-        if (!playerInSightRange && !playerInAttackRange) Patroling();
-        if (playerInSightRange && !playerInAttackRange) ChasePlayer();
-        if (playerInAttackRange && playerInSightRange) AttackPlayer();
+        // Check if player has lit lantern
+        bool playerHasLitLantern = playerInteraction != null && playerInteraction.HasLitLantern;
+        
+        if (playerHasLitLantern && playerInSightRange)
+        {
+            FleeFromPlayer();
+        }
+        else
+        {
+            // Normal behavior - not afraid
+            if (!playerInSightRange && !playerInAttackRange) Patroling();
+            if (playerInSightRange && !playerInAttackRange) ChasePlayer();
+            if (playerInAttackRange && playerInSightRange) AttackPlayer();
+        }
     }
 
     #region AI Behavior
     private void Patroling()
     {
+        agent.speed = normalSpeed;
+        
         if (!walkPointSet) SearchWalkPoint();
 
         if (walkPointSet)
@@ -79,14 +103,12 @@ public class Zombie : MonoBehaviour
 
         Vector3 distanceToWalkPoint = transform.position - walkPoint;
 
-        //Walkpoint reached
         if (distanceToWalkPoint.magnitude < 1f)
             walkPointSet = false;
     }
 
     private void SearchWalkPoint()
     {
-        //Calculate random point in range
         float randomZ = UnityEngine.Random.Range(-walkPointRange, walkPointRange);
         float randomX = UnityEngine.Random.Range(-walkPointRange, walkPointRange);
 
@@ -98,40 +120,44 @@ public class Zombie : MonoBehaviour
 
     private void ChasePlayer()
     {
+        agent.speed = normalSpeed;
         agent.SetDestination(playerObject.position);
     }
-
-    // CS TODO: Use this one if we want projectiles
-    private void ProjectileAttackPlayer()
-    {
-        //Make sure enemy doesn't move
-        agent.SetDestination(transform.position);
-
-        transform.LookAt(playerObject);
-
-        if (!alreadyAttacked)
-        {
-            // CS TODO: Add call to take damage here and use Stats.AttackDamage
-            ///Attack code here
-            Rigidbody rb = Instantiate(projectile, transform.position, Quaternion.identity).GetComponent<Rigidbody>();
-            rb.AddForce(transform.forward * 32f, ForceMode.Impulse);
-            rb.AddForce(transform.up * 8f, ForceMode.Impulse);
-            ///End of attack code
-
-            alreadyAttacked = true;
-            Invoke(nameof(ResetAttack), timeBetweenAttacks);
-        }
-    }
     
+    private void FleeFromPlayer()
+    {
+        agent.speed = fleeSpeed;
+        
+        // Calculate direction away from player
+        Vector3 directionAwayFromPlayer = (transform.position - playerObject.position).normalized;
+        
+        // Calculate flee destination
+        Vector3 fleeDestination = transform.position + directionAwayFromPlayer * fleeDistance;
+        
+        // Make sure flee point is on the ground
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(fleeDestination, out hit, fleeDistance, NavMesh.AllAreas))
+        {
+            agent.SetDestination(hit.position);
+        }
+        else
+        {
+            // If can't find valid flee point, just move away in any direction
+            agent.SetDestination(transform.position + directionAwayFromPlayer * 5f);
+        }
+        
+        // CS TODO: Remove Optional if not wanted--looks at player while fleeing
+        transform.LookAt(new Vector3(playerObject.position.x, transform.position.y, playerObject.position.z));
+    }
+
     private void AttackPlayer()
     {
+        agent.speed = normalSpeed;
         agent.SetDestination(transform.position);
         transform.LookAt(playerObject);
 
         if (!alreadyAttacked)
         {
-            // CS TODO: Add any attack effects we'd like
-            // Deal damage directly to player
             if (player != null)
             {
                 player.TakeDamage(stats.AttackDamage);
@@ -168,13 +194,7 @@ public class Zombie : MonoBehaviour
     private void Die()
     {
         OnDeath?.Invoke();
-        
-        // Disable AI
         agent.enabled = false;
-        
-        // CS TODO: Add death animation and any eventing we need here
-        // animator.SetTrigger("Death");
-        
         Invoke(nameof(DestroyEnemy), 0.5f);
     }
 
@@ -190,5 +210,9 @@ public class Zombie : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, attackRange);
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, sightRange);
+        
+        // Flee Distance Gizmos
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, fleeDistance);
     }
 }
