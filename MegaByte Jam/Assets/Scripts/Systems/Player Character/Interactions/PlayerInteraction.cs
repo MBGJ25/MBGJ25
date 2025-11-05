@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using PhysicsCharacterController;
@@ -15,6 +16,8 @@ public class PlayerInteraction : MonoBehaviour
     
     [Header("System References")]
     [SerializeField] private InputReader input;
+    // CS TODO: Implement once FMOD branch is merged in
+    // [SerializeField] private PlayerSounds playerSounds;
 
     [Header("Lantern References")]
     [SerializeField] private GameObject lanternLight;
@@ -25,8 +28,19 @@ public class PlayerInteraction : MonoBehaviour
     private IInteractable currentInteractable;
     private bool hasLitLantern = false;
     private float lanternTimeRemaining;
+    
+    // Collectible tracking
+    private HashSet<string> collectedItemIDs = new HashSet<string>();
+    private List<CollectibleData> collectedItems = new List<CollectibleData>();
+    
+    // Public properties
     public bool HasLitLantern => hasLitLantern;
     public float LanternTimeRemaining => lanternTimeRemaining;
+    public int CollectiblesCount => collectedItems.Count;
+    public IReadOnlyList<CollectibleData> CollectedItems => collectedItems.AsReadOnly();
+    
+    // Events
+    public event Action<CollectibleData> OnCollectiblePickedUp;
     #endregion
 
     #region Lifecycle Methods
@@ -62,7 +76,7 @@ public class PlayerInteraction : MonoBehaviour
     #endregion
     
     
-    #region Methods
+    #region Interaction Methods
     private void HandleInteract()
     {
         if (currentInteractable != null)
@@ -103,7 +117,9 @@ public class PlayerInteraction : MonoBehaviour
                 interactionTextPrompt.text = "";
         }
     }
+    #endregion
 
+    #region Lantern Methods
     public void LightLantern()
     {
         hasLitLantern = true;
@@ -154,7 +170,97 @@ public class PlayerInteraction : MonoBehaviour
         if (temporaryFireVFX != null)
             temporaryFireVFX.SetActive(false);
     }
+    #endregion
 
+    #region Collectible Methods
+    /// <summary>
+    /// Attempt to collect an item. Returns true if successfully collected, false if already collected or invalid.
+    /// </summary>
+    public bool CollectItem(CollectibleData collectibleData)
+    {
+        // Validation
+        if (collectibleData == null)
+        {
+            #if UNITY_EDITOR
+            Debug.LogWarning("Attempted to collect null collectible data!");
+            #endif
+            return false;
+        }
+
+        // Check if already collected
+        if (collectedItemIDs.Contains(collectibleData.CollectibleID))
+        {
+            #if UNITY_EDITOR
+            Debug.LogWarning($"Already collected: {collectibleData.CollectibleName}");
+            #endif
+            return false;
+        }
+
+        // Add to both collections
+        collectedItemIDs.Add(collectibleData.CollectibleID);
+        collectedItems.Add(collectibleData);
+        
+        // CS TODO: Implement once FMOD is set up
+        // if (playerSounds != null)
+        // {
+        //     playerSounds.PlayCollectiblePickup(collectibleData.PickupSound);
+        // }
+        
+        // Fire event for other systems
+        OnCollectiblePickedUp?.Invoke(collectibleData);
+        
+        #if UNITY_EDITOR
+        Debug.Log($"Collected: {collectibleData.CollectibleName} ({collectedItems.Count} total)");
+        #endif
+        
+        return true;
+    }
+
+    /// <summary>
+    /// Check if a specific collectible has been collected
+    /// </summary>
+    public bool HasCollected(CollectibleData collectibleData)
+    {
+        if (collectibleData == null)
+            return false;
+            
+        return collectedItemIDs.Contains(collectibleData.CollectibleID);
+    }
+
+    /// <summary>
+    /// Check if a collectible with a specific ID has been collected
+    /// </summary>
+    public bool HasCollected(string collectibleID)
+    {
+        return collectedItemIDs.Contains(collectibleID);
+    }
+
+    /// <summary>
+    /// Reset all collected items (call this when restarting the game/level)
+    /// </summary>
+    public void ResetCollectibles()
+    {
+        collectedItemIDs.Clear();
+        collectedItems.Clear();
+        
+        #if UNITY_EDITOR
+        Debug.Log("Collectibles reset!");
+        #endif
+    }
+
+    /// <summary>
+    /// Get a specific collected item by index
+    /// </summary>
+    public CollectibleData GetCollectedItem(int index)
+    {
+        if (index >= 0 && index < collectedItems.Count)
+            return collectedItems[index];
+            
+        return null;
+    }
+    #endregion
+
+    #region Debug
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
