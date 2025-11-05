@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5260149020633160431}
   - component: {fileID: 5676936349076951417}
   m_Layer: 0
-  m_Name: VFX_Fire_Campfire_V2-0
+  m_Name: VFX_Fire_Campfire_V3-0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -664,15 +664,15 @@ ParticleSystem:
   ShapeModule:
     serializedVersion: 6
     enabled: 1
-    type: 4
+    type: 5
     angle: 2.06
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
     radiusThickness: 0
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
-    m_Rotation: {x: 270, y: -0, z: 0}
-    m_Scale: {x: 0.3, y: 0.5, z: 0.3}
+    m_Rotation: {x: -90, y: 0, z: 0}
+    m_Scale: {x: 0.3, y: 0.3, z: 0.3}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -1308,9 +1308,9 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0.9150943, g: 0.8692317, b: 0.41869882, a: 0}
-        key1: {r: 0.7924528, g: 0.43827525, b: 0.09344961, a: 1}
-        key2: {r: 0.3679245, g: 0.11256488, b: 0.071155205, a: 1}
+        key0: {r: 0.8867924, g: 0.84698766, b: 0.4308473, a: 0}
+        key1: {r: 0.8301887, g: 0.5939484, b: 0.13705944, a: 1}
+        key2: {r: 0.3773585, g: 0.110945076, b: 0.065859735, a: 1}
         key3: {r: 0, g: 0, b: 0, a: 0.77254903}
         key4: {r: 0, g: 0, b: 0, a: 0}
         key5: {r: 0, g: 0, b: 0, a: 0}
@@ -4806,7 +4806,7 @@ ParticleSystemRenderer:
   m_CameraVelocityScale: 0
   m_VelocityScale: 0
   m_LengthScale: 2
-  m_SortingFudge: -5
+  m_SortingFudge: 0
   m_NormalDirection: 1
   m_ShadowBias: 0
   m_RenderAlignment: 0
