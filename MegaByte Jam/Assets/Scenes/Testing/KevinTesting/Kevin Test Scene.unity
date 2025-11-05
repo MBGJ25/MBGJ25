@@ -262023,8 +262023,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3958116859997675554, guid: ce29deb842017b140aa628c639195ba6, type: 3}
-      propertyPath: looping
-      value: 1
+      propertyPath: ShapeModule.type
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 3958116859997675554, guid: ce29deb842017b140aa628c639195ba6, type: 3}
+      propertyPath: ShapeModule.radius.value
+      value: 0.0001
+      objectReference: {fileID: 0}
+    - target: {fileID: 3958116859997675554, guid: ce29deb842017b140aa628c639195ba6, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5575520869107017217, guid: ce29deb842017b140aa628c639195ba6, type: 3}
       propertyPath: m_Name
