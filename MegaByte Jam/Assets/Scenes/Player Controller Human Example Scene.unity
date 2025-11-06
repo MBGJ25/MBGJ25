@@ -8128,6 +8128,63 @@ CapsuleCollider:
   m_Height: 2.6613808
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1001 &1965273165256168265
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 587361392480639365, guid: ea1d97280cb4a1a4191561b99a551cb1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -72.64584
+      objectReference: {fileID: 0}
+    - target: {fileID: 587361392480639365, guid: ea1d97280cb4a1a4191561b99a551cb1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 13.481819
+      objectReference: {fileID: 0}
+    - target: {fileID: 587361392480639365, guid: ea1d97280cb4a1a4191561b99a551cb1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -24.77
+      objectReference: {fileID: 0}
+    - target: {fileID: 587361392480639365, guid: ea1d97280cb4a1a4191561b99a551cb1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 587361392480639365, guid: ea1d97280cb4a1a4191561b99a551cb1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 587361392480639365, guid: ea1d97280cb4a1a4191561b99a551cb1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 587361392480639365, guid: ea1d97280cb4a1a4191561b99a551cb1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 587361392480639365, guid: ea1d97280cb4a1a4191561b99a551cb1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 587361392480639365, guid: ea1d97280cb4a1a4191561b99a551cb1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 587361392480639365, guid: ea1d97280cb4a1a4191561b99a551cb1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4403349832084212146, guid: ea1d97280cb4a1a4191561b99a551cb1, type: 3}
+      propertyPath: m_Name
+      value: Sprite Tree
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ea1d97280cb4a1a4191561b99a551cb1, type: 3}
 --- !u!1001 &4845001928994968277
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8438,3 +8495,4 @@ SceneRoots:
   - {fileID: 1436616730}
   - {fileID: 4845001928994968277}
   - {fileID: 1285644945}
+  - {fileID: 1965273165256168265}
