@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class SceneTransitionManager : SingletonMonoBehavior<SceneTransitionManager>
+public class SceneTransitionManager : SingletonMonoBehaviour<SceneTransitionManager>
 {
     [Header("Transition Settings")]
     [SerializeField] private float fadeOutDuration = 0.5f;
