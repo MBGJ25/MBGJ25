@@ -812,7 +812,7 @@ namespace PhysicsCharacterController
             }
 
             // Move along rail (forward or backward based on grindingForward)
-            float moveAmount = (currentRail.grindSpeed * Time.fixedDeltaTime) / currentRail.GetRailLength();
+            float moveAmount = (rigidbody.velocity.magnitude * Time.fixedDeltaTime) / currentRail.GetRailLength();
     
             if (grindingForward)
             {
