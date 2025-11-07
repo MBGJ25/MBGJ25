@@ -129,7 +129,7 @@ namespace PhysicsCharacterController
         private bool isTouchingWall = false;
         private bool isJumping = false;
         private bool isCrouch = false;
-        
+
         public enum MovementMode
         {
             Physics,
@@ -160,12 +160,14 @@ namespace PhysicsCharacterController
         /**/
 
         #region Grind Values
+
         private bool isGrinding = false;
         private GrindRail currentRail = null;
         private float grindPositionT = 0f;
         private Vector3 grindDirection = Vector3.zero;
         private float grindHeightOffset = 0.5f;
         private bool grindingForward = true;
+
         #endregion
 
         private void Awake()
@@ -224,7 +226,7 @@ namespace PhysicsCharacterController
             MoveCrouch();
             // 4️⃣ Handle jump (including rail jump)
             MoveJump();
-            
+
             // 5️⃣ Rotation should come *after* horizontal/vertical movement,
             // so it's aligned with where the player actually went.
             if (!lockToCamera)
@@ -256,7 +258,6 @@ namespace PhysicsCharacterController
                 }
             }
         }
-        
 
 
         private void PhysicsUpdate()
@@ -346,7 +347,7 @@ namespace PhysicsCharacterController
             float dist = rigidbody.velocity.magnitude;
 
             RaycastHit hit;
-            if(dir.y < 0 &&  Physics.SphereCast(transform.position, GetComponent<Collider>().bounds.size.y/2, dir, out hit, dist * Time.fixedDeltaTime))
+            if (dir.y < 0 && Physics.SphereCast(transform.position, GetComponent<Collider>().bounds.size.y / 2, dir, out hit, dist * Time.fixedDeltaTime))
             {
                 GrindRail rail = hit.collider.gameObject.GetComponent<GrindRail>();
                 if (rail != null)
@@ -568,6 +569,7 @@ namespace PhysicsCharacterController
         #endregion
 
         #region Move
+
         private void MoveCrouch()
         {
             if (crouch && isGrounded)
@@ -629,7 +631,8 @@ namespace PhysicsCharacterController
         {
             // Todo: make actual surfing
             // currently allows for magnitude to be transalted into forward motion
-            if (isCrouch) {
+            if (isCrouch)
+            {
                 targetAngle = Mathf.Atan2(axisInput.x, axisInput.y) * Mathf.Rad2Deg + characterCamera.transform.eulerAngles.y;
                 rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, forward * rigidbody.velocity.magnitude, ref currVelocity, dampSpeedUp);
             }
@@ -724,14 +727,13 @@ namespace PhysicsCharacterController
                 isJumping = false;
                 coyoteJumpMultiplier = 1f;
             }
-            
+
             jump = false;
         }
 
-
         #endregion
 
-    
+
         #region Gravity
 
         private void ApplyGravity()
@@ -776,17 +778,18 @@ namespace PhysicsCharacterController
             // Find closest point on rail and starting position
             Vector3 closestPoint = rail.GetClosestPointOnRail(transform.position, out grindPositionT);
 
-            // Use the provided direction (based on player's facing)
-            grindDirection = direction;
-    
-            // Determine if we're grinding forward (towards end) or backward (towards start)
-            grindingForward = Vector3.Dot(direction, rail.GetRailDirection()) > 0;
+            // Determine if we're grinding forward or backward based on initial direction
+            Vector3 railDirAtT = rail.GetDirectionAtT(grindPositionT);
+            grindingForward = Vector3.Dot(direction, railDirAtT) > 0;
 
-            // Lock rotation to rail direction FIRST
+            // Set initial grind direction based on the curve at this point
+            grindDirection = grindingForward ? railDirAtT : -railDirAtT;
+
+            // Lock rotation to rail direction
             targetAngle = Mathf.Atan2(grindDirection.x, grindDirection.z) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
 
-            // Calculate proper offset in WORLD SPACE based on character rotation
+            // Calculate proper offset in WORLD SPACE
             float colliderBottom = collider.center.y - (collider.height / 2f);
             Vector3 colliderCenterWorld = transform.rotation * collider.center;
 
@@ -813,11 +816,11 @@ namespace PhysicsCharacterController
 
             // Move along rail (forward or backward based on grindingForward)
             float moveAmount = (rigidbody.velocity.magnitude * Time.fixedDeltaTime) / currentRail.GetRailLength();
-    
+
             if (grindingForward)
             {
                 grindPositionT += moveAmount;
-        
+
                 // Check if reached end of rail
                 if (grindPositionT >= 1f)
                 {
@@ -828,7 +831,7 @@ namespace PhysicsCharacterController
             else
             {
                 grindPositionT -= moveAmount;
-        
+
                 // Check if reached start of rail
                 if (grindPositionT <= 0f)
                 {
@@ -837,7 +840,12 @@ namespace PhysicsCharacterController
                 }
             }
 
-            // Update rotation FIRST
+            // 🔥 KEY CHANGE: Get the direction at the current position on the curve
+            Vector3 railDirAtT = currentRail.GetDirectionAtT(grindPositionT);
+            grindDirection = grindingForward ? railDirAtT : -railDirAtT;
+
+            // Update rotation to follow the curve
+            targetAngle = Mathf.Atan2(grindDirection.x, grindDirection.z) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
             characterModel.transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
 
@@ -857,9 +865,11 @@ namespace PhysicsCharacterController
             Vector3 finalPosition = railPosition + properOffset;
             finalPosition.x = Mathf.Round(finalPosition.x);
             transform.position = finalPosition;
-            rigidbody.velocity = grindDirection * rigidbody.velocity.magnitude;
+
+            // Set velocity to match current grind direction and speed
+            rigidbody.velocity = grindDirection * currentRail.grindSpeed;
         }
-        
+
         private void StopGrinding(bool jumpedOff = false)
         {
             if (!isGrinding) return;
@@ -867,9 +877,10 @@ namespace PhysicsCharacterController
             isGrinding = false;
             var prevRail = currentRail;
             currentRail = null;
-            
+
             if (!jumpedOff && prevRail != null)
             {
+                // Maintain momentum in the grind direction when exiting
                 rigidbody.velocity = grindDirection * rigidbody.velocity.magnitude;
             }
         }
