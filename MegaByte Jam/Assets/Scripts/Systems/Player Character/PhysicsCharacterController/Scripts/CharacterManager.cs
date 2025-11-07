@@ -768,12 +768,21 @@ namespace PhysicsCharacterController
 
         #endregion
 
-        #region Grinding
+       #region Grinding
 
         private void StartGrinding(GrindRail rail, Vector3 direction)
         {
             currentRail = rail;
             isGrinding = true;
+
+            // Disable physical collision with rail's non-trigger colliders while grinding
+            foreach (Collider railCol in rail.GetComponents<Collider>())
+            {
+                if (!railCol.isTrigger)
+                {
+                    Physics.IgnoreCollision(collider, railCol, true);
+                }
+            }
 
             // Find closest point on rail and starting position
             Vector3 closestPoint = rail.GetClosestPointOnRail(transform.position, out grindPositionT);
@@ -789,7 +798,7 @@ namespace PhysicsCharacterController
             targetAngle = Mathf.Atan2(grindDirection.x, grindDirection.z) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
 
-            // Calculate proper offset in WORLD SPACE
+            // Calculate proper offset - NO ROUNDING for smooth movement
             float colliderBottom = collider.center.y - (collider.height / 2f);
             Vector3 colliderCenterWorld = transform.rotation * collider.center;
 
@@ -800,10 +809,9 @@ namespace PhysicsCharacterController
             );
 
             Vector3 finalPosition = closestPoint + properOffset;
-            finalPosition.x = Mathf.Round(finalPosition.x);
-            finalPosition.z = Mathf.Round(finalPosition.z);
-
             transform.position = finalPosition;
+
+            Debug.Log($"Started grinding on {rail.gameObject.name} at t={grindPositionT:F2}");
         }
 
         private void UpdateGrinding()
@@ -814,16 +822,17 @@ namespace PhysicsCharacterController
                 return;
             }
 
-            // Move along rail (forward or backward based on grindingForward)
-            float moveAmount = (rigidbody.velocity.magnitude * Time.fixedDeltaTime) / currentRail.GetRailLength();
+            // Use the rail's grindSpeed for consistent movement
+            float moveAmount = (currentRail.grindSpeed * Time.fixedDeltaTime) / currentRail.GetRailLength();
 
             if (grindingForward)
             {
                 grindPositionT += moveAmount;
 
-                // Check if reached end of rail
-                if (grindPositionT >= 1f)
+                // Check if reached end of rail with small buffer
+                if (grindPositionT >= 0.99f)
                 {
+                    Debug.Log("Reached end of rail");
                     StopGrinding();
                     return;
                 }
@@ -832,15 +841,19 @@ namespace PhysicsCharacterController
             {
                 grindPositionT -= moveAmount;
 
-                // Check if reached start of rail
-                if (grindPositionT <= 0f)
+                // Check if reached start of rail with small buffer
+                if (grindPositionT <= 0.01f)
                 {
+                    Debug.Log("Reached start of rail");
                     StopGrinding();
                     return;
                 }
             }
 
-            // 🔥 KEY CHANGE: Get the direction at the current position on the curve
+            // Clamp just to be safe
+            grindPositionT = Mathf.Clamp01(grindPositionT);
+
+            // Get the direction at the current position on the curve
             Vector3 railDirAtT = currentRail.GetDirectionAtT(grindPositionT);
             grindDirection = grindingForward ? railDirAtT : -railDirAtT;
 
@@ -863,26 +876,52 @@ namespace PhysicsCharacterController
             );
 
             Vector3 finalPosition = railPosition + properOffset;
-            finalPosition.x = Mathf.Round(finalPosition.x);
+
+            // CRITICAL FIX: Remove Mathf.Round() for smooth movement!
             transform.position = finalPosition;
 
             // Set velocity to match current grind direction and speed
             rigidbody.velocity = grindDirection * currentRail.grindSpeed;
         }
 
+
         private void StopGrinding(bool jumpedOff = false)
         {
             if (!isGrinding) return;
+
+            // Store info before clearing
+            Vector3 exitDirection = grindDirection;
+            float exitSpeed = currentRail != null ? currentRail.grindSpeed : 10f;
+
+            // Re-enable physical collision with the rail
+            if (currentRail != null)
+            {
+                foreach (Collider railCol in currentRail.GetComponents<Collider>())
+                {
+                    if (!railCol.isTrigger)
+                    {
+                        Physics.IgnoreCollision(collider, railCol, false);
+                    }
+                }
+            }
 
             isGrinding = false;
             var prevRail = currentRail;
             currentRail = null;
 
-            if (!jumpedOff && prevRail != null)
+            // Set exit velocity
+            if (!jumpedOff)
             {
-                // Maintain momentum in the grind direction when exiting
-                rigidbody.velocity = grindDirection * rigidbody.velocity.magnitude;
+                // Natural exit (reached end of rail)
+                // Give upward boost + forward momentum to prevent getting stuck
+                Vector3 exitVelocity = exitDirection * exitSpeed; // Maintain forward/backward momentum
+                exitVelocity.y = jumpVelocity * 0.3f; // Add upward boost (30% of jump height)
+
+                rigidbody.velocity = exitVelocity;
+
+                Debug.Log($"Exited rail naturally with velocity: {exitVelocity}");
             }
+            // If jumped off, MoveJump already set the velocity, don't override it
         }
 
         #endregion

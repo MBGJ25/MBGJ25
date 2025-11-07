@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using System.Linq;
 
 [CustomEditor(typeof(GrindRail))]
 public class GrindRailEditor : Editor
@@ -11,6 +12,10 @@ public class GrindRailEditor : Editor
     private int waypointCount = 10;
     private float heightOffset = 0f;
     private bool useVertexSampling = true;
+    
+    // Collider generation settings
+    private bool autoGenerateColliders = true;
+    private float triggerColliderScale = 1.3f;
 
     private void OnEnable()
     {
@@ -33,6 +38,18 @@ public class GrindRailEditor : Editor
         waypointCount = EditorGUILayout.IntSlider("Waypoint Count", waypointCount, 2, 50);
         heightOffset = EditorGUILayout.Slider("Height Offset", heightOffset, -2f, 2f);
         useVertexSampling = EditorGUILayout.Toggle("Use Vertex Sampling", useVertexSampling);
+        
+        EditorGUILayout.Space(5);
+        
+        // Collider generation settings
+        EditorGUILayout.LabelField("Collider Settings", EditorStyles.boldLabel);
+        autoGenerateColliders = EditorGUILayout.Toggle("Auto-Generate Colliders", autoGenerateColliders);
+        if (autoGenerateColliders)
+        {
+            EditorGUI.indentLevel++;
+            triggerColliderScale = EditorGUILayout.Slider("Trigger Size Multiplier", triggerColliderScale, 1.1f, 2.0f);
+            EditorGUI.indentLevel--;
+        }
         
         EditorGUILayout.Space(5);
         
@@ -94,6 +111,21 @@ public class GrindRailEditor : Editor
         
         EditorGUILayout.Space(10);
         
+        // Collider tools
+        EditorGUILayout.LabelField("Collider Tools", EditorStyles.boldLabel);
+        
+        if (GUILayout.Button("🎯 Generate Colliders"))
+        {
+            GenerateColliders();
+        }
+        
+        if (GUILayout.Button("🗑️ Remove All Colliders"))
+        {
+            RemoveAllColliders();
+        }
+        
+        EditorGUILayout.Space(10);
+        
         // Info display
         if (rail.waypoints != null && rail.waypoints.Length > 0)
         {
@@ -130,7 +162,12 @@ public class GrindRailEditor : Editor
             GenerateFromBoundsAnalysis(meshFilter);
         }
 
+        // Generate colliders after waypoints are created
+        GenerateColliders();
+
         EditorUtility.SetDirty(rail);
+        
+        Debug.Log($"Generated waypoints and colliders for {rail.gameObject.name}");
     }
 
     private void GenerateFromVertexAnalysis(MeshFilter meshFilter)
@@ -255,7 +292,7 @@ public class GrindRailEditor : Editor
         // Use the longest axis
         if (size.x >= size.y && size.x >= size.z)
         {
-            // X-axis is primary
+            // X axis is primary
             start.y = bounds.center.y;
             start.z = bounds.center.z;
             end.y = bounds.center.y;
@@ -271,7 +308,7 @@ public class GrindRailEditor : Editor
         }
         else
         {
-            // Y-axis is primary
+            // Y axis is primary
             start.x = bounds.center.x;
             start.z = bounds.center.z;
             end.x = bounds.center.x;
@@ -341,6 +378,9 @@ public class GrindRailEditor : Editor
         }
 
         CreateWaypointObjects(points, heightOffset);
+        
+        // Generate colliders after waypoints are created
+        GenerateColliders();
         
         EditorUtility.SetDirty(rail);
     }
@@ -493,6 +533,89 @@ public class GrindRailEditor : Editor
         }
         
         EditorUtility.SetDirty(rail);
+    }
+
+    private void GenerateColliders()
+    {
+        if (!autoGenerateColliders)
+        {
+            Debug.Log("Auto-generate colliders is disabled. Enable it in settings to generate colliders.");
+            return;
+        }
+
+        if (rail.waypoints == null || rail.waypoints.Length < 2)
+        {
+            EditorUtility.DisplayDialog("Error", 
+                "Rail must have at least 2 waypoints to generate colliders!", 
+                "OK");
+            return;
+        }
+
+        // Remove existing box colliders
+        RemoveAllColliders();
+
+        Undo.RecordObject(rail.gameObject, "Generate Rail Colliders");
+
+        // Calculate bounds from waypoints
+        Bounds railBounds = CalculateWaypointBounds();
+
+        // Create collision box collider (normal, for physical blocking)
+        BoxCollider collisionCollider = Undo.AddComponent<BoxCollider>(rail.gameObject);
+        collisionCollider.center = railBounds.center - rail.transform.position;
+        collisionCollider.size = railBounds.size;
+        collisionCollider.isTrigger = false;
+
+        // Create trigger box collider (for grind detection, slightly larger)
+        BoxCollider triggerCollider = Undo.AddComponent<BoxCollider>(rail.gameObject);
+        triggerCollider.center = railBounds.center - rail.transform.position;
+        triggerCollider.size = railBounds.size * triggerColliderScale;
+        triggerCollider.isTrigger = true;
+
+        EditorUtility.SetDirty(rail.gameObject);
+        
+        Debug.Log($"Generated colliders for {rail.gameObject.name}:\n" +
+                  $"- Collision Box: {railBounds.size}\n" +
+                  $"- Trigger Box: {railBounds.size * triggerColliderScale}");
+    }
+
+    private Bounds CalculateWaypointBounds()
+    {
+        // Initialize bounds with first waypoint position
+        Bounds bounds = new Bounds(rail.waypoints[0].position, Vector3.zero);
+
+        // Expand to include all waypoints
+        foreach (Transform waypoint in rail.waypoints)
+        {
+            if (waypoint != null)
+            {
+                bounds.Encapsulate(waypoint.position);
+            }
+        }
+
+        // Add some padding to the bounds
+        // Expand slightly in all directions for better coverage
+        Vector3 padding = new Vector3(0.5f, 0.5f, 0.5f);
+        bounds.Expand(padding);
+
+        return bounds;
+    }
+
+    private void RemoveAllColliders()
+    {
+        BoxCollider[] existingColliders = rail.GetComponents<BoxCollider>();
+        
+        if (existingColliders.Length > 0)
+        {
+            Undo.RecordObject(rail.gameObject, "Remove Rail Colliders");
+            
+            foreach (BoxCollider col in existingColliders)
+            {
+                Undo.DestroyObjectImmediate(col);
+            }
+            
+            EditorUtility.SetDirty(rail.gameObject);
+            Debug.Log($"Removed {existingColliders.Length} box collider(s) from {rail.gameObject.name}");
+        }
     }
 
     // Scene view handles for easier waypoint manipulation
