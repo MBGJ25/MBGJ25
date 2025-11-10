@@ -25,8 +25,8 @@ namespace PhysicsCharacterController
         private PlayerSounds playerSounds;
 
         [Header("Jump and gravity specifics")]
-        public float jumpVelocity = 20f;
-        public float fallMultiplier = 1.7f;
+        public float jumpVelocity = 30f;
+        public float fallMultiplier = .8f;
         public float holdJumpMultiplier = 5f;
         [Range(0f, 1f)]
         public float frictionAgainstFloor = 0.3f;
@@ -54,7 +54,7 @@ namespace PhysicsCharacterController
         [Range(0.01f, 1f)]
         public float climbingStairsMultiplierCurve = 0.637f;
         [Space(10)]
-        public float gravityMultiplier = 6f;
+        public float gravityMultiplier = 5f;
         public float gravityMultiplyerOnSlideChange = 3f;
         public float gravityMultiplierIfUnclimbableSlope = 30f;
         [Space(10)]
@@ -67,6 +67,12 @@ namespace PhysicsCharacterController
         [Space(10)]
         public float jumpFromWallMultiplier = 30f;
         public float multiplierVerticalLeap = 1f;
+        [Space(10)]
+        public int maxWallJumps = 1;
+        private int currentWallJumps = 0;
+        [Space(10)]
+        public float wallJumpCooldown = 0.5f;  // Time after wall jump before wall friction applies again
+        private float timeSinceWallJump = 0f;  // Timer tracking time since last wall jump
 
 
         [Header("Sprint and crouch specifics")]
@@ -221,6 +227,18 @@ namespace PhysicsCharacterController
             CheckWall();
             CheckSlopeAndDirections();
 
+            // ✨ NEW: Reset wall jump counter when grounded
+            if (isGrounded && !isJumping)
+            {
+                currentWallJumps = 0;
+            }
+
+            // ✨ NEW: Update wall jump cooldown timer
+            if (timeSinceWallJump < wallJumpCooldown)
+            {
+                timeSinceWallJump += Time.fixedDeltaTime;
+            }
+
             // 3️⃣ Handle input-dependent motion
             MoveWalk();
             MoveCrouch();
@@ -275,6 +293,18 @@ namespace PhysicsCharacterController
             CheckWall();
             CheckSlopeAndDirections();
 
+            // ✨ NEW: Reset wall jump counter when grounded
+            if (isGrounded && !isJumping)
+            {
+                currentWallJumps = 0;
+            }
+
+            // ✨ NEW: Update wall jump cooldown timer
+            if (timeSinceWallJump < wallJumpCooldown)
+            {
+                timeSinceWallJump += Time.fixedDeltaTime;
+            }
+
             MoveWalk();
             MoveCrouch();
 
@@ -314,6 +344,18 @@ namespace PhysicsCharacterController
             CheckGrounded();
             CheckSlopeAndDirections();
             MoveCrouch();
+
+            // ✨ NEW: Reset wall jump counter when grounded
+            if (isGrounded && !isJumping)
+            {
+                currentWallJumps = 0;
+            }
+
+            // ✨ NEW: Update wall jump cooldown timer
+            if (timeSinceWallJump < wallJumpCooldown)
+            {
+                timeSinceWallJump += Time.fixedDeltaTime;
+            }
 
             // Instead of full physics-based movement, directly set the desired velocity
             Vector3 inputDir = new Vector3(axisInput.x, 0, axisInput.y);
@@ -685,7 +727,7 @@ namespace PhysicsCharacterController
 
                 rigidbody.velocity = jumpVel;
                 isJumping = true;
-                return; // ✅ Important: exit early so regular jump code doesn’t run
+                return; // ✅ Important: exit early so regular jump code doesn't run
             }
 
             // 🔹 2. Ground jump
@@ -695,12 +737,14 @@ namespace PhysicsCharacterController
                 isJumping = true;
             }
 
-            // 🔹 3. Wall jump
-            else if (jump && !isGrounded && isTouchingWall)
+            // ✨ 3. Wall jump - NOW WITH COUNTER CHECK!
+            else if (jump && !isGrounded && isTouchingWall && currentWallJumps < maxWallJumps)
             {
                 rigidbody.velocity += wallNormal * jumpFromWallMultiplier
                     + (Vector3.up * jumpFromWallMultiplier) * multiplierVerticalLeap;
                 isJumping = true;
+                currentWallJumps++;  // Increment the wall jump counter
+                timeSinceWallJump = 0f;  // ✨ Reset cooldown timer
 
                 targetAngle = Mathf.Atan2(wallNormal.x, wallNormal.z) * Mathf.Rad2Deg;
                 forward = wallNormal;
@@ -761,7 +805,11 @@ namespace PhysicsCharacterController
             }
 
             //friction when touching wall
-            if (isTouchingWall && rigidbody.velocity.y < 0) gravity *= frictionAgainstWall;
+            // ✨ Only apply if cooldown period has passed
+            if (isTouchingWall && rigidbody.velocity.y < 0 && timeSinceWallJump >= wallJumpCooldown) 
+            {
+                gravity *= frictionAgainstWall;
+            }
 
             rigidbody.AddForce(gravity);
         }
