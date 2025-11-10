@@ -41272,10 +41272,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _footsteps:
     Guid:
-      Data1: -1572027271
-      Data2: 1306855916
-      Data3: 977131699
-      Data4: 723866364
+      Data1: -834727128
+      Data2: 1252004595
+      Data3: -612896834
+      Data4: -37424732
     Path: event:/SFX/Movement/Footsteps_Concrete
 --- !u!1 &1704000523 stripped
 GameObject:
