@@ -25,8 +25,8 @@ namespace PhysicsCharacterController
         private PlayerSounds playerSounds;
 
         [Header("Jump and gravity specifics")]
-        public float jumpVelocity = 20f;
-        public float fallMultiplier = 1.7f;
+        public float jumpVelocity = 24f;
+        public float fallMultiplier = 1.2f;
         public float holdJumpMultiplier = 5f;
         [Range(0f, 1f)]
         public float frictionAgainstFloor = 0.3f;
@@ -54,7 +54,7 @@ namespace PhysicsCharacterController
         [Range(0.01f, 1f)]
         public float climbingStairsMultiplierCurve = 0.637f;
         [Space(10)]
-        public float gravityMultiplier = 6f;
+        public float gravityMultiplier = 5f;
         public float gravityMultiplyerOnSlideChange = 3f;
         public float gravityMultiplierIfUnclimbableSlope = 30f;
         [Space(10)]
@@ -67,6 +67,11 @@ namespace PhysicsCharacterController
         [Space(10)]
         public float jumpFromWallMultiplier = 30f;
         public float multiplierVerticalLeap = 1f;
+        [Space(10)]
+        public int maxWallJumps = 1;
+        private int currentWallJumps = 0;
+        [Space(10)]
+        private bool wallDetectionEnabled = true;
 
 
         [Header("Sprint and crouch specifics")]
@@ -212,13 +217,29 @@ namespace PhysicsCharacterController
                     break;
             }
 
-            // ✅ NEW: If grinding, the mode-specific method already handled everything - exit early!
+            // If grinding, the mode-specific method already handled everything - exit early!
             if (isGrinding) return;
 
             // 2️⃣ Gather state information before applying movement
             CheckGrounded();
             CheckStep();
-            CheckWall();
+            
+            // Re-enable wall detection when grounded, check walls only if enabled
+            if (isGrounded && !isJumping)
+            {
+                currentWallJumps = 0;
+                wallDetectionEnabled = true;  // Re-enable wall detection on ground
+            }
+            
+            if (wallDetectionEnabled)
+            {
+                CheckWall();
+            }
+            else
+            {
+                isTouchingWall = false;  // No wall interaction during cooldown
+            }
+            
             CheckSlopeAndDirections();
 
             // 3️⃣ Handle input-dependent motion
@@ -272,7 +293,23 @@ namespace PhysicsCharacterController
 
             CheckGrounded();
             CheckStep();
-            CheckWall();
+            
+            // Re-enable wall detection when grounded, check walls only if enabled
+            if (isGrounded && !isJumping)
+            {
+                currentWallJumps = 0;
+                wallDetectionEnabled = true;  // Re-enable wall detection on ground
+            }
+            
+            if (wallDetectionEnabled)
+            {
+                CheckWall();
+            }
+            else
+            {
+                isTouchingWall = false;  // No wall interaction during cooldown
+            }
+            
             CheckSlopeAndDirections();
 
             MoveWalk();
@@ -314,6 +351,13 @@ namespace PhysicsCharacterController
             CheckGrounded();
             CheckSlopeAndDirections();
             MoveCrouch();
+
+            // Re-enable wall detection when grounded
+            if (isGrounded && !isJumping)
+            {
+                currentWallJumps = 0;
+                wallDetectionEnabled = true;  // Re-enable wall detection on ground
+            }
 
             // Instead of full physics-based movement, directly set the desired velocity
             Vector3 inputDir = new Vector3(axisInput.x, 0, axisInput.y);
@@ -601,7 +645,7 @@ namespace PhysicsCharacterController
 
                 headPoint.position = new Vector3(transform.position.x + POV_crouchHeadHeight.x, transform.position.y + POV_crouchHeadHeight.y, transform.position.z + POV_crouchHeadHeight.z);
 
-                //change majority of vilocity to down
+                // change majority of velocity to down
                 crouchSpeedMultiplier = 0f;
                 if (airCrouchCompleteStop)
                 {
@@ -685,7 +729,7 @@ namespace PhysicsCharacterController
 
                 rigidbody.velocity = jumpVel;
                 isJumping = true;
-                return; // ✅ Important: exit early so regular jump code doesn’t run
+                return; // ✅ Important: exit early so regular jump code doesn't run
             }
 
             // 🔹 2. Ground jump
@@ -695,12 +739,14 @@ namespace PhysicsCharacterController
                 isJumping = true;
             }
 
-            // 🔹 3. Wall jump
-            else if (jump && !isGrounded && isTouchingWall)
+            // 3. Wall jump - NOW WITH COUNTER CHECK!
+            else if (jump && !isGrounded && isTouchingWall && currentWallJumps < maxWallJumps)
             {
                 rigidbody.velocity += wallNormal * jumpFromWallMultiplier
                     + (Vector3.up * jumpFromWallMultiplier) * multiplierVerticalLeap;
                 isJumping = true;
+                currentWallJumps++;  // Increment the wall jump counter
+                wallDetectionEnabled = false;  // Disable wall detection until grounded
 
                 targetAngle = Mathf.Atan2(wallNormal.x, wallNormal.z) * Mathf.Rad2Deg;
                 forward = wallNormal;
@@ -761,7 +807,10 @@ namespace PhysicsCharacterController
             }
 
             //friction when touching wall
-            if (isTouchingWall && rigidbody.velocity.y < 0) gravity *= frictionAgainstWall;
+            if (isTouchingWall && rigidbody.velocity.y < 0)
+            {
+                gravity *= frictionAgainstWall;
+            }
 
             rigidbody.AddForce(gravity);
         }
