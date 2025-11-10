@@ -14398,6 +14398,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 11fb9bd1839ff49bd9cbb34fdc9962af, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1703076634}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 11fb9bd1839ff49bd9cbb34fdc9962af, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1703076636}
   m_SourcePrefab: {fileID: 100100000, guid: 11fb9bd1839ff49bd9cbb34fdc9962af, type: 3}
 --- !u!1 &639558778 stripped
 GameObject:
@@ -41255,6 +41258,25 @@ MonoBehaviour:
   lockRotationOnWall: 1
   groundCheckerThrashold: 0.4
   climbThreshold: 0.5
+--- !u!114 &1703076636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1703076633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3445486e366b51f40a22f0a98cf1c50d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _footsteps:
+    Guid:
+      Data1: -1572027271
+      Data2: 1306855916
+      Data3: 977131699
+      Data4: 723866364
+    Path: event:/SFX/Movement/Footsteps_Concrete
 --- !u!1 &1704000523 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8164078558771037576, guid: 741b72c1c381fcd469aa8989a8624161, type: 3}
