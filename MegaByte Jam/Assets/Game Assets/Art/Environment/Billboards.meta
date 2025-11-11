@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:MegaByte Jam/Assets/Game Assets/Art/Environment/Billboards.meta
 guid: bf804b4f9ad9e40e58479aefee4ea255
+========
+guid: 1ba9b89477cba9146b8737cc70a28ae8
+>>>>>>>> main:MegaByte Jam/Assets/Game Assets/Art/Character/Maxx/Animations/FBX.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:MegaByte Jam/Assets/Game Assets/Art/Character/Maxx/Animations/Mixamo.meta
 guid: ba412a9ebf760f64bb319869e45ce809
+========
+guid: 682820cb2d4b4e2468de2562bdc84451
+>>>>>>>> main:MegaByte Jam/Assets/Game Assets/Art/Character/Enemies.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

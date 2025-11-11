@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:MegaByte Jam/Assets/Game Assets/Art/Environment/Pedestrian Bridges.meta
 guid: a2e8c8bf3cdc946bfabf9cd0349fbecd
+========
+guid: 8cb54d61f92dd824daeccd0bccb5c3fe
+>>>>>>>> main:MegaByte Jam/Assets/Game Assets/Art/Character/Enemies/3D models.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
