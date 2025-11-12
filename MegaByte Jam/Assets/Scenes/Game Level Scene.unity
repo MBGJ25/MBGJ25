@@ -20820,10 +20820,50 @@ PrefabInstance:
       propertyPath: m_AABB.m_Extent.z
       value: 0.000065806526
       objectReference: {fileID: 0}
+    - target: {fileID: 5540598798916817022, guid: 481fcb4d50908104a96981e70bb7e63b, type: 3}
+      propertyPath: m_DirtyAABB
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5540598798916817022, guid: 481fcb4d50908104a96981e70bb7e63b, type: 3}
+      propertyPath: m_AABB.m_Center.x
+      value: 0.0001944417
+      objectReference: {fileID: 0}
+    - target: {fileID: 5540598798916817022, guid: 481fcb4d50908104a96981e70bb7e63b, type: 3}
+      propertyPath: m_AABB.m_Center.y
+      value: 0.000036854974
+      objectReference: {fileID: 0}
+    - target: {fileID: 5540598798916817022, guid: 481fcb4d50908104a96981e70bb7e63b, type: 3}
+      propertyPath: m_AABB.m_Center.z
+      value: -0.00007286723
+      objectReference: {fileID: 0}
+    - target: {fileID: 5540598798916817022, guid: 481fcb4d50908104a96981e70bb7e63b, type: 3}
+      propertyPath: m_AABB.m_Extent.x
+      value: 0.000048213544
+      objectReference: {fileID: 0}
+    - target: {fileID: 5540598798916817022, guid: 481fcb4d50908104a96981e70bb7e63b, type: 3}
+      propertyPath: m_AABB.m_Extent.y
+      value: 0.00005964106
+      objectReference: {fileID: 0}
+    - target: {fileID: 5540598798916817022, guid: 481fcb4d50908104a96981e70bb7e63b, type: 3}
+      propertyPath: m_AABB.m_Extent.z
+      value: 0.000065806526
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 481fcb4d50908104a96981e70bb7e63b, type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: 481fcb4d50908104a96981e70bb7e63b, type: 3}
     - target: {fileID: 5866666021909216657, guid: 481fcb4d50908104a96981e70bb7e63b, type: 3}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 842fee80ecb5b844b89bc193fa74874c, type: 2}
+    - target: {fileID: 5866666021909216657, guid: 481fcb4d50908104a96981e70bb7e63b, type: 3}
+      propertyPath: m_CullingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 481fcb4d50908104a96981e70bb7e63b, type: 3}
+      propertyPath: m_WarningMessage
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 481fcb4d50908104a96981e70bb7e63b, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 0

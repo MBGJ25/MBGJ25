@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1105 &110500000
+HumanTemplate:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: New Human Template
+  m_BoneTemplate:
+    Chest: spine_02.x
+    Head: head.x
+    Hips: root.x
+    Left Index Distal: c_index3.l
+    Left Index Intermediate: c_index2.l
+    Left Index Proximal: c_index1.l
+    Left Little Distal: c_pinky3.l
+    Left Little Intermediate: c_pinky2.l
+    Left Little Proximal: c_pinky1.l
+    Left Middle Distal: c_middle3.l
+    Left Middle Intermediate: c_middle2.l
+    Left Middle Proximal: c_middle1.l
+    Left Ring Distal: c_ring3.l
+    Left Ring Intermediate: c_ring2.l
+    Left Ring Proximal: c_ring1.l
+    Left Thumb Distal: c_thumb3.l
+    Left Thumb Intermediate: c_thumb2.l
+    Left Thumb Proximal: c_thumb1.l
+    LeftFoot: foot.l
+    LeftHand: hand.l
+    LeftLowerArm: forearm_stretch.l
+    LeftLowerLeg: leg_stretch.l
+    LeftShoulder: shoulder.l
+    LeftToes: toes_01.l
+    LeftUpperArm: arm_stretch.l
+    LeftUpperLeg: thigh_stretch.l
+    Neck: neck.x
+    Right Index Distal: c_index3.r
+    Right Index Intermediate: c_index2.r
+    Right Index Proximal: c_index1.r
+    Right Little Distal: c_pinky3.r
+    Right Little Intermediate: c_pinky2.r
+    Right Little Proximal: c_pinky1.r
+    Right Middle Distal: c_middle3.r
+    Right Middle Intermediate: c_middle2.r
+    Right Middle Proximal: c_middle1.r
+    Right Ring Distal: c_ring3.r
+    Right Ring Intermediate: c_ring2.r
+    Right Ring Proximal: c_ring1.r
+    Right Thumb Distal: c_thumb3.r
+    Right Thumb Intermediate: c_thumb2.r
+    Right Thumb Proximal: c_thumb1.r
+    RightFoot: foot.r
+    RightHand: hand.r
+    RightLowerArm: forearm_stretch.r
+    RightLowerLeg: leg_stretch.r
+    RightShoulder: shoulder.r
+    RightToes: toes_01.r
+    RightUpperArm: arm_stretch.r
+    RightUpperLeg: thigh_stretch.r
+    Spine: spine_01.x
+    UpperChest: spine_03.x
