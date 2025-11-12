@@ -50259,7 +50259,7 @@ PrefabInstance:
     - target: {fileID: 468307785458387724, guid: cf4b3ff444aac3d479825f1fa43b6237, type: 3}
       propertyPath: meshCharacterCrouch
       value: 
-      objectReference: {fileID: 981329991}
+      objectReference: {fileID: 0}
     - target: {fileID: 468307785458387724, guid: cf4b3ff444aac3d479825f1fa43b6237, type: 3}
       propertyPath: groundCheckerThrashold
       value: 0.15
@@ -144343,6 +144343,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7823351806585649516, guid: 60542c78ea7861c4381d91d66fa28c9a, type: 3}
       propertyPath: m_LocalRotation.x
+<<<<<<< HEAD
       value: -0.10060127
       objectReference: {fileID: 0}
     - target: {fileID: 7823351806585649516, guid: 60542c78ea7861c4381d91d66fa28c9a, type: 3}
@@ -144352,6 +144353,17 @@ PrefabInstance:
     - target: {fileID: 7823351806585649516, guid: 60542c78ea7861c4381d91d66fa28c9a, type: 3}
       propertyPath: m_LocalRotation.z
       value: 7.4953943e-10
+=======
+      value: -0.10060113
+      objectReference: {fileID: 0}
+    - target: {fileID: 7823351806585649516, guid: 60542c78ea7861c4381d91d66fa28c9a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.00000016409618
+      objectReference: {fileID: 0}
+    - target: {fileID: 7823351806585649516, guid: 60542c78ea7861c4381d91d66fa28c9a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.000000016592438
+>>>>>>> 34ca56df (Idle Animation in game)
       objectReference: {fileID: 0}
     - target: {fileID: 7823351806651475545, guid: 60542c78ea7861c4381d91d66fa28c9a, type: 3}
       propertyPath: m_LocalPosition.x
