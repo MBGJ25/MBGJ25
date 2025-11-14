@@ -1,1134 +1,40 @@
-﻿using UnityEngine;
-using UnityEngine.Events;
+﻿using FMODUnity;using UnityEngine;using UnityEngine.Events;namespace PhysicsCharacterController{    [RequireComponent(typeof(CapsuleCollider))]    [RequireComponent(typeof(Rigidbody))]    public class CharacterManager : MonoBehaviour    {        [Header("Movement specifics")]        [SerializeField] LayerMask groundMask;        public float movementSpeed = 14f;        [Range(0f, 1f)]        public float crouchSpeedMultiplier = 0.248f;        [Range(0.01f, 0.99f)]        public float movementThrashold = 0.01f;        [Space(10)]        public float dampSpeedUp = 0.2f;        public float dampSpeedDown = 0.1f;        public bool airCrouchCompleteStop = true;        [Header("Audio")]        [SerializeField]        private PlayerSounds playerSounds;        [SerializeField] protected FMODUnity.EventReference _jumpsound;        [SerializeField] private StudioEventEmitter grindEmitter;        [Header("Jump and gravity specifics")]        public float jumpVelocity = 24f;        public float fallMultiplier = 1.2f;        public float holdJumpMultiplier = 5f;        [Range(0f, 1f)]        public float frictionAgainstFloor = 0.3f;        [Range(0.01f, 0.99f)]        public float frictionAgainstWall = 0.839f;        [Space(10)]        public bool canLongJump = true;        public float airCrouchGravityMultiplier = 24f;        [Header("Slope and step specifics")]        public float groundCheckerThrashold = 0.1f;        public float slopeCheckerThrashold = 0.51f;        public float stepCheckerThrashold = 0.6f;        [Space(10)]        [Range(1f, 89f)]        public float maxClimbableSlopeAngle = 53.6f;        public float maxStepHeight = 0.74f;        [Space(10)]        public AnimationCurve speedMultiplierOnAngle = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);        [Range(0.01f, 1f)]        public float canSlideMultiplierCurve = 0.061f;        [Range(0.01f, 1f)]        public float cantSlideMultiplierCurve = 0.039f;        [Range(0.01f, 1f)]        public float climbingStairsMultiplierCurve = 0.637f;        [Space(10)]        public float gravityMultiplier = 5f;        public float gravityMultiplyerOnSlideChange = 3f;        public float gravityMultiplierIfUnclimbableSlope = 30f;        [Space(10)]        public bool lockOnSlope = false;        [Header("Wall slide specifics")]        public float wallCheckerThrashold = 0.8f;        public float hightWallCheckerChecker = 0.5f;        [Space(10)]        public float jumpFromWallMultiplier = 30f;        public float multiplierVerticalLeap = 1f;        [Space(10)]        public int maxWallJumps = 1;        private int currentWallJumps = 0;        [Space(10)]        private bool wallDetectionEnabled = true;        [Header("Sprint and crouch specifics")]        public float sprintSpeed = 20f;        public float crouchHeightMultiplier = 0.5f;        public Vector3 POV_normalHeadHeight = new Vector3(0f, 0.5f, -0.1f);        public Vector3 POV_crouchHeadHeight = new Vector3(0f, -0.1f, -0.1f);        [Header("References")]        public GameObject characterCamera;        public GameObject characterModel;        public float characterModelRotationSmooth = 0.1f;        [Space(10)]        public GameObject meshCharacter;        public GameObject meshCharacterCrouch;        public Transform headPoint;        [Space(10)]        public InputReader input;        [Space(10)]        [HideInInspector]        public bool debug = true;        [Header("Events")]        [SerializeField] UnityEvent OnGrind;        [Space(15)]        public float minimumVerticalSpeedToLandEvent;        [SerializeField] UnityEvent OnLand;        [Space(15)]        public float minimumHorizontalSpeedToFastEvent;        [SerializeField] UnityEvent OnFast;        [Space(15)]        [SerializeField] UnityEvent OnWallSlide;        [Space(15)]        [SerializeField] UnityEvent OnSprint;        [Space(15)]        [SerializeField] UnityEvent OnCrouch;        [Space(15)]        private Vector3 forward;        private Vector3 globalForward;        private Vector3 reactionForward;        private Vector3 down;        private Vector3 globalDown;        private Vector3 reactionGlobalDown;        private float currentSurfaceAngle;        private bool currentLockOnSlope;        private Vector3 wallNormal;        private Vector3 groundNormal;        private Vector3 prevGroundNormal;        private bool prevGrounded;        private float coyoteJumpMultiplier = 1f;        private bool isGrounded = false;        private bool isTouchingSlope = false;        private bool isTouchingStep = false;        private bool isTouchingWall = false;        private bool isJumping = false;        private bool isCrouch = false;        public enum MovementMode        {            Physics,            Manual,            Hybrid        }        public MovementMode movementMode = MovementMode.Hybrid;        private Vector2 axisInput;        private bool jump;        private bool jumpHold;        private bool sprint;        private bool crouch;        [HideInInspector]        public float targetAngle;        private Rigidbody rigidbody;        private CapsuleCollider collider;        private float originalColliderHeight;        private float originalGravityMultiplier;        private float originalCrouchSpeedMultiplier;        private Vector3 currVelocity = Vector3.zero;        private float turnSmoothVelocity;        private bool lockRotation = false;        private bool lockToCamera = false;        /**/        #region Grind Values        private bool isGrinding = false;        private GrindRail currentRail = null;        private float grindPositionT = 0f;        private Vector3 grindDirection = Vector3.zero;        private float grindHeightOffset = 0.5f;        private bool grindingForward = true;        #endregion        private void Awake()        {            rigidbody = this.GetComponent<Rigidbody>();            collider = this.GetComponent<CapsuleCollider>();            originalColliderHeight = collider.height;            originalGravityMultiplier = gravityMultiplier;            originalCrouchSpeedMultiplier = crouchSpeedMultiplier;            SetFriction(frictionAgainstFloor, true);            currentLockOnSlope = lockOnSlope;        }        private void Update()        {            axisInput = input.axisInput;            jump = input.jump;            jumpHold = input.jumpHold;            sprint = input.sprint;            crouch = input.crouch;        }        private void FixedUpdate()        {            // Detect if any interactable object would be collided with in the next movement calculation, if so start interaction process.            PreemptiveInteraction();            // 1️⃣ Handle which movement logic to run (Manual, Physics, Hybrid)            switch (movementMode)            {                case MovementMode.Manual:                    ManualUpdate();                    break;                case MovementMode.Physics:                    PhysicsUpdate();                    break;                case MovementMode.Hybrid:                    HybridUpdate();                    break;            }            // If grinding, the mode-specific method already handled everything - exit early!            if (isGrinding) return;            // 2️⃣ Gather state information before applying movement            CheckGrounded();            CheckStep();                        // Re-enable wall detection when grounded, check walls only if enabled            if (isGrounded && !isJumping)            {                currentWallJumps = 0;                wallDetectionEnabled = true;  // Re-enable wall detection on ground            }                        if (wallDetectionEnabled)            {                CheckWall();            }            else            {                isTouchingWall = false;  // No wall interaction during cooldown            }                        CheckSlopeAndDirections();            // 3️⃣ Handle input-dependent motion            MoveWalk();            MoveCrouch();            // 4️⃣ Handle jump (including rail jump)            MoveJump();            // 5️⃣ Rotation should come *after* horizontal/vertical movement,            // so it's aligned with where the player actually went.            if (!lockToCamera)                MoveRotation();            else                ForceRotation();            // 6️⃣ Apply gravity AFTER movement, so it integrates properly.            ApplyGravity();            // 7️⃣ Send out events last, so they reflect the final frame state.            UpdateEvents();        }        private void OnTriggerEnter(Collider other)        {            if (isGrinding) return;
 
-
-namespace PhysicsCharacterController
-{
-    [RequireComponent(typeof(CapsuleCollider))]
-    [RequireComponent(typeof(Rigidbody))]
-    public class CharacterManager : MonoBehaviour
-    {
-        [Header("Movement specifics")]
-        [SerializeField] LayerMask groundMask;
-        public float movementSpeed = 14f;
-        [Range(0f, 1f)]
-        public float crouchSpeedMultiplier = 0.248f;
-        [Range(0.01f, 0.99f)]
-        public float movementThrashold = 0.01f;
-        [Space(10)]
-        public float dampSpeedUp = 0.2f;
-        public float dampSpeedDown = 0.1f;
-        public bool airCrouchCompleteStop = true;
-
-        [Header("Audio")]
-        [SerializeField]
-        private PlayerSounds playerSounds;
-        [SerializeField] protected FMODUnity.EventReference _jumpsound;
-        private FMOD.Studio.EventInstance jumpsound;
-
-
-        [Header("Jump and gravity specifics")]
-        public float jumpVelocity = 24f;
-        public float fallMultiplier = 1.2f;
-        public float holdJumpMultiplier = 5f;
-        [Range(0f, 1f)]
-        public float frictionAgainstFloor = 0.3f;
-        [Range(0.01f, 0.99f)]
-        public float frictionAgainstWall = 0.839f;
-        [Space(10)]
-        public bool canLongJump = true;
-        public float airCrouchGravityMultiplier = 24f;
-
-
-        [Header("Slope and step specifics")]
-        public float groundCheckerThrashold = 0.1f;
-        public float slopeCheckerThrashold = 0.51f;
-        public float stepCheckerThrashold = 0.6f;
-        [Space(10)]
-        [Range(1f, 89f)]
-        public float maxClimbableSlopeAngle = 53.6f;
-        public float maxStepHeight = 0.74f;
-        [Space(10)]
-        public AnimationCurve speedMultiplierOnAngle = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
-        [Range(0.01f, 1f)]
-        public float canSlideMultiplierCurve = 0.061f;
-        [Range(0.01f, 1f)]
-        public float cantSlideMultiplierCurve = 0.039f;
-        [Range(0.01f, 1f)]
-        public float climbingStairsMultiplierCurve = 0.637f;
-        [Space(10)]
-        public float gravityMultiplier = 5f;
-        public float gravityMultiplyerOnSlideChange = 3f;
-        public float gravityMultiplierIfUnclimbableSlope = 30f;
-        [Space(10)]
-        public bool lockOnSlope = false;
-
-
-        [Header("Wall slide specifics")]
-        public float wallCheckerThrashold = 0.8f;
-        public float hightWallCheckerChecker = 0.5f;
-        [Space(10)]
-        public float jumpFromWallMultiplier = 30f;
-        public float multiplierVerticalLeap = 1f;
-        [Space(10)]
-        public int maxWallJumps = 1;
-        private int currentWallJumps = 0;
-        [Space(10)]
-        private bool wallDetectionEnabled = true;
-
-
-        [Header("Sprint and crouch specifics")]
-        public float sprintSpeed = 20f;
-        public float crouchHeightMultiplier = 0.5f;
-        public Vector3 POV_normalHeadHeight = new Vector3(0f, 0.5f, -0.1f);
-        public Vector3 POV_crouchHeadHeight = new Vector3(0f, -0.1f, -0.1f);
-
-
-        [Header("References")]
-        public GameObject characterCamera;
-        public GameObject characterModel;
-        public float characterModelRotationSmooth = 0.1f;
-        [Space(10)]
-        public GameObject meshCharacter;
-        public GameObject meshCharacterCrouch;
-        public Transform headPoint;
-        [Space(10)]
-        public InputReader input;
-        [Space(10)]
-        [HideInInspector]
-        public bool debug = true;
-
-
-        [Header("Events")]
-        [SerializeField] UnityEvent OnGrind;
-        [Space(15)]
-        public float minimumVerticalSpeedToLandEvent;
-        [SerializeField] UnityEvent OnLand;
-        [Space(15)]
-        public float minimumHorizontalSpeedToFastEvent;
-        [SerializeField] UnityEvent OnFast;
-        [Space(15)]
-        [SerializeField] UnityEvent OnWallSlide;
-        [Space(15)]
-        [SerializeField] UnityEvent OnSprint;
-        [Space(15)]
-        [SerializeField] UnityEvent OnCrouch;
-        [Space(15)]
-        private Vector3 forward;
-        private Vector3 globalForward;
-        private Vector3 reactionForward;
-        private Vector3 down;
-        private Vector3 globalDown;
-        private Vector3 reactionGlobalDown;
-
-        private float currentSurfaceAngle;
-        private bool currentLockOnSlope;
-
-        private Vector3 wallNormal;
-        private Vector3 groundNormal;
-        private Vector3 prevGroundNormal;
-        private bool prevGrounded;
-
-        private float coyoteJumpMultiplier = 1f;
-
-        private bool isGrounded = false;
-        private bool isTouchingSlope = false;
-        private bool isTouchingStep = false;
-        private bool isTouchingWall = false;
-        private bool isJumping = false;
-        private bool isCrouch = false;
-
-        public enum MovementMode
-        {
-            Physics,
-            Manual,
-            Hybrid
-        }
-        public MovementMode movementMode = MovementMode.Hybrid;
-
-        private Vector2 axisInput;
-        private bool jump;
-        private bool jumpHold;
-        private bool sprint;
-        private bool crouch;
-
-        [HideInInspector]
-        public float targetAngle;
-        private Rigidbody rigidbody;
-        private CapsuleCollider collider;
-        private float originalColliderHeight;
-        private float originalGravityMultiplier;
-        private float originalCrouchSpeedMultiplier;
-
-        private Vector3 currVelocity = Vector3.zero;
-        private float turnSmoothVelocity;
-        private bool lockRotation = false;
-        private bool lockToCamera = false;
-
-        /**/
-
-        #region Grind Values
-
-        private bool isGrinding = false;
-        private GrindRail currentRail = null;
-        private float grindPositionT = 0f;
-        private Vector3 grindDirection = Vector3.zero;
-        private float grindHeightOffset = 0.5f;
-        private bool grindingForward = true;
-
-        #endregion
-
-        private void Awake()
-        {
-            rigidbody = this.GetComponent<Rigidbody>();
-            collider = this.GetComponent<CapsuleCollider>();
-            originalColliderHeight = collider.height;
-            originalGravityMultiplier = gravityMultiplier;
-            originalCrouchSpeedMultiplier = crouchSpeedMultiplier;
-
-            SetFriction(frictionAgainstFloor, true);
-            currentLockOnSlope = lockOnSlope;
-        }
-
-
-        private void Update()
-        {
-            axisInput = input.axisInput;
-            jump = input.jump;
-            jumpHold = input.jumpHold;
-            sprint = input.sprint;
-            crouch = input.crouch;
-        }
-
-
-        private void FixedUpdate()
-        {
-            // Detect if any interactable object would be collided with in the next movement calculation, if so start interaction process.
-            PreemptiveInteraction();
-
-            // 1️⃣ Handle which movement logic to run (Manual, Physics, Hybrid)
-            switch (movementMode)
-            {
-                case MovementMode.Manual:
-                    ManualUpdate();
-                    break;
-                case MovementMode.Physics:
-                    PhysicsUpdate();
-                    break;
-                case MovementMode.Hybrid:
-                    HybridUpdate();
-                    break;
-            }
-
-            // If grinding, the mode-specific method already handled everything - exit early!
-            if (isGrinding) return;
-
-            // 2️⃣ Gather state information before applying movement
-            CheckGrounded();
-            CheckStep();
-            
-            // Re-enable wall detection when grounded, check walls only if enabled
-            if (isGrounded && !isJumping)
-            {
-                currentWallJumps = 0;
-                wallDetectionEnabled = true;  // Re-enable wall detection on ground
-            }
-            
-            if (wallDetectionEnabled)
-            {
-                CheckWall();
-            }
-            else
-            {
-                isTouchingWall = false;  // No wall interaction during cooldown
-            }
-            
-            CheckSlopeAndDirections();
-
-            // 3️⃣ Handle input-dependent motion
-            MoveWalk();
-            MoveCrouch();
-            // 4️⃣ Handle jump (including rail jump)
-            MoveJump();
-
-            // 5️⃣ Rotation should come *after* horizontal/vertical movement,
-            // so it's aligned with where the player actually went.
-            if (!lockToCamera)
-                MoveRotation();
-            else
-                ForceRotation();
-
-            // 6️⃣ Apply gravity AFTER movement, so it integrates properly.
-            ApplyGravity();
-
-            // 7️⃣ Send out events last, so they reflect the final frame state.
-            UpdateEvents();
-        }
-        private void OnTriggerEnter(Collider other)
-        {
-            if (isGrinding) return;
 
             // 🔹 Require the player to be in the air and moving fast enough
             if (isGrounded || rigidbody.velocity.magnitude < 5f || !isJumping)
-                return;
+                return;            GrindRail rail = other.GetComponent<GrindRail>();            if (rail != null)            {                Vector3 preferredDirection;                if (rail.CanStartGrinding(rigidbody.velocity, transform.forward, out preferredDirection))                {                    StartGrinding(rail, preferredDirection);                }            }        }        private void PhysicsUpdate()        {            if (isGrinding)            {                UpdateGrinding();                MoveJump();                UpdateEvents();                return;            }            CheckGrounded();            CheckStep();                        // Re-enable wall detection when grounded, check walls only if enabled            if (isGrounded && !isJumping)            {                currentWallJumps = 0;                wallDetectionEnabled = true;  // Re-enable wall detection on ground            }                        if (wallDetectionEnabled)            {                CheckWall();            }            else            {                isTouchingWall = false;  // No wall interaction during cooldown            }                        CheckSlopeAndDirections();            MoveWalk();            MoveCrouch();            if (!lockToCamera) MoveRotation();            else ForceRotation();            MoveJump();            ApplyGravity();            UpdateEvents();        }        private void ManualUpdate()        {            // Read input and move transform directly (no physics)            Vector3 moveDir = new Vector3(axisInput.x, 0, axisInput.y);            if (moveDir.sqrMagnitude > movementThrashold)            {                float targetAngle = Mathf.Atan2(moveDir.x, moveDir.z) * Mathf.Rad2Deg + characterCamera.transform.eulerAngles.y;                Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;                transform.position += moveDirection * movementSpeed * Time.fixedDeltaTime;                transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);            }        }        private void HybridUpdate()        {            if (isGrinding)            {                UpdateGrinding();                MoveJump();                UpdateEvents();                return;            }            // Update physics interactions            CheckGrounded();            CheckSlopeAndDirections();            MoveCrouch();            // Re-enable wall detection when grounded            if (isGrounded && !isJumping)            {                currentWallJumps = 0;                wallDetectionEnabled = true;  // Re-enable wall detection on ground            }            // Instead of full physics-based movement, directly set the desired velocity            Vector3 inputDir = new Vector3(axisInput.x, 0, axisInput.y);            if (inputDir.magnitude > movementThrashold)            {                float targetAngle = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg + characterCamera.transform.eulerAngles.y;                Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;                // Preserve vertical velocity from physics, apply manual horizontal                Vector3 desiredVelocity = moveDir * (sprint ? sprintSpeed : movementSpeed);                desiredVelocity.y = rigidbody.velocity.y;                // Smooth damping for nice transitions                rigidbody.velocity = Vector3.Lerp(rigidbody.velocity, desiredVelocity, Time.fixedDeltaTime * 10f);                // Smooth rotation                float smoothAngle = Mathf.SmoothDampAngle(characterModel.transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, characterModelRotationSmooth);                transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);                characterModel.transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);            }            // Apply jump and gravity naturally            MoveJump();            ApplyGravity();            UpdateEvents();        }        private void PreemptiveInteraction()        {            Vector3 dir = rigidbody.velocity.normalized;            float dist = rigidbody.velocity.magnitude;            RaycastHit hit;            if (isJumping && dir.y < 0 && Physics.SphereCast(transform.position, GetComponent<Collider>().bounds.size.y / 2, dir, out hit, dist * Time.fixedDeltaTime)) {                GrindRail rail = hit.collider.gameObject.GetComponent<GrindRail>();                if (rail != null)                {                    Vector3 preferredDirection;                    if (rail.CanStartGrinding(rigidbody.velocity, transform.forward, out preferredDirection))                    {                        StartGrinding(rail, preferredDirection);                    }                }            }        }        private void PlayFootsteps()        {            Debug.Log("In play footsteps");            playerSounds.PlayFootstep();        }        private void StopGrind()
+        {
+            isGrinding = false;
 
-            GrindRail rail = other.GetComponent<GrindRail>();
-            if (rail != null)
-            {
-                Vector3 preferredDirection;
-                if (rail.CanStartGrinding(rigidbody.velocity, transform.forward, out preferredDirection))
-                {
-                    StartGrinding(rail, preferredDirection);
-                }
-            }
+            grindEmitter.EventInstance.setParameterByName("Is Idle", 0f);
         }
 
 
-        private void PhysicsUpdate()
-        {
-            if (isGrinding)
-            {
-                UpdateGrinding();
-                MoveJump();
-                UpdateEvents();
-                return;
-            }
 
-            CheckGrounded();
-            CheckStep();
-            
-            // Re-enable wall detection when grounded, check walls only if enabled
-            if (isGrounded && !isJumping)
-            {
-                currentWallJumps = 0;
-                wallDetectionEnabled = true;  // Re-enable wall detection on ground
-            }
-            
-            if (wallDetectionEnabled)
-            {
-                CheckWall();
-            }
-            else
-            {
-                isTouchingWall = false;  // No wall interaction during cooldown
-            }
-            
-            CheckSlopeAndDirections();
 
-            MoveWalk();
-            MoveCrouch();
+        #region Checks
+        private void CheckGrounded()        {            prevGrounded = isGrounded;            isGrounded = Physics.CheckSphere(transform.position - new Vector3(0, originalColliderHeight / 2f, 0), groundCheckerThrashold, groundMask);        }        private void CheckStep()        {            bool tmpStep = false;            Vector3 bottomStepPos = transform.position - new Vector3(0f, originalColliderHeight / 2f, 0f) + new Vector3(0f, 0.05f, 0f);            RaycastHit stepLowerHit;            if (Physics.Raycast(bottomStepPos, globalForward, out stepLowerHit, stepCheckerThrashold, groundMask))            {                RaycastHit stepUpperHit;                if (RoundValue(stepLowerHit.normal.y) == 0 && !Physics.Raycast(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), globalForward, out stepUpperHit, stepCheckerThrashold + 0.05f, groundMask))                {                    tmpStep = true;                }            }            RaycastHit stepLowerHit45;            if (Physics.Raycast(bottomStepPos, Quaternion.AngleAxis(45, transform.up) * globalForward, out stepLowerHit45, stepCheckerThrashold, groundMask))            {                RaycastHit stepUpperHit45;                if (RoundValue(stepLowerHit45.normal.y) == 0 && !Physics.Raycast(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), Quaternion.AngleAxis(45, Vector3.up) * globalForward, out stepUpperHit45, stepCheckerThrashold + 0.05f, groundMask))                {                    tmpStep = true;                }            }            RaycastHit stepLowerHitMinus45;            if (Physics.Raycast(bottomStepPos, Quaternion.AngleAxis(-45, transform.up) * globalForward, out stepLowerHitMinus45, stepCheckerThrashold, groundMask))            {                RaycastHit stepUpperHitMinus45;                if (RoundValue(stepLowerHitMinus45.normal.y) == 0 && !Physics.Raycast(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), Quaternion.AngleAxis(-45, Vector3.up) * globalForward, out stepUpperHitMinus45, stepCheckerThrashold + 0.05f, groundMask))                {                    tmpStep = true;                }            }            isTouchingStep = tmpStep;        }        private void CheckWall()        {            bool tmpWall = false;            Vector3 tmpWallNormal = Vector3.zero;            Vector3 topWallPos = new Vector3(transform.position.x, transform.position.y + hightWallCheckerChecker, transform.position.z);            RaycastHit wallHit;            if (Physics.Raycast(topWallPos, globalForward, out wallHit, wallCheckerThrashold, groundMask))            {                tmpWallNormal = wallHit.normal;                tmpWall = true;            }            else if (Physics.Raycast(topWallPos, Quaternion.AngleAxis(45, transform.up) * globalForward, out wallHit, wallCheckerThrashold, groundMask))            {                tmpWallNormal = wallHit.normal;                tmpWall = true;            }            else if (Physics.Raycast(topWallPos, Quaternion.AngleAxis(90, transform.up) * globalForward, out wallHit, wallCheckerThrashold, groundMask))            {                tmpWallNormal = wallHit.normal;                tmpWall = true;            }            else if (Physics.Raycast(topWallPos, Quaternion.AngleAxis(135, transform.up) * globalForward, out wallHit, wallCheckerThrashold, groundMask))            {                tmpWallNormal = wallHit.normal;                tmpWall = true;            }            else if (Physics.Raycast(topWallPos, Quaternion.AngleAxis(180, transform.up) * globalForward, out wallHit, wallCheckerThrashold, groundMask))            {                tmpWallNormal = wallHit.normal;                tmpWall = true;            }            else if (Physics.Raycast(topWallPos, Quaternion.AngleAxis(225, transform.up) * globalForward, out wallHit, wallCheckerThrashold, groundMask))            {                tmpWallNormal = wallHit.normal;                tmpWall = true;            }            else if (Physics.Raycast(topWallPos, Quaternion.AngleAxis(270, transform.up) * globalForward, out wallHit, wallCheckerThrashold, groundMask))            {                tmpWallNormal = wallHit.normal;                tmpWall = true;            }            else if (Physics.Raycast(topWallPos, Quaternion.AngleAxis(315, transform.up) * globalForward, out wallHit, wallCheckerThrashold, groundMask))            {                tmpWallNormal = wallHit.normal;                tmpWall = true;            }            isTouchingWall = tmpWall;            wallNormal = tmpWallNormal;        }        private void CheckSlopeAndDirections()        {            prevGroundNormal = groundNormal;            RaycastHit slopeHit;            if (Physics.SphereCast(transform.position, slopeCheckerThrashold, Vector3.down, out slopeHit, originalColliderHeight / 2f + 0.5f, groundMask))            {                groundNormal = slopeHit.normal;                if (slopeHit.normal.y == 1)                {                    forward = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;                    globalForward = forward;                    reactionForward = forward;                    if (!isCrouch)                    {                        SetFriction(frictionAgainstFloor, true);                    }                    currentLockOnSlope = lockOnSlope;                    currentSurfaceAngle = 0f;                    isTouchingSlope = false;                }                else                {                    //set forward                    Vector3 tmpGlobalForward = transform.forward.normalized;                    Vector3 tmpForward = new Vector3(tmpGlobalForward.x, Vector3.ProjectOnPlane(transform.forward.normalized, slopeHit.normal).normalized.y, tmpGlobalForward.z);                    Vector3 tmpReactionForward = new Vector3(tmpForward.x, tmpGlobalForward.y - tmpForward.y, tmpForward.z);                    if (currentSurfaceAngle <= maxClimbableSlopeAngle && !isTouchingStep)                    {                        //set forward                        forward = tmpForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * canSlideMultiplierCurve) + 1f);                        globalForward = tmpGlobalForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * canSlideMultiplierCurve) + 1f);                        reactionForward = tmpReactionForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * canSlideMultiplierCurve) + 1f);                        if (!isCrouch)                        {                            SetFriction(frictionAgainstFloor, true);                        }                        currentLockOnSlope = lockOnSlope;                    }                    else if (isTouchingStep)                    {                        //set forward                        forward = tmpForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * climbingStairsMultiplierCurve) + 1f);                        globalForward = tmpGlobalForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * climbingStairsMultiplierCurve) + 1f);                        reactionForward = tmpReactionForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * climbingStairsMultiplierCurve) + 1f);                        if (!isCrouch)                        {                            SetFriction(frictionAgainstFloor, true);                        }                        currentLockOnSlope = true;                    }                    else                    {                        //set forward                        forward = tmpForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * cantSlideMultiplierCurve) + 1f);                        globalForward = tmpGlobalForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * cantSlideMultiplierCurve) + 1f);                        reactionForward = tmpReactionForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * cantSlideMultiplierCurve) + 1f);                        SetFriction(0f, true);                        currentLockOnSlope = lockOnSlope;                    }                    currentSurfaceAngle = Vector3.Angle(Vector3.up, slopeHit.normal);                    isTouchingSlope = true;                }                //set down                down = Vector3.Project(Vector3.down, slopeHit.normal);                globalDown = Vector3.down.normalized;                reactionGlobalDown = Vector3.up.normalized;            }            else            {                groundNormal = Vector3.zero;                forward = Vector3.ProjectOnPlane(transform.forward, slopeHit.normal).normalized;                globalForward = forward;                reactionForward = forward;                //set down                down = Vector3.down.normalized;                globalDown = Vector3.down.normalized;                reactionGlobalDown = Vector3.up.normalized;                SetFriction(frictionAgainstFloor, true);                currentLockOnSlope = lockOnSlope;            }        }        #endregion        #region Move        private void MoveCrouch()        {            if (crouch && isGrounded)            {                isCrouch = true;                if (meshCharacterCrouch != null && meshCharacter != null) meshCharacter.SetActive(false);                if (meshCharacterCrouch != null) meshCharacterCrouch.SetActive(true);                float newHeight = originalColliderHeight * crouchHeightMultiplier;                collider.height = newHeight;                collider.center = new Vector3(0f, -newHeight * crouchHeightMultiplier, 0f);                crouchSpeedMultiplier = originalCrouchSpeedMultiplier;                gravityMultiplier = originalGravityMultiplier;                headPoint.position = new Vector3(transform.position.x + POV_crouchHeadHeight.x, transform.position.y + POV_crouchHeadHeight.y, transform.position.z + POV_crouchHeadHeight.z);            }            //Air Crouch            else if (crouch && !isGrounded)            {                isCrouch = true;                if (meshCharacterCrouch != null && meshCharacter != null) meshCharacter.SetActive(false);                if (meshCharacterCrouch != null) meshCharacterCrouch.SetActive(true);                float newHeight = originalColliderHeight * crouchHeightMultiplier;                collider.height = newHeight;                collider.center = new Vector3(0f, -newHeight * crouchHeightMultiplier, 0f);                headPoint.position = new Vector3(transform.position.x + POV_crouchHeadHeight.x, transform.position.y + POV_crouchHeadHeight.y, transform.position.z + POV_crouchHeadHeight.z);                // change majority of velocity to down                crouchSpeedMultiplier = 0f;                if (airCrouchCompleteStop)                {                    rigidbody.velocity = new Vector3(0f, -rigidbody.velocity.magnitude, 0f);                }                gravityMultiplier = airCrouchGravityMultiplier;            }            else            {                isCrouch = false;                if (meshCharacterCrouch != null && meshCharacter != null) meshCharacter.SetActive(true);                if (meshCharacterCrouch != null) meshCharacterCrouch.SetActive(false);                crouchSpeedMultiplier = originalCrouchSpeedMultiplier;                gravityMultiplier = originalGravityMultiplier;                collider.height = originalColliderHeight;                collider.center = Vector3.zero;                headPoint.position = new Vector3(transform.position.x + POV_normalHeadHeight.x, transform.position.y + POV_normalHeadHeight.y, transform.position.z + POV_normalHeadHeight.z);            }        }        private void MoveWalk()        {            // Todo: make actual surfing            // currently allows for magnitude to be transalted into forward motion            if (isCrouch)            {                targetAngle = Mathf.Atan2(axisInput.x, axisInput.y) * Mathf.Rad2Deg + characterCamera.transform.eulerAngles.y;                rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, forward * rigidbody.velocity.magnitude, ref currVelocity, dampSpeedUp);            }            else if (axisInput.magnitude > movementThrashold)            {                targetAngle = Mathf.Atan2(axisInput.x, axisInput.y) * Mathf.Rad2Deg + characterCamera.transform.eulerAngles.y;                if (!sprint) rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, forward * movementSpeed, ref currVelocity, dampSpeedUp);                else rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, forward * sprintSpeed, ref currVelocity, dampSpeedUp);            }            else rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, Vector3.zero, ref currVelocity, dampSpeedDown);        }        private void MoveRotation()        {            if (isGrinding) return;            float angle = Mathf.SmoothDampAngle(characterModel.transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, characterModelRotationSmooth);            transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);            if (!lockRotation)                characterModel.transform.rotation = Quaternion.Euler(0f, angle, 0f);            else            {                var lookPos = -wallNormal;                lookPos.y = 0;                var rotation = Quaternion.LookRotation(lookPos);                characterModel.transform.rotation = rotation;            }        }        public void ForceRotation()        {            characterModel.transform.rotation = Quaternion.Euler(0f, characterCamera.transform.rotation.eulerAngles.y, 0f);        }        private void MoveJump()        {            // 🔹 1. Handle jump from grinding FIRST (highest priority)            if (jump && isGrinding)            {
 
-            if (!lockToCamera) MoveRotation();
-            else ForceRotation();
-
-            MoveJump();
-            ApplyGravity();
-            UpdateEvents();
-        }
-
-        private void ManualUpdate()
-        {
-            // Read input and move transform directly (no physics)
-            Vector3 moveDir = new Vector3(axisInput.x, 0, axisInput.y);
-            if (moveDir.sqrMagnitude > movementThrashold)
-            {
-                float targetAngle = Mathf.Atan2(moveDir.x, moveDir.z) * Mathf.Rad2Deg + characterCamera.transform.eulerAngles.y;
-                Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-
-                transform.position += moveDirection * movementSpeed * Time.fixedDeltaTime;
-                transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
-            }
-        }
-
-        private void HybridUpdate()
-        {
-            if (isGrinding)
-            {
-                UpdateGrinding();
-                MoveJump();
-                UpdateEvents();
-                return;
-            }
-
-            // Update physics interactions
-            CheckGrounded();
-            CheckSlopeAndDirections();
-            MoveCrouch();
-
-            // Re-enable wall detection when grounded
-            if (isGrounded && !isJumping)
-            {
-                currentWallJumps = 0;
-                wallDetectionEnabled = true;  // Re-enable wall detection on ground
-            }
-
-            // Instead of full physics-based movement, directly set the desired velocity
-            Vector3 inputDir = new Vector3(axisInput.x, 0, axisInput.y);
-            if (inputDir.magnitude > movementThrashold)
-            {
-                float targetAngle = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg + characterCamera.transform.eulerAngles.y;
-                Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-
-                // Preserve vertical velocity from physics, apply manual horizontal
-                Vector3 desiredVelocity = moveDir * (sprint ? sprintSpeed : movementSpeed);
-                desiredVelocity.y = rigidbody.velocity.y;
-
-                // Smooth damping for nice transitions
-                rigidbody.velocity = Vector3.Lerp(rigidbody.velocity, desiredVelocity, Time.fixedDeltaTime * 10f);
-
-                // Smooth rotation
-                float smoothAngle = Mathf.SmoothDampAngle(characterModel.transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, characterModelRotationSmooth);
-                transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
-                characterModel.transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
-            }
-
-            // Apply jump and gravity naturally
-            MoveJump();
-            ApplyGravity();
-            UpdateEvents();
-        }
-
-        private void PreemptiveInteraction()
-        {
-            Vector3 dir = rigidbody.velocity.normalized;
-            float dist = rigidbody.velocity.magnitude;
-
-            RaycastHit hit;
-            if (isJumping && dir.y < 0 && Physics.SphereCast(transform.position, GetComponent<Collider>().bounds.size.y / 2, dir, out hit, dist * Time.fixedDeltaTime)) {
-                GrindRail rail = hit.collider.gameObject.GetComponent<GrindRail>();
-                if (rail != null)
-                {
-                    Vector3 preferredDirection;
-                    if (rail.CanStartGrinding(rigidbody.velocity, transform.forward, out preferredDirection))
-                    {
-                        StartGrinding(rail, preferredDirection);
-                    }
-                }
-            }
-        }
-
-        private void PlayFootsteps()
-        {
-            Debug.Log("In play footsteps");
-            playerSounds.PlayFootstep();
-        }
-
-
-        #region Checks
-
-        private void CheckGrounded()
-        {
-            prevGrounded = isGrounded;
-            isGrounded = Physics.CheckSphere(transform.position - new Vector3(0, originalColliderHeight / 2f, 0), groundCheckerThrashold, groundMask);
-        }
-
-
-        private void CheckStep()
-        {
-            bool tmpStep = false;
-            Vector3 bottomStepPos = transform.position - new Vector3(0f, originalColliderHeight / 2f, 0f) + new Vector3(0f, 0.05f, 0f);
-
-            RaycastHit stepLowerHit;
-            if (Physics.Raycast(bottomStepPos, globalForward, out stepLowerHit, stepCheckerThrashold, groundMask))
-            {
-                RaycastHit stepUpperHit;
-                if (RoundValue(stepLowerHit.normal.y) == 0 && !Physics.Raycast(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), globalForward, out stepUpperHit, stepCheckerThrashold + 0.05f, groundMask))
-                {
-                    tmpStep = true;
-                }
-            }
-
-            RaycastHit stepLowerHit45;
-            if (Physics.Raycast(bottomStepPos, Quaternion.AngleAxis(45, transform.up) * globalForward, out stepLowerHit45, stepCheckerThrashold, groundMask))
-            {
-                RaycastHit stepUpperHit45;
-                if (RoundValue(stepLowerHit45.normal.y) == 0 && !Physics.Raycast(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), Quaternion.AngleAxis(45, Vector3.up) * globalForward, out stepUpperHit45, stepCheckerThrashold + 0.05f, groundMask))
-                {
-                    tmpStep = true;
-                }
-            }
-
-            RaycastHit stepLowerHitMinus45;
-            if (Physics.Raycast(bottomStepPos, Quaternion.AngleAxis(-45, transform.up) * globalForward, out stepLowerHitMinus45, stepCheckerThrashold, groundMask))
-            {
-                RaycastHit stepUpperHitMinus45;
-                if (RoundValue(stepLowerHitMinus45.normal.y) == 0 && !Physics.Raycast(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), Quaternion.AngleAxis(-45, Vector3.up) * globalForward, out stepUpperHitMinus45, stepCheckerThrashold + 0.05f, groundMask))
-                {
-                    tmpStep = true;
-                }
-            }
-
-            isTouchingStep = tmpStep;
-        }
-
-
-        private void CheckWall()
-        {
-            bool tmpWall = false;
-            Vector3 tmpWallNormal = Vector3.zero;
-            Vector3 topWallPos = new Vector3(transform.position.x, transform.position.y + hightWallCheckerChecker, transform.position.z);
-
-            RaycastHit wallHit;
-            if (Physics.Raycast(topWallPos, globalForward, out wallHit, wallCheckerThrashold, groundMask))
-            {
-                tmpWallNormal = wallHit.normal;
-                tmpWall = true;
-            }
-            else if (Physics.Raycast(topWallPos, Quaternion.AngleAxis(45, transform.up) * globalForward, out wallHit, wallCheckerThrashold, groundMask))
-            {
-                tmpWallNormal = wallHit.normal;
-                tmpWall = true;
-            }
-            else if (Physics.Raycast(topWallPos, Quaternion.AngleAxis(90, transform.up) * globalForward, out wallHit, wallCheckerThrashold, groundMask))
-            {
-                tmpWallNormal = wallHit.normal;
-                tmpWall = true;
-            }
-            else if (Physics.Raycast(topWallPos, Quaternion.AngleAxis(135, transform.up) * globalForward, out wallHit, wallCheckerThrashold, groundMask))
-            {
-                tmpWallNormal = wallHit.normal;
-                tmpWall = true;
-            }
-            else if (Physics.Raycast(topWallPos, Quaternion.AngleAxis(180, transform.up) * globalForward, out wallHit, wallCheckerThrashold, groundMask))
-            {
-                tmpWallNormal = wallHit.normal;
-                tmpWall = true;
-            }
-            else if (Physics.Raycast(topWallPos, Quaternion.AngleAxis(225, transform.up) * globalForward, out wallHit, wallCheckerThrashold, groundMask))
-            {
-                tmpWallNormal = wallHit.normal;
-                tmpWall = true;
-            }
-            else if (Physics.Raycast(topWallPos, Quaternion.AngleAxis(270, transform.up) * globalForward, out wallHit, wallCheckerThrashold, groundMask))
-            {
-                tmpWallNormal = wallHit.normal;
-                tmpWall = true;
-            }
-            else if (Physics.Raycast(topWallPos, Quaternion.AngleAxis(315, transform.up) * globalForward, out wallHit, wallCheckerThrashold, groundMask))
-            {
-                tmpWallNormal = wallHit.normal;
-                tmpWall = true;
-            }
-
-            isTouchingWall = tmpWall;
-            wallNormal = tmpWallNormal;
-        }
-
-
-        private void CheckSlopeAndDirections()
-        {
-            prevGroundNormal = groundNormal;
-
-            RaycastHit slopeHit;
-            if (Physics.SphereCast(transform.position, slopeCheckerThrashold, Vector3.down, out slopeHit, originalColliderHeight / 2f + 0.5f, groundMask))
-            {
-                groundNormal = slopeHit.normal;
-
-                if (slopeHit.normal.y == 1)
-                {
-
-                    forward = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-                    globalForward = forward;
-                    reactionForward = forward;
-
-                    if (!isCrouch)
-                    {
-                        SetFriction(frictionAgainstFloor, true);
-                    }
-                    currentLockOnSlope = lockOnSlope;
-
-                    currentSurfaceAngle = 0f;
-                    isTouchingSlope = false;
-
-                }
-                else
-                {
-                    //set forward
-                    Vector3 tmpGlobalForward = transform.forward.normalized;
-                    Vector3 tmpForward = new Vector3(tmpGlobalForward.x, Vector3.ProjectOnPlane(transform.forward.normalized, slopeHit.normal).normalized.y, tmpGlobalForward.z);
-                    Vector3 tmpReactionForward = new Vector3(tmpForward.x, tmpGlobalForward.y - tmpForward.y, tmpForward.z);
-
-                    if (currentSurfaceAngle <= maxClimbableSlopeAngle && !isTouchingStep)
-                    {
-                        //set forward
-                        forward = tmpForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * canSlideMultiplierCurve) + 1f);
-                        globalForward = tmpGlobalForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * canSlideMultiplierCurve) + 1f);
-                        reactionForward = tmpReactionForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * canSlideMultiplierCurve) + 1f);
-
-                        if (!isCrouch)
-                        {
-                            SetFriction(frictionAgainstFloor, true);
-                        }
-                        currentLockOnSlope = lockOnSlope;
-                    }
-                    else if (isTouchingStep)
-                    {
-                        //set forward
-                        forward = tmpForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * climbingStairsMultiplierCurve) + 1f);
-                        globalForward = tmpGlobalForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * climbingStairsMultiplierCurve) + 1f);
-                        reactionForward = tmpReactionForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * climbingStairsMultiplierCurve) + 1f);
-
-                        if (!isCrouch)
-                        {
-                            SetFriction(frictionAgainstFloor, true);
-                        }
-                        currentLockOnSlope = true;
-                    }
-                    else
-                    {
-                        //set forward
-                        forward = tmpForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * cantSlideMultiplierCurve) + 1f);
-                        globalForward = tmpGlobalForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * cantSlideMultiplierCurve) + 1f);
-                        reactionForward = tmpReactionForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * cantSlideMultiplierCurve) + 1f);
-
-                        SetFriction(0f, true);
-                        currentLockOnSlope = lockOnSlope;
-                    }
-
-                    currentSurfaceAngle = Vector3.Angle(Vector3.up, slopeHit.normal);
-                    isTouchingSlope = true;
-                }
-
-                //set down
-                down = Vector3.Project(Vector3.down, slopeHit.normal);
-                globalDown = Vector3.down.normalized;
-                reactionGlobalDown = Vector3.up.normalized;
-            }
-            else
-            {
-                groundNormal = Vector3.zero;
-
-                forward = Vector3.ProjectOnPlane(transform.forward, slopeHit.normal).normalized;
-                globalForward = forward;
-                reactionForward = forward;
-
-                //set down
-                down = Vector3.down.normalized;
-                globalDown = Vector3.down.normalized;
-                reactionGlobalDown = Vector3.up.normalized;
-
-                SetFriction(frictionAgainstFloor, true);
-                currentLockOnSlope = lockOnSlope;
-            }
-        }
-
-        #endregion
-
-        #region Move
-
-        private void MoveCrouch()
-        {
-            if (crouch && isGrounded)
-            {
-                isCrouch = true;
-                if (meshCharacterCrouch != null && meshCharacter != null) meshCharacter.SetActive(false);
-                if (meshCharacterCrouch != null) meshCharacterCrouch.SetActive(true);
-
-                float newHeight = originalColliderHeight * crouchHeightMultiplier;
-                collider.height = newHeight;
-                collider.center = new Vector3(0f, -newHeight * crouchHeightMultiplier, 0f);
-
-                crouchSpeedMultiplier = originalCrouchSpeedMultiplier;
-                gravityMultiplier = originalGravityMultiplier;
-
-                headPoint.position = new Vector3(transform.position.x + POV_crouchHeadHeight.x, transform.position.y + POV_crouchHeadHeight.y, transform.position.z + POV_crouchHeadHeight.z);
-            }
-            //Air Crouch
-            else if (crouch && !isGrounded)
-            {
-                isCrouch = true;
-
-                if (meshCharacterCrouch != null && meshCharacter != null) meshCharacter.SetActive(false);
-                if (meshCharacterCrouch != null) meshCharacterCrouch.SetActive(true);
-
-                float newHeight = originalColliderHeight * crouchHeightMultiplier;
-                collider.height = newHeight;
-                collider.center = new Vector3(0f, -newHeight * crouchHeightMultiplier, 0f);
-
-                headPoint.position = new Vector3(transform.position.x + POV_crouchHeadHeight.x, transform.position.y + POV_crouchHeadHeight.y, transform.position.z + POV_crouchHeadHeight.z);
-
-                // change majority of velocity to down
-                crouchSpeedMultiplier = 0f;
-                if (airCrouchCompleteStop)
-                {
-                    rigidbody.velocity = new Vector3(0f, -rigidbody.velocity.magnitude, 0f);
-                }
-                gravityMultiplier = airCrouchGravityMultiplier;
-            }
-            else
-            {
-                isCrouch = false;
-
-                if (meshCharacterCrouch != null && meshCharacter != null) meshCharacter.SetActive(true);
-                if (meshCharacterCrouch != null) meshCharacterCrouch.SetActive(false);
-
-                crouchSpeedMultiplier = originalCrouchSpeedMultiplier;
-                gravityMultiplier = originalGravityMultiplier;
-
-                collider.height = originalColliderHeight;
-                collider.center = Vector3.zero;
-
-                headPoint.position = new Vector3(transform.position.x + POV_normalHeadHeight.x, transform.position.y + POV_normalHeadHeight.y, transform.position.z + POV_normalHeadHeight.z);
-            }
-        }
-
-
-        private void MoveWalk()
-        {
-            // Todo: make actual surfing
-            // currently allows for magnitude to be transalted into forward motion
-            if (isCrouch)
-            {
-                targetAngle = Mathf.Atan2(axisInput.x, axisInput.y) * Mathf.Rad2Deg + characterCamera.transform.eulerAngles.y;
-                rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, forward * rigidbody.velocity.magnitude, ref currVelocity, dampSpeedUp);
-            }
-            else if (axisInput.magnitude > movementThrashold)
-            {
-                targetAngle = Mathf.Atan2(axisInput.x, axisInput.y) * Mathf.Rad2Deg + characterCamera.transform.eulerAngles.y;
-                if (!sprint) rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, forward * movementSpeed, ref currVelocity, dampSpeedUp);
-                else rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, forward * sprintSpeed, ref currVelocity, dampSpeedUp);
-            }
-            else rigidbody.velocity = Vector3.SmoothDamp(rigidbody.velocity, Vector3.zero, ref currVelocity, dampSpeedDown);
-        }
-
-
-        private void MoveRotation()
-        {
-            if (isGrinding) return;
-            float angle = Mathf.SmoothDampAngle(characterModel.transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, characterModelRotationSmooth);
-            transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
-
-            if (!lockRotation)
-                characterModel.transform.rotation = Quaternion.Euler(0f, angle, 0f);
-            else
-            {
-                var lookPos = -wallNormal;
-                lookPos.y = 0;
-                var rotation = Quaternion.LookRotation(lookPos);
-                characterModel.transform.rotation = rotation;
-            }
-        }
-
-
-        public void ForceRotation()
-        {
-            characterModel.transform.rotation = Quaternion.Euler(0f, characterCamera.transform.rotation.eulerAngles.y, 0f);
-        }
-
-
-        private void MoveJump()
-        {
-            // 🔹 1. Handle jump from grinding FIRST (highest priority)
-            if (jump && isGrinding)
-            {
                 // Forward boost from rail direction with a bit of lift
-                float boostMultiplier = 1.2f; // tweak feel
-                Vector3 jumpVel = grindDirection * (currentRail.grindSpeed * boostMultiplier)
-                    + Vector3.up * jumpVelocity;
+                float boostMultiplier = 1.2f; // tweak feel                Vector3 jumpVel = grindDirection * (currentRail.grindSpeed * boostMultiplier)                    + Vector3.up * jumpVelocity;
 
                 // Stop grinding before modifying velocity
-                StopGrinding(true);
-
-                rigidbody.velocity = jumpVel;
-                isJumping = true;
-                return; // ✅ Important: exit early so regular jump code doesn't run
-            }
-
-            // 🔹 2. Ground jump
-            if (jump && isGrounded && ((isTouchingSlope && currentSurfaceAngle <= maxClimbableSlopeAngle) || !isTouchingSlope))
+                StopGrinding(true);                rigidbody.velocity = jumpVel;                isJumping = true;                return; // ✅ Important: exit early so regular jump code doesn't run            }            // 🔹 2. Ground jump            if (jump && isGrounded && ((isTouchingSlope && currentSurfaceAngle <= maxClimbableSlopeAngle) || !isTouchingSlope))            {                rigidbody.velocity += Vector3.up * jumpVelocity;                isJumping = true;                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Movement/Jump");            }            // 3. Wall jump - NOW WITH COUNTER CHECK!            else if (jump && !isGrounded && isTouchingWall && currentWallJumps < maxWallJumps)            {                rigidbody.velocity += wallNormal * jumpFromWallMultiplier                    + (Vector3.up * jumpFromWallMultiplier) * multiplierVerticalLeap;                isJumping = true;                currentWallJumps++;  // Increment the wall jump counter                wallDetectionEnabled = false;  // Disable wall detection until grounded                targetAngle = Mathf.Atan2(wallNormal.x, wallNormal.z) * Mathf.Rad2Deg;                forward = wallNormal;                globalForward = forward;                reactionForward = forward;            }            // 🔹 4. Manage jump/fall multipliers            if (rigidbody.velocity.y < 0 && !isGrounded)            {                coyoteJumpMultiplier = fallMultiplier;            }            else if (rigidbody.velocity.y > 0.1f && (currentSurfaceAngle <= maxClimbableSlopeAngle || isTouchingStep))            {                // is short jumping                if (!jumpHold || !canLongJump)                    coyoteJumpMultiplier = 1f;                // is long jumping                else                    coyoteJumpMultiplier = 1f / holdJumpMultiplier;            }            else            {                isJumping = false;                coyoteJumpMultiplier = 1f;            }            jump = false;        }        #endregion        #region Gravity        private void ApplyGravity()        {            Vector3 gravity = Vector3.zero;            if ((currentLockOnSlope && isGrounded) || isTouchingStep) gravity = down * (gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier);            else if (currentLockOnSlope && !isGrounded) gravity = new Vector3(0f, down.y, 0f) * (gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier);            else gravity = globalDown * (gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier);            //avoid little jump            if (groundNormal.y != 1 && groundNormal.y != 0 && isTouchingSlope && prevGroundNormal != groundNormal)            {                //Debug.Log("Added correction jump on slope");                gravity *= gravityMultiplyerOnSlideChange;            }            //slide if angle too big            if (groundNormal.y != 1 && groundNormal.y != 0 && (currentSurfaceAngle > maxClimbableSlopeAngle && !isTouchingStep))            {                //Debug.Log("Slope angle too high, character is sliding");                if (currentSurfaceAngle > 0f && currentSurfaceAngle <= 30f) gravity = globalDown * (gravityMultiplierIfUnclimbableSlope * -Physics.gravity.y);                else if (currentSurfaceAngle > 30f && currentSurfaceAngle <= 89f) gravity = globalDown * gravityMultiplierIfUnclimbableSlope / 2f * -Physics.gravity.y;            }            //friction when touching wall            if (isTouchingWall && rigidbody.velocity.y < 0)            {                gravity *= frictionAgainstWall;            }            rigidbody.AddForce(gravity);        }        #endregion       #region Grinding        private void StartGrinding(GrindRail rail, Vector3 direction)        {            currentRail = rail;            isGrinding = true;
+            grindEmitter.Play();
+            if (grindEmitter.EventInstance.getPlaybackState(out FMOD.Studio.PLAYBACK_STATE state) != FMOD.RESULT.OK
+    || state == FMOD.Studio.PLAYBACK_STATE.STOPPED)
             {
-                rigidbody.velocity += Vector3.up * jumpVelocity;
-                isJumping = true;
-                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Movement/Jump");
+                grindEmitter.EventInstance.start();
             }
+            grindEmitter.EventInstance.setParameterByName("Is Idle", 1f);
 
-            // 3. Wall jump - NOW WITH COUNTER CHECK!
-            else if (jump && !isGrounded && isTouchingWall && currentWallJumps < maxWallJumps)
-            {
-                rigidbody.velocity += wallNormal * jumpFromWallMultiplier
-                    + (Vector3.up * jumpFromWallMultiplier) * multiplierVerticalLeap;
-                isJumping = true;
-                currentWallJumps++;  // Increment the wall jump counter
-                wallDetectionEnabled = false;  // Disable wall detection until grounded
-
-                targetAngle = Mathf.Atan2(wallNormal.x, wallNormal.z) * Mathf.Rad2Deg;
-                forward = wallNormal;
-                globalForward = forward;
-                reactionForward = forward;
-            }
-
-            // 🔹 4. Manage jump/fall multipliers
-            if (rigidbody.velocity.y < 0 && !isGrounded)
-            {
-                coyoteJumpMultiplier = fallMultiplier;
-            }
-            else if (rigidbody.velocity.y > 0.1f && (currentSurfaceAngle <= maxClimbableSlopeAngle || isTouchingStep))
-            {
-                // is short jumping
-                if (!jumpHold || !canLongJump)
-                    coyoteJumpMultiplier = 1f;
-                // is long jumping
-                else
-                    coyoteJumpMultiplier = 1f / holdJumpMultiplier;
-            }
-            else
-            {
-                isJumping = false;
-                coyoteJumpMultiplier = 1f;
-            }
-
-            jump = false;
-        }
-
-        #endregion
-
-
-        #region Gravity
-
-        private void ApplyGravity()
-        {
-            Vector3 gravity = Vector3.zero;
-
-            if ((currentLockOnSlope && isGrounded) || isTouchingStep) gravity = down * (gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier);
-            else if (currentLockOnSlope && !isGrounded) gravity = new Vector3(0f, down.y, 0f) * (gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier);
-
-            else gravity = globalDown * (gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier);
-
-            //avoid little jump
-            if (groundNormal.y != 1 && groundNormal.y != 0 && isTouchingSlope && prevGroundNormal != groundNormal)
-            {
-                //Debug.Log("Added correction jump on slope");
-                gravity *= gravityMultiplyerOnSlideChange;
-            }
-
-            //slide if angle too big
-            if (groundNormal.y != 1 && groundNormal.y != 0 && (currentSurfaceAngle > maxClimbableSlopeAngle && !isTouchingStep))
-            {
-                //Debug.Log("Slope angle too high, character is sliding");
-                if (currentSurfaceAngle > 0f && currentSurfaceAngle <= 30f) gravity = globalDown * (gravityMultiplierIfUnclimbableSlope * -Physics.gravity.y);
-                else if (currentSurfaceAngle > 30f && currentSurfaceAngle <= 89f) gravity = globalDown * gravityMultiplierIfUnclimbableSlope / 2f * -Physics.gravity.y;
-            }
-
-            //friction when touching wall
-            if (isTouchingWall && rigidbody.velocity.y < 0)
-            {
-                gravity *= frictionAgainstWall;
-            }
-
-            rigidbody.AddForce(gravity);
-        }
-
-        #endregion
-
-       #region Grinding
-
-        private void StartGrinding(GrindRail rail, Vector3 direction)
-        {
-            currentRail = rail;
-            isGrinding = true;
+            Debug.Log("GRIND SOUND SHOULD START NOW");
 
             // Disable physical collision with rail's non-trigger colliders while grinding
-            foreach (Collider railCol in rail.GetComponents<Collider>())
-            {
-                if (!railCol.isTrigger)
-                {
-                    Physics.IgnoreCollision(collider, railCol, true);
-                }
-            }
+            foreach (Collider railCol in rail.GetComponents<Collider>())            {                if (!railCol.isTrigger)                {                    Physics.IgnoreCollision(collider, railCol, true);                }            }            // Find closest point on rail and starting position            Vector3 closestPoint = rail.GetClosestPointOnRail(transform.position, out grindPositionT);            // Determine if we're grinding forward or backward based on initial direction            Vector3 railDirAtT = rail.GetDirectionAtT(grindPositionT);            grindingForward = Vector3.Dot(direction, railDirAtT) > 0;            // Set initial grind direction based on the curve at this point            grindDirection = grindingForward ? railDirAtT : -railDirAtT;            // Lock rotation to rail direction            targetAngle = Mathf.Atan2(grindDirection.x, grindDirection.z) * Mathf.Rad2Deg;            transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);            // Calculate proper offset - NO ROUNDING for smooth movement            float colliderBottom = collider.center.y - (collider.height / 2f);            Vector3 colliderCenterWorld = transform.rotation * collider.center;            Vector3 properOffset = new Vector3(                -colliderCenterWorld.x,                grindHeightOffset - colliderBottom,                -colliderCenterWorld.z            );            Vector3 finalPosition = closestPoint + properOffset;            transform.position = finalPosition;            Debug.Log($"Started grinding on {rail.gameObject.name} at t={grindPositionT:F2}");        }        private void UpdateGrinding()        {            if (currentRail == null)            {                StopGrinding();                return;            }            // Use the rail's grindSpeed for consistent movement            float moveAmount = (currentRail.grindSpeed * Time.fixedDeltaTime) / currentRail.GetRailLength();            if (grindingForward)            {                grindPositionT += moveAmount;                // Check if reached end of rail with small buffer                if (grindPositionT >= 0.99f)                {                    Debug.Log("Reached end of rail");                    StopGrinding();                    return;                }            }            else            {                grindPositionT -= moveAmount;                // Check if reached start of rail with small buffer                if (grindPositionT <= 0.01f)                {                    Debug.Log("Reached start of rail");                    StopGrinding();                    return;                }            }            // Clamp just to be safe            grindPositionT = Mathf.Clamp01(grindPositionT);            // Get the direction at the current position on the curve            Vector3 railDirAtT = currentRail.GetDirectionAtT(grindPositionT);            grindDirection = grindingForward ? railDirAtT : -railDirAtT;            // Update rotation to follow the curve            targetAngle = Mathf.Atan2(grindDirection.x, grindDirection.z) * Mathf.Rad2Deg;            transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);            characterModel.transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);            // Update position along rail            Vector3 railPosition = currentRail.GetPositionAtT(grindPositionT);            // Calculate proper offset in WORLD SPACE based on character rotation            float colliderBottom = collider.center.y - (collider.height / 2f);            Vector3 colliderCenterWorld = transform.rotation * collider.center;            Vector3 properOffset = new Vector3(                -colliderCenterWorld.x,                grindHeightOffset - colliderBottom,                -colliderCenterWorld.z            );            Vector3 finalPosition = railPosition + properOffset;            // CRITICAL FIX: Remove Mathf.Round() for smooth movement!            transform.position = finalPosition;            // Set velocity to match current grind direction and speed            rigidbody.velocity = grindDirection * currentRail.grindSpeed;        }        private void StopGrinding(bool jumpedOff = false)        {            if (!isGrinding) return;
 
-            // Find closest point on rail and starting position
-            Vector3 closestPoint = rail.GetClosestPointOnRail(transform.position, out grindPositionT);
-
-            // Determine if we're grinding forward or backward based on initial direction
-            Vector3 railDirAtT = rail.GetDirectionAtT(grindPositionT);
-            grindingForward = Vector3.Dot(direction, railDirAtT) > 0;
-
-            // Set initial grind direction based on the curve at this point
-            grindDirection = grindingForward ? railDirAtT : -railDirAtT;
-
-            // Lock rotation to rail direction
-            targetAngle = Mathf.Atan2(grindDirection.x, grindDirection.z) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
-
-            // Calculate proper offset - NO ROUNDING for smooth movement
-            float colliderBottom = collider.center.y - (collider.height / 2f);
-            Vector3 colliderCenterWorld = transform.rotation * collider.center;
-
-            Vector3 properOffset = new Vector3(
-                -colliderCenterWorld.x,
-                grindHeightOffset - colliderBottom,
-                -colliderCenterWorld.z
-            );
-
-            Vector3 finalPosition = closestPoint + properOffset;
-            transform.position = finalPosition;
-
-            Debug.Log($"Started grinding on {rail.gameObject.name} at t={grindPositionT:F2}");
-        }
-
-        private void UpdateGrinding()
-        {
-            if (currentRail == null)
-            {
-                StopGrinding();
-                return;
-            }
-
-            // Use the rail's grindSpeed for consistent movement
-            float moveAmount = (currentRail.grindSpeed * Time.fixedDeltaTime) / currentRail.GetRailLength();
-
-            if (grindingForward)
-            {
-                grindPositionT += moveAmount;
-
-                // Check if reached end of rail with small buffer
-                if (grindPositionT >= 0.99f)
-                {
-                    Debug.Log("Reached end of rail");
-                    StopGrinding();
-                    return;
-                }
-            }
-            else
-            {
-                grindPositionT -= moveAmount;
-
-                // Check if reached start of rail with small buffer
-                if (grindPositionT <= 0.01f)
-                {
-                    Debug.Log("Reached start of rail");
-                    StopGrinding();
-                    return;
-                }
-            }
-
-            // Clamp just to be safe
-            grindPositionT = Mathf.Clamp01(grindPositionT);
-
-            // Get the direction at the current position on the curve
-            Vector3 railDirAtT = currentRail.GetDirectionAtT(grindPositionT);
-            grindDirection = grindingForward ? railDirAtT : -railDirAtT;
-
-            // Update rotation to follow the curve
-            targetAngle = Mathf.Atan2(grindDirection.x, grindDirection.z) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
-            characterModel.transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
-
-            // Update position along rail
-            Vector3 railPosition = currentRail.GetPositionAtT(grindPositionT);
-
-            // Calculate proper offset in WORLD SPACE based on character rotation
-            float colliderBottom = collider.center.y - (collider.height / 2f);
-            Vector3 colliderCenterWorld = transform.rotation * collider.center;
-
-            Vector3 properOffset = new Vector3(
-                -colliderCenterWorld.x,
-                grindHeightOffset - colliderBottom,
-                -colliderCenterWorld.z
-            );
-
-            Vector3 finalPosition = railPosition + properOffset;
-
-            // CRITICAL FIX: Remove Mathf.Round() for smooth movement!
-            transform.position = finalPosition;
-
-            // Set velocity to match current grind direction and speed
-            rigidbody.velocity = grindDirection * currentRail.grindSpeed;
-        }
-
-
-        private void StopGrinding(bool jumpedOff = false)
-        {
-            if (!isGrinding) return;
-
+            grindEmitter.EventInstance.setParameterByName("Is Idle", 0f);
+            Debug.Log("Grinding LOOP STOPPED");
             // Store info before clearing
-            Vector3 exitDirection = grindDirection;
-            float exitSpeed = currentRail != null ? currentRail.grindSpeed : 10f;
-
-            // Re-enable physical collision with the rail
-            if (currentRail != null)
-            {
-                foreach (Collider railCol in currentRail.GetComponents<Collider>())
-                {
-                    if (!railCol.isTrigger)
-                    {
-                        Physics.IgnoreCollision(collider, railCol, false);
-                    }
-                }
-            }
-
-            isGrinding = false;
-            var prevRail = currentRail;
-            currentRail = null;
-
-            // Set exit velocity
-            if (!jumpedOff)
-            {
-                // Natural exit (reached end of rail)
-                // Give upward boost + forward momentum to prevent getting stuck
-                Vector3 exitVelocity = exitDirection * exitSpeed; // Maintain forward/backward momentum
-                exitVelocity.y = jumpVelocity * 0.3f; // Add upward boost (30% of jump height)
-
-                rigidbody.velocity = exitVelocity;
-
-                Debug.Log($"Exited rail naturally with velocity: {exitVelocity}");
-            }
-            // If jumped off, MoveJump already set the velocity, don't override it
-        }
-
-        #endregion
-
-        #region Events
-
-        private void UpdateEvents()
-        {   
-            //These all tell VFX Manager what to do:
-            if (isGrinding) OnGrind.Invoke();
-            //if ((jump && isGrounded && ((isTouchingSlope && currentSurfaceAngle <= maxClimbableSlopeAngle) || !isTouchingSlope)) || (jump && !isGrounded && isTouchingWall)) OnJump.Invoke();
-            if (isGrounded && !prevGrounded && rigidbody.velocity.y > -minimumVerticalSpeedToLandEvent) OnLand.Invoke();
-            if (Mathf.Abs(rigidbody.velocity.x) + Mathf.Abs(rigidbody.velocity.z) > minimumHorizontalSpeedToFastEvent) OnFast.Invoke();
-            if (isTouchingWall && rigidbody.velocity.y < 0) OnWallSlide.Invoke();
-            if (sprint) OnSprint.Invoke();
-            if (isCrouch) OnCrouch.Invoke();
-        }
-
-        #endregion
-
-
-        #region Friction and Round
-
-        private void SetFriction(float _frictionWall, bool _isMinimum)
-        {
-            collider.material.dynamicFriction = 0.6f * _frictionWall;
-            collider.material.staticFriction = 0.6f * _frictionWall;
-
-            if (_isMinimum) collider.material.frictionCombine = PhysicMaterialCombine.Minimum;
-            else collider.material.frictionCombine = PhysicMaterialCombine.Maximum;
-        }
-
-
-        private float RoundValue(float _value)
-        {
-            float unit = (float)Mathf.Round(_value);
-
-            if (_value - unit < 0.000001f && _value - unit > -0.000001f) return unit;
-            else return _value;
-        }
-
-        #endregion
-
-
-        #region Getters & Setters
-
-        public bool  GetGrounded()               { return isGrounded; }
-        public bool  GetTouchingSlope()          { return isTouchingSlope; }
-        public bool  GetTouchingStep()           { return isTouchingStep; }
-        public bool  GetTouchingWall()           { return isTouchingWall; }
-        public bool  GetJumping()                { return isJumping; }
-        public bool  GetCrouching()              { return isCrouch; }
-        public float GetOriginalColliderHeight() { return originalColliderHeight; }
-
-        public void SetLockRotation(bool _lock) { lockRotation = _lock; }
-        public void SetLockToCamera(bool _lockToCamera)
-        {
-            lockToCamera = _lockToCamera;
-            if (!_lockToCamera) targetAngle = characterModel.transform.eulerAngles.y;
-        }
-        public bool GetGrinding() { return isGrinding; }
-
-        #endregion
-
-
-        #region Gizmos
-
-        public void ToggleDebug()
-        {
-            debug = !debug;
-        }
-
-
-        private void OnDrawGizmos()
-        {
-            if (debug)
-            {
-                rigidbody = this.GetComponent<Rigidbody>();
-                collider = this.GetComponent<CapsuleCollider>();
-
-                Vector3 bottomStepPos = transform.position - new Vector3(0f, originalColliderHeight / 2f, 0f) + new Vector3(0f, 0.05f, 0f);
-                Vector3 topWallPos = new Vector3(transform.position.x, transform.position.y + hightWallCheckerChecker, transform.position.z);
-
-                //ground and slope
-                Gizmos.color = Color.blue;
-                Gizmos.DrawWireSphere(transform.position - new Vector3(0, originalColliderHeight / 2f, 0), groundCheckerThrashold);
-
-                Gizmos.color = Color.green;
-                Gizmos.DrawWireSphere(transform.position - new Vector3(0, originalColliderHeight / 2f, 0), slopeCheckerThrashold);
-
-                //direction
-                Gizmos.color = Color.blue;
-                Gizmos.DrawLine(transform.position, transform.position + forward * 2f);
-
-                Gizmos.color = Color.cyan;
-                Gizmos.DrawLine(transform.position, transform.position + globalForward * 2);
-
-                Gizmos.color = Color.cyan;
-                Gizmos.DrawLine(transform.position, transform.position + reactionForward * 2f);
-
-                Gizmos.color = Color.red;
-                Gizmos.DrawLine(transform.position, transform.position + down * 2f);
-
-                Gizmos.color = Color.magenta;
-                Gizmos.DrawLine(transform.position, transform.position + globalDown * 2f);
-
-                Gizmos.color = Color.magenta;
-                Gizmos.DrawLine(transform.position, transform.position + reactionGlobalDown * 2f);
-
-                //step check
-                Gizmos.color = Color.black;
-                Gizmos.DrawLine(bottomStepPos, bottomStepPos + globalForward * stepCheckerThrashold);
-
-                Gizmos.color = Color.black;
-                Gizmos.DrawLine(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), bottomStepPos + new Vector3(0f, maxStepHeight, 0f) + globalForward * (stepCheckerThrashold + 0.05f));
-
-                Gizmos.color = Color.black;
-                Gizmos.DrawLine(bottomStepPos, bottomStepPos + Quaternion.AngleAxis(45, transform.up) * (globalForward * stepCheckerThrashold));
-
-                Gizmos.color = Color.black;
-                Gizmos.DrawLine(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), bottomStepPos + Quaternion.AngleAxis(45, Vector3.up) * (globalForward * stepCheckerThrashold) + new Vector3(0f, maxStepHeight, 0f));
-
-                Gizmos.color = Color.black;
-                Gizmos.DrawLine(bottomStepPos, bottomStepPos + Quaternion.AngleAxis(-45, transform.up) * (globalForward * stepCheckerThrashold));
-
-                Gizmos.color = Color.black;
-                Gizmos.DrawLine(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), bottomStepPos + Quaternion.AngleAxis(-45, Vector3.up) * (globalForward * stepCheckerThrashold) + new Vector3(0f, maxStepHeight, 0f));
-
-                //wall check
-                Gizmos.color = Color.black;
-                Gizmos.DrawLine(topWallPos, topWallPos + globalForward * wallCheckerThrashold);
-
-                Gizmos.color = Color.black;
-                Gizmos.DrawLine(topWallPos, topWallPos + Quaternion.AngleAxis(45, transform.up) * (globalForward * wallCheckerThrashold));
-
-                Gizmos.color = Color.black;
-                Gizmos.DrawLine(topWallPos, topWallPos + Quaternion.AngleAxis(90, transform.up) * (globalForward * wallCheckerThrashold));
-
-                Gizmos.color = Color.black;
-                Gizmos.DrawLine(topWallPos, topWallPos + Quaternion.AngleAxis(135, transform.up) * (globalForward * wallCheckerThrashold));
-
-                Gizmos.color = Color.black;
-                Gizmos.DrawLine(topWallPos, topWallPos + Quaternion.AngleAxis(180, transform.up) * (globalForward * wallCheckerThrashold));
-
-                Gizmos.color = Color.black;
-                Gizmos.DrawLine(topWallPos, topWallPos + Quaternion.AngleAxis(225, transform.up) * (globalForward * wallCheckerThrashold));
-
-                Gizmos.color = Color.black;
-                Gizmos.DrawLine(topWallPos, topWallPos + Quaternion.AngleAxis(270, transform.up) * (globalForward * wallCheckerThrashold));
-
-                Gizmos.color = Color.black;
-                Gizmos.DrawLine(topWallPos, topWallPos + Quaternion.AngleAxis(315, transform.up) * (globalForward * wallCheckerThrashold));
-            }
-        }
-
-        #endregion
-    }
-}
+            Vector3 exitDirection = grindDirection;            float exitSpeed = currentRail != null ? currentRail.grindSpeed : 10f;            // Re-enable physical collision with the rail            if (currentRail != null)            {                foreach (Collider railCol in currentRail.GetComponents<Collider>())                {                    if (!railCol.isTrigger)                    {                        Physics.IgnoreCollision(collider, railCol, false);                    }                }            }            isGrinding = false;            var prevRail = currentRail;            currentRail = null;            // Set exit velocity            if (!jumpedOff)            {                // Natural exit (reached end of rail)                // Give upward boost + forward momentum to prevent getting stuck                Vector3 exitVelocity = exitDirection * exitSpeed; // Maintain forward/backward momentum                exitVelocity.y = jumpVelocity * 0.3f; // Add upward boost (30% of jump height)                rigidbody.velocity = exitVelocity;                Debug.Log($"Exited rail naturally with velocity: {exitVelocity}");            }            // If jumped off, MoveJump already set the velocity, don't override it        }        #endregion        #region Events        private void UpdateEvents()        {               //These all tell VFX Manager what to do:            if (isGrinding) OnGrind.Invoke();            //if ((jump && isGrounded && ((isTouchingSlope && currentSurfaceAngle <= maxClimbableSlopeAngle) || !isTouchingSlope)) || (jump && !isGrounded && isTouchingWall)) OnJump.Invoke();            if (isGrounded && !prevGrounded && rigidbody.velocity.y > -minimumVerticalSpeedToLandEvent) OnLand.Invoke();            if (Mathf.Abs(rigidbody.velocity.x) + Mathf.Abs(rigidbody.velocity.z) > minimumHorizontalSpeedToFastEvent) OnFast.Invoke();            if (isTouchingWall && rigidbody.velocity.y < 0) OnWallSlide.Invoke();            if (sprint) OnSprint.Invoke();            if (isCrouch) OnCrouch.Invoke();        }        #endregion        #region Friction and Round        private void SetFriction(float _frictionWall, bool _isMinimum)        {            collider.material.dynamicFriction = 0.6f * _frictionWall;            collider.material.staticFriction = 0.6f * _frictionWall;            if (_isMinimum) collider.material.frictionCombine = PhysicMaterialCombine.Minimum;            else collider.material.frictionCombine = PhysicMaterialCombine.Maximum;        }        private float RoundValue(float _value)        {            float unit = (float)Mathf.Round(_value);            if (_value - unit < 0.000001f && _value - unit > -0.000001f) return unit;            else return _value;        }        #endregion        #region Getters & Setters        public bool  GetGrounded()               { return isGrounded; }        public bool  GetTouchingSlope()          { return isTouchingSlope; }        public bool  GetTouchingStep()           { return isTouchingStep; }        public bool  GetTouchingWall()           { return isTouchingWall; }        public bool  GetJumping()                { return isJumping; }        public bool  GetCrouching()              { return isCrouch; }        public float GetOriginalColliderHeight() { return originalColliderHeight; }        public void SetLockRotation(bool _lock) { lockRotation = _lock; }        public void SetLockToCamera(bool _lockToCamera)        {            lockToCamera = _lockToCamera;            if (!_lockToCamera) targetAngle = characterModel.transform.eulerAngles.y;        }        public bool GetGrinding() { return isGrinding; }        #endregion        #region Gizmos        public void ToggleDebug()        {            debug = !debug;        }        private void OnDrawGizmos()        {            if (debug)            {                rigidbody = this.GetComponent<Rigidbody>();                collider = this.GetComponent<CapsuleCollider>();                Vector3 bottomStepPos = transform.position - new Vector3(0f, originalColliderHeight / 2f, 0f) + new Vector3(0f, 0.05f, 0f);                Vector3 topWallPos = new Vector3(transform.position.x, transform.position.y + hightWallCheckerChecker, transform.position.z);                //ground and slope                Gizmos.color = Color.blue;                Gizmos.DrawWireSphere(transform.position - new Vector3(0, originalColliderHeight / 2f, 0), groundCheckerThrashold);                Gizmos.color = Color.green;                Gizmos.DrawWireSphere(transform.position - new Vector3(0, originalColliderHeight / 2f, 0), slopeCheckerThrashold);                //direction                Gizmos.color = Color.blue;                Gizmos.DrawLine(transform.position, transform.position + forward * 2f);                Gizmos.color = Color.cyan;                Gizmos.DrawLine(transform.position, transform.position + globalForward * 2);                Gizmos.color = Color.cyan;                Gizmos.DrawLine(transform.position, transform.position + reactionForward * 2f);                Gizmos.color = Color.red;                Gizmos.DrawLine(transform.position, transform.position + down * 2f);                Gizmos.color = Color.magenta;                Gizmos.DrawLine(transform.position, transform.position + globalDown * 2f);                Gizmos.color = Color.magenta;                Gizmos.DrawLine(transform.position, transform.position + reactionGlobalDown * 2f);                //step check                Gizmos.color = Color.black;                Gizmos.DrawLine(bottomStepPos, bottomStepPos + globalForward * stepCheckerThrashold);                Gizmos.color = Color.black;                Gizmos.DrawLine(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), bottomStepPos + new Vector3(0f, maxStepHeight, 0f) + globalForward * (stepCheckerThrashold + 0.05f));                Gizmos.color = Color.black;                Gizmos.DrawLine(bottomStepPos, bottomStepPos + Quaternion.AngleAxis(45, transform.up) * (globalForward * stepCheckerThrashold));                Gizmos.color = Color.black;                Gizmos.DrawLine(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), bottomStepPos + Quaternion.AngleAxis(45, Vector3.up) * (globalForward * stepCheckerThrashold) + new Vector3(0f, maxStepHeight, 0f));                Gizmos.color = Color.black;                Gizmos.DrawLine(bottomStepPos, bottomStepPos + Quaternion.AngleAxis(-45, transform.up) * (globalForward * stepCheckerThrashold));                Gizmos.color = Color.black;                Gizmos.DrawLine(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), bottomStepPos + Quaternion.AngleAxis(-45, Vector3.up) * (globalForward * stepCheckerThrashold) + new Vector3(0f, maxStepHeight, 0f));                //wall check                Gizmos.color = Color.black;                Gizmos.DrawLine(topWallPos, topWallPos + globalForward * wallCheckerThrashold);                Gizmos.color = Color.black;                Gizmos.DrawLine(topWallPos, topWallPos + Quaternion.AngleAxis(45, transform.up) * (globalForward * wallCheckerThrashold));                Gizmos.color = Color.black;                Gizmos.DrawLine(topWallPos, topWallPos + Quaternion.AngleAxis(90, transform.up) * (globalForward * wallCheckerThrashold));                Gizmos.color = Color.black;                Gizmos.DrawLine(topWallPos, topWallPos + Quaternion.AngleAxis(135, transform.up) * (globalForward * wallCheckerThrashold));                Gizmos.color = Color.black;                Gizmos.DrawLine(topWallPos, topWallPos + Quaternion.AngleAxis(180, transform.up) * (globalForward * wallCheckerThrashold));                Gizmos.color = Color.black;                Gizmos.DrawLine(topWallPos, topWallPos + Quaternion.AngleAxis(225, transform.up) * (globalForward * wallCheckerThrashold));                Gizmos.color = Color.black;                Gizmos.DrawLine(topWallPos, topWallPos + Quaternion.AngleAxis(270, transform.up) * (globalForward * wallCheckerThrashold));                Gizmos.color = Color.black;                Gizmos.DrawLine(topWallPos, topWallPos + Quaternion.AngleAxis(315, transform.up) * (globalForward * wallCheckerThrashold));            }        }        #endregion    }}
