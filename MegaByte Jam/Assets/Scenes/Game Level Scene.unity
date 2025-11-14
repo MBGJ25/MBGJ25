@@ -18291,6 +18291,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: 72b48f00ca3fa2345b6f958844ff233a, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 72b48f00ca3fa2345b6f958844ff233a, type: 3}
       propertyPath: m_Name
       value: SM_2D-Normal_PedestrainBridge_V1.0 (2)
@@ -22804,6 +22808,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7635826562936255635, guid: 25cb17bc79a824d1d8d72274e074c6b4, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: 25cb17bc79a824d1d8d72274e074c6b4, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -26067,6 +26075,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7635826562936255635, guid: e5cd79019e71d407686b103cec4de027, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e5cd79019e71d407686b103cec4de027, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -27881,6 +27893,10 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 26fb654e4355e294195502ce5c3f83a2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: 26fb654e4355e294195502ce5c3f83a2, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 26fb654e4355e294195502ce5c3f83a2, type: 3}
       propertyPath: m_Name
@@ -36244,6 +36260,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e5cd79019e71d407686b103cec4de027, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e5cd79019e71d407686b103cec4de027, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7635826562936255635, guid: e5cd79019e71d407686b103cec4de027, type: 3}
@@ -56470,6 +56490,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: 1ee9eca45cebe5b41ae11c24f79ac919, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 1ee9eca45cebe5b41ae11c24f79ac919, type: 3}
       propertyPath: m_Name
       value: SM_3D-Tall_PedestrainBridge_V1.0 (2)
@@ -59021,6 +59045,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e5cd79019e71d407686b103cec4de027, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e5cd79019e71d407686b103cec4de027, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7635826562936255635, guid: e5cd79019e71d407686b103cec4de027, type: 3}
@@ -97605,6 +97633,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7635826562936255635, guid: e5cd79019e71d407686b103cec4de027, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e5cd79019e71d407686b103cec4de027, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -97623,6 +97655,10 @@ PrefabInstance:
     - target: {fileID: 8164078558771037576, guid: e5cd79019e71d407686b103cec4de027, type: 3}
       propertyPath: m_Layer
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8164078558771037576, guid: e5cd79019e71d407686b103cec4de027, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -103790,6 +103826,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e5cd79019e71d407686b103cec4de027, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e5cd79019e71d407686b103cec4de027, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7635826562936255635, guid: e5cd79019e71d407686b103cec4de027, type: 3}
@@ -138020,6 +138060,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7635826562936255635, guid: e5cd79019e71d407686b103cec4de027, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e5cd79019e71d407686b103cec4de027, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -140581,6 +140625,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e5cd79019e71d407686b103cec4de027, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e5cd79019e71d407686b103cec4de027, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7635826562936255635, guid: e5cd79019e71d407686b103cec4de027, type: 3}
@@ -145111,6 +145159,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: 72b48f00ca3fa2345b6f958844ff233a, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 72b48f00ca3fa2345b6f958844ff233a, type: 3}
       propertyPath: m_Name
       value: SM_2D-Normal_PedestrainBridge_V1.0 (1)
@@ -145549,6 +145601,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e5cd79019e71d407686b103cec4de027, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e5cd79019e71d407686b103cec4de027, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7635826562936255635, guid: e5cd79019e71d407686b103cec4de027, type: 3}
@@ -152029,6 +152085,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: 26fb654e4355e294195502ce5c3f83a2, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 26fb654e4355e294195502ce5c3f83a2, type: 3}
       propertyPath: m_Name
       value: SM_3D-Normal_PedestrainBridge_V1.0 (1)
@@ -154990,6 +155050,10 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 1ee9eca45cebe5b41ae11c24f79ac919, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: 1ee9eca45cebe5b41ae11c24f79ac919, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 1ee9eca45cebe5b41ae11c24f79ac919, type: 3}
       propertyPath: m_Name
