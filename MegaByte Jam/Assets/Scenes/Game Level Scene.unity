@@ -69241,7 +69241,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterManager: {fileID: 631634513}
   particleGrind: {fileID: 1953492567862052285, guid: 55a508f696e1b034889a368b97729a5d, type: 3}
-  particleLand: {fileID: 1990316578479262824, guid: 14c2a6bc35134fe48a43d301722618ec, type: 3}
+  particleLand: {fileID: 0}
   particleFast: {fileID: 0}
   enableVFX: 1
 --- !u!4 &959799303
