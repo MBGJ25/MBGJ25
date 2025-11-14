@@ -39,12 +39,7 @@ namespace PhysicsCharacterController
 
         private void Update()
         {
-            if (characterManager.GetGrinding())
-            {
-                anim.SetBool("isGrounded", false);
-                anim.SetBool("isJumping", true);
-                return;
-            }
+            anim.SetBool("isGrinding", characterManager.GetGrinding());            
             
             anim.SetFloat("velocity", rigidbodyCharacter.velocity.magnitude * velocityAnimationMultiplier);
 
