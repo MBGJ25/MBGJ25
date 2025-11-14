@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 
 namespace PhysicsCharacterController
@@ -9,7 +9,7 @@ namespace PhysicsCharacterController
         public CharacterManager characterManager;
         [Space(10)]
 
-        public GameObject particleJump;
+        public GameObject particleGrind;
         public GameObject particleLand;
         public GameObject particleFast;
         [Space(10)]
@@ -32,11 +32,11 @@ namespace PhysicsCharacterController
 
         #region VFX 
 
-        public void ParticleJump()
+        public void ParticleGrind()
         {
             if (enableVFX)
             {
-                GameObject tmpObj = GameObject.Instantiate(particleJump, characterManager.transform.position - new Vector3(0f, collider.height / 2f, 0f), Quaternion.identity);
+                GameObject tmpObj = GameObject.Instantiate(particleGrind, characterManager.transform.position - new Vector3(0f, collider.height / 2f, 0f), Quaternion.identity);
                 tmpObj.transform.parent = this.transform;
             }
         }
@@ -46,7 +46,7 @@ namespace PhysicsCharacterController
             if (enableVFX)
             {
                 GameObject tmpObj = GameObject.Instantiate(particleLand, characterManager.transform.position - new Vector3(0f, collider.height / 2f, 0f), Quaternion.identity);
-                tmpObj.transform.parent = this.transform;
+                tmpObj.transform.parent = this.transform; 
             }
         }
 

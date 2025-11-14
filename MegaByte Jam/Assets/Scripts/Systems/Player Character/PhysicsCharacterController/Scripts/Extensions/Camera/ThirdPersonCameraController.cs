@@ -9,6 +9,8 @@ namespace PhysicsCharacterController
         [Header("Camera controls")]
         public Vector2 mouseSensivity = new Vector2(5f, 1f);
         public Vector2 analogSensivity = new Vector2(13f, 1.5f);
+
+        public bool CameraAccelleration = true;
         public float smoothSpeed = 0.17f;
 
         [Header("References")]
@@ -29,6 +31,7 @@ namespace PhysicsCharacterController
         {
             cinemachineFreeLook = this.GetComponent<CinemachineFreeLook>();
             currentSensitivity = mouseSensivity;
+            if (!CameraAccelleration) smoothSpeed = 0f;
         }
 
 

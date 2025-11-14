@@ -97,7 +97,7 @@ namespace PhysicsCharacterController
 
 
         [Header("Events")]
-        [SerializeField] UnityEvent OnJump;
+        [SerializeField] UnityEvent OnGrind;
         [Space(15)]
         public float minimumVerticalSpeedToLandEvent;
         [SerializeField] UnityEvent OnLand;
@@ -391,8 +391,7 @@ namespace PhysicsCharacterController
             float dist = rigidbody.velocity.magnitude;
 
             RaycastHit hit;
-            if (dir.y < 0 && Physics.SphereCast(transform.position, GetComponent<Collider>().bounds.size.y / 2, dir, out hit, dist * Time.fixedDeltaTime))
-            {
+            if (isJumping && dir.y < 0 && Physics.SphereCast(transform.position, GetComponent<Collider>().bounds.size.y / 2, dir, out hit, dist * Time.fixedDeltaTime)) {
                 GrindRail rail = hit.collider.gameObject.GetComponent<GrindRail>();
                 if (rail != null)
                 {
@@ -978,8 +977,10 @@ namespace PhysicsCharacterController
         #region Events
 
         private void UpdateEvents()
-        {
-            if ((jump && isGrounded && ((isTouchingSlope && currentSurfaceAngle <= maxClimbableSlopeAngle) || !isTouchingSlope)) || (jump && !isGrounded && isTouchingWall)) OnJump.Invoke();
+        {   
+            //These all tell VFX Manager what to do:
+            if (isGrinding) OnGrind.Invoke();
+            //if ((jump && isGrounded && ((isTouchingSlope && currentSurfaceAngle <= maxClimbableSlopeAngle) || !isTouchingSlope)) || (jump && !isGrounded && isTouchingWall)) OnJump.Invoke();
             if (isGrounded && !prevGrounded && rigidbody.velocity.y > -minimumVerticalSpeedToLandEvent) OnLand.Invoke();
             if (Mathf.Abs(rigidbody.velocity.x) + Mathf.Abs(rigidbody.velocity.z) > minimumHorizontalSpeedToFastEvent) OnFast.Invoke();
             if (isTouchingWall && rigidbody.velocity.y < 0) OnWallSlide.Invoke();
