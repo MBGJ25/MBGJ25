@@ -1124,6 +1124,8 @@ GameObject:
   - component: {fileID: 683204721}
   - component: {fileID: 683204720}
   - component: {fileID: 683204719}
+  - component: {fileID: 683204722}
+  - component: {fileID: 683204723}
   m_Layer: 5
   m_Name: StartButton
   m_TagString: Untagged
@@ -1206,6 +1208,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1454603637}
+        m_TargetAssemblyTypeName: FMODOneShotPlayer, Assembly-CSharp
+        m_MethodName: PlayOneShot
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &683204720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1244,6 +1258,68 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 683204717}
   m_CullTransparentMesh: 1
+--- !u!114 &683204722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683204717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -57131327
+      Data2: 1153904029
+      Data3: -155587409
+      Data4: 1567843955
+    Path: event:/SFX/UI/button_hover
+  Event: 
+  EventPlayTrigger: 17
+  EventStopTrigger: 18
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &683204723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683204717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 1240468923
+      Data2: 1240265587
+      Data3: 251261080
+      Data4: -1697397271
+    Path: event:/SFX/UI/button_start
+  Event: 
+  EventPlayTrigger: 15
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &711906381
 GameObject:
   m_ObjectHideFlags: 0
@@ -1537,6 +1613,11 @@ MonoBehaviour:
   musicVolume: 1
   soundeffectsVolume: 1
   ambienceVolume: 1
+--- !u!4 &941145863 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 150338846333327474, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+  m_PrefabInstance: {fileID: 1367465511208614010}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &987705839
 GameObject:
   m_ObjectHideFlags: 0
@@ -2302,6 +2383,57 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   volumeType: 3
   volumeSlider: {fileID: 1819388149}
+--- !u!1 &1454603635
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1454603636}
+  - component: {fileID: 1454603637}
+  m_Layer: 0
+  m_Name: StartSound
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1454603636
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1454603635}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 941145863}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1454603637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1454603635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e84db4c0ba805647b577b5962cdc26d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventToPlay:
+    Guid:
+      Data1: 1240468923
+      Data2: 1240265587
+      Data3: 251261080
+      Data4: -1697397271
+    Path: event:/SFX/UI/button_start
 --- !u!1 &1495318376
 GameObject:
   m_ObjectHideFlags: 0
@@ -3245,7 +3377,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 150338846333327474, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1454603636}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2041956044931495372, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
       insertIndex: -1
