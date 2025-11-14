@@ -13,7 +13,7 @@ public class FMODOneShotPlayer : MonoBehaviour
     {
         if (eventToPlay.IsNull)
         {
-            Debug.LogWarning("FMODOneShotPlayer: EventReference está vazio!");
+            Debug.LogWarning("FMODOneShotPlayer: EventReference is empty!");
             return;
         }
 
