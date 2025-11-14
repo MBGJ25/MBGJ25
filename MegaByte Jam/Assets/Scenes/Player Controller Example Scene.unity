@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterManager: {fileID: 1989639285}
-  particleJump: {fileID: 5969544759886621580, guid: 027f7676d85eaff4db64945788d561c4, type: 3}
+  particleGrind: {fileID: 0}
   particleLand: {fileID: 9046057661589556714, guid: 86804816d3c9e214c9a526e82ee95703, type: 3}
   particleFast: {fileID: 5331628502967614616, guid: e263a650d9724a04fb16a49a08c8db3d, type: 3}
   enableVFX: 0
@@ -7477,6 +7477,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: (Prb)Shooter
       objectReference: {fileID: 0}
+    - target: {fileID: 2795047108100826419, guid: 9e4757aed32f476419bb6acd9168541a, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

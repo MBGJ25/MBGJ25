@@ -101,8 +101,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats: {fileID: 11400000, guid: af33e6becb2bcbc49bba80f259b72be0, type: 2}
+  attackPlayer: 1
   agent: {fileID: 926973869391325555}
-  player: {fileID: 0}
+  playerObject: {fileID: 0}
   whatIsGround:
     serializedVersion: 2
     m_Bits: 8
@@ -117,6 +118,9 @@ MonoBehaviour:
   attackRange: 5
   playerInSightRange: 0
   playerInAttackRange: 0
+  panicRange: 10
+  fleeSpeed: 5
+  fleeDistance: 15
 --- !u!195 &926973869391325555
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -201,7 +205,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -306,7 +310,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
