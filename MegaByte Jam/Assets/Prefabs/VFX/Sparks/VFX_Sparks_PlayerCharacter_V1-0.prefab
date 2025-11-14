@@ -49,7 +49,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 0
+  looping: 1
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -447,7 +447,7 @@ ParticleSystem:
     startRotationX:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0
+      scalar: 1.5707963
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -4901,4 +4901,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42a3b1a9bd9f968458f42e69fe6dc509, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeDelay: 1
+  timeDelay: 0.3
