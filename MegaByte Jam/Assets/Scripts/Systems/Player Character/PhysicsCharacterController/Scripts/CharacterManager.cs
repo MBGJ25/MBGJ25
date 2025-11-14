@@ -23,6 +23,9 @@ namespace PhysicsCharacterController
         [Header("Audio")]
         [SerializeField]
         private PlayerSounds playerSounds;
+        [SerializeField] protected FMODUnity.EventReference _jumpsound;
+        private FMOD.Studio.EventInstance jumpsound;
+
 
         [Header("Jump and gravity specifics")]
         public float jumpVelocity = 24f;
@@ -737,6 +740,7 @@ namespace PhysicsCharacterController
             {
                 rigidbody.velocity += Vector3.up * jumpVelocity;
                 isJumping = true;
+                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Movement/Jump");
             }
 
             // 3. Wall jump - NOW WITH COUNTER CHECK!
