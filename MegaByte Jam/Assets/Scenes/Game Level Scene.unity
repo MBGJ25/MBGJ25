@@ -52301,6 +52301,111 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1656656422}
   m_SourcePrefab: {fileID: 100100000, guid: 53aa51a6a02cae046a93f38dfe026de8, type: 3}
+--- !u!1001 &716403227
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 150338846333327474, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 588.60724
+      objectReference: {fileID: 0}
+    - target: {fileID: 150338846333327474, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 277.2234
+      objectReference: {fileID: 0}
+    - target: {fileID: 150338846333327474, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -13.242109
+      objectReference: {fileID: 0}
+    - target: {fileID: 150338846333327474, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 150338846333327474, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 150338846333327474, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 150338846333327474, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 150338846333327474, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 150338846333327474, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 150338846333327474, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2041956044931495372, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: m_Name
+      value: AudioManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: EventPlayTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: EventStopTrigger
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: Params.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: EventReference.Path
+      value: event:/Music/Music
+      objectReference: {fileID: 0}
+    - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: OverrideMaxDistance
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: OverrideMinDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: EventReference.Guid.Data1
+      value: -1068456903
+      objectReference: {fileID: 0}
+    - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: EventReference.Guid.Data2
+      value: 1320006607
+      objectReference: {fileID: 0}
+    - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: EventReference.Guid.Data3
+      value: 719404162
+      objectReference: {fileID: 0}
+    - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: EventReference.Guid.Data4
+      value: 2073253608
+      objectReference: {fileID: 0}
+    - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: Params.Array.data[0].Name
+      value: MusicState 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: Params.Array.data[0].Value
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
 --- !u!1 &716684438
 GameObject:
   m_ObjectHideFlags: 0
@@ -157631,6 +157736,7 @@ SceneRoots:
   - {fileID: 79950595}
   - {fileID: 2042500374}
   - {fileID: 959799303}
+  - {fileID: 716403227}
   - {fileID: 697353970}
   - {fileID: 1963116823}
   - {fileID: 644130867}
