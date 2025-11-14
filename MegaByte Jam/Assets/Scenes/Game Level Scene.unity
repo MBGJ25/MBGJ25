@@ -50301,6 +50301,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 468307785458387724, guid: cf4b3ff444aac3d479825f1fa43b6237, type: 3}
+      propertyPath: grindEmitter
+      value: 
+      objectReference: {fileID: -8856671951202509687, guid: 2e64d3d8289f0264a90f9b503915239f, type: 3}
+    - target: {fileID: 468307785458387724, guid: cf4b3ff444aac3d479825f1fa43b6237, type: 3}
       propertyPath: jumpVelocity
       value: 30
       objectReference: {fileID: 0}
