@@ -17,6 +17,7 @@ namespace PhysicsCharacterController
         public bool enableVFX = false;
 
         private CapsuleCollider collider;
+        private Quaternion gqt;
         private GameObject characterModel;
 
 
@@ -36,7 +37,8 @@ namespace PhysicsCharacterController
         {
             if (enableVFX)
             {
-                GameObject tmpObj = GameObject.Instantiate(particleGrind, characterManager.transform.position - new Vector3(0f, collider.height / 2f, 0f), Quaternion.identity);
+                Quaternion newQuaternion = new Quaternion(0, 0, characterManager.transform.rotation.z, characterManager.transform.rotation.w);
+                GameObject tmpObj = GameObject.Instantiate(particleGrind, characterManager.transform.position - new Vector3(0f, collider.height / 2f, 0f), characterManager.transform.rotation);
                 tmpObj.transform.parent = this.transform;
             }
         }
