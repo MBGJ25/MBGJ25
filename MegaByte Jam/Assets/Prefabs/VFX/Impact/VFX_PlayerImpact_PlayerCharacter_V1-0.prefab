@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1657702431904473814}
   - component: {fileID: 5318623232557219829}
   - component: {fileID: 8830017692996692854}
+  - component: {fileID: -8539568625675421487}
   m_Layer: 0
   m_Name: VFX_PlayerImpact_PlayerCharacter_V1-0
   m_TagString: Untagged
@@ -4889,6 +4890,19 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &-8539568625675421487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990316578479262824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42a3b1a9bd9f968458f42e69fe6dc509, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeDelay: 0.5
 --- !u!1 &6547212983119960829
 GameObject:
   m_ObjectHideFlags: 0

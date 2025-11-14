@@ -43,7 +43,7 @@ namespace PhysicsCharacterController
             
             anim.SetFloat("velocity", rigidbodyCharacter.velocity.magnitude * velocityAnimationMultiplier);
 
-            anim.SetBool("isGrounded", CheckAnimationGrounded());
+            anim.SetBool("isGrounded", characterManager.GetGrounded());
 
             // CS TODO: Eventually remove when we have an actual grind animation
             // anim.SetBool("isJump", characterManager.GetJumping() || characterManager.GetGrinding());
@@ -57,10 +57,5 @@ namespace PhysicsCharacterController
             anim.SetBool("isCrouch", characterManager.GetCrouching());
         }
 
-
-        private bool CheckAnimationGrounded()
-        {
-            return Physics.CheckSphere(characterManager.transform.position - new Vector3(0, originalColliderHeight / 2f, 0), groundCheckerThrashold, groundMask);
-        }
     }
 }
