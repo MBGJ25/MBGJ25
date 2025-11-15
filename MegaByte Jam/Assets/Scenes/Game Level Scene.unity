@@ -45579,7 +45579,7 @@ PrefabInstance:
       objectReference: {fileID: 7622018436607181172, guid: 7beed6419f751b1488778b3f73ba47ab, type: 3}
     - target: {fileID: 468307785458387724, guid: cf4b3ff444aac3d479825f1fa43b6237, type: 3}
       propertyPath: stepCheckerThrashold
-      value: 0.3
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 468307785458387724, guid: cf4b3ff444aac3d479825f1fa43b6237, type: 3}
       propertyPath: _jumpsound.Guid.Data1
@@ -45603,11 +45603,11 @@ PrefabInstance:
       objectReference: {fileID: 3095441805783680800, guid: 2e323702419056f45a8c87ace608ef71, type: 3}
     - target: {fileID: 468307785458387724, guid: cf4b3ff444aac3d479825f1fa43b6237, type: 3}
       propertyPath: slopeCheckerThrashold
-      value: 0.3
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 468307785458387724, guid: cf4b3ff444aac3d479825f1fa43b6237, type: 3}
       propertyPath: groundCheckerThrashold
-      value: 0.3
+      value: 0.175
       objectReference: {fileID: 0}
     - target: {fileID: 468307785458387724, guid: cf4b3ff444aac3d479825f1fa43b6237, type: 3}
       propertyPath: maxClimbableSlopeAngle
