@@ -1416,11 +1416,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
       propertyPath: Params.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
       propertyPath: EventReference.Path
-      value: event:/MUS/Music
+      value: event:/MUS/EndGame
       objectReference: {fileID: 0}
     - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
       propertyPath: OverrideMaxDistance
@@ -1432,23 +1432,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
       propertyPath: EventReference.Guid.Data1
-      value: -1068456903
+      value: 944857638
       objectReference: {fileID: 0}
     - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
       propertyPath: EventReference.Guid.Data2
-      value: 1320006607
+      value: 1292867510
       objectReference: {fileID: 0}
     - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
       propertyPath: EventReference.Guid.Data3
-      value: 719404162
+      value: -170832719
       objectReference: {fileID: 0}
     - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
       propertyPath: EventReference.Guid.Data4
-      value: 2073253608
+      value: 343401281
       objectReference: {fileID: 0}
     - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
       propertyPath: Params.Array.data[0].Name
       value: MusicState 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: Params.Array.data[0].Value
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -89,7 +89,7 @@ MonoBehaviour:
   Path: Assets/Audio/FMOD Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638987972515092805
+  lastModified: 638988227413577000
   FileSizes: []
   Exists: 1
 --- !u!114 &-7550907842946750735
@@ -144,7 +144,7 @@ MonoBehaviour:
   - {fileID: 5451714291649447153}
   MinDistance: 1
   MaxDistance: 20
-  Length: 418459
+  Length: 443600
 --- !u!114 &-5959940673727271109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -625,12 +625,13 @@ MonoBehaviour:
   - {fileID: -5075982307325625143}
   - {fileID: -5728364799822215822}
   - {fileID: -2803446932690884509}
+  - {fileID: 5146752788847347224}
   EditorParameters: []
   MasterBanks:
   - {fileID: -8113383383493620727}
   StringsBanks:
   - {fileID: 8538905158116974900}
-  cacheTime: 638987972515127923
+  cacheTime: 638988227413612193
   cacheVersion: 131632
 --- !u!114 &900357396905546765
 MonoBehaviour:
@@ -928,6 +929,33 @@ MonoBehaviour:
   IsGlobal: 0
   Labels: []
   Exists: 1
+--- !u!114 &5146752788847347224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/MUS/EndGame
+  m_EditorClassIdentifier: 
+  Path: event:/MUS/EndGame
+  Guid:
+    Data1: 944857638
+    Data2: 1292867510
+    Data3: -170832719
+    Data4: 343401281
+  Banks:
+  - {fileID: -8113383383493620727}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 131947
 --- !u!114 &5451714291649447153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1047,8 +1075,8 @@ MonoBehaviour:
   Path: Assets/Audio/FMOD Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638987972515127923
+  lastModified: 638988227413612193
   FileSizes:
   - Name: 
-    Value: 2268
+    Value: 2318
   Exists: 1
