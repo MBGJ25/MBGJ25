@@ -6,10 +6,9 @@ using UnityEngine;
 public class GetCollectible : MonoBehaviour
 {
 
-    private int Collectible = 0;
-
     public TextMeshProUGUI collectibleText;
-    [SerializeField]private int totalStickers;
+    [SerializeField] private int totalStickers;
+    [SerializeField] private int Collectible = 0;
 
     private void Start()
     {
