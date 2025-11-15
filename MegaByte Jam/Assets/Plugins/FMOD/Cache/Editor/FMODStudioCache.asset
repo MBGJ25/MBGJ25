@@ -89,7 +89,7 @@ MonoBehaviour:
   Path: Assets/Audio/FMOD Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638987704153164040
+  lastModified: 638987780654885911
   FileSizes: []
   Exists: 1
 --- !u!114 &-7550907842946750735
@@ -295,6 +295,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 305
+--- !u!114 &-3216740476212653620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/UI/collectible
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/UI/collectible
+  Guid:
+    Data1: -297324537
+    Data2: 1206930100
+    Data3: 805004471
+    Data4: 891623428
+  Banks:
+  - {fileID: -8113383383493620727}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 2200
 --- !u!114 &-3158977377940563155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -347,6 +374,33 @@ MonoBehaviour:
   IsGlobal: 0
   Labels: []
   Exists: 1
+--- !u!114 &-2007802554912819843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/AMB/car alarm
+  m_EditorClassIdentifier: 
+  Path: event:/AMB/car alarm
+  Guid:
+    Data1: 1267288786
+    Data2: 1247682791
+    Data3: 1849254535
+    Data4: 914095736
+  Banks:
+  - {fileID: -8113383383493620727}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 11000
 --- !u!114 &-1856131614004261152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -422,7 +476,7 @@ MonoBehaviour:
   - {fileID: 8128768583830322416}
   MinDistance: 1
   MaxDistance: 20
-  Length: 460
+  Length: 810
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -453,12 +507,14 @@ MonoBehaviour:
   - {fileID: 900357396905546765}
   - {fileID: -7353080431718587206}
   - {fileID: 2800380545846605594}
+  - {fileID: -3216740476212653620}
+  - {fileID: -2007802554912819843}
   EditorParameters: []
   MasterBanks:
   - {fileID: -8113383383493620727}
   StringsBanks:
   - {fileID: 8538905158116974900}
-  cacheTime: 638987704153179087
+  cacheTime: 638987780654903261
   cacheVersion: 131632
 --- !u!114 &900357396905546765
 MonoBehaviour:
@@ -568,7 +624,7 @@ MonoBehaviour:
   - {fileID: -1352726662293078852}
   MinDistance: 1
   MaxDistance: 20
-  Length: 2435
+  Length: 4242
 --- !u!114 &2604640823580957307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -767,8 +823,8 @@ MonoBehaviour:
   Path: Assets/Audio/FMOD Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638987704153179087
+  lastModified: 638987780654903261
   FileSizes:
   - Name: 
-    Value: 1804
+    Value: 1910
   Exists: 1
