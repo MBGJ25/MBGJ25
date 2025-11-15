@@ -89,7 +89,7 @@ MonoBehaviour:
   Path: Assets/Audio/FMOD Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638987906249053433
+  lastModified: 638987931521359605
   FileSizes: []
   Exists: 1
 --- !u!114 &-7550907842946750735
@@ -404,6 +404,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 3566
+--- !u!114 &-2803446932690884509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/Movement/Climb
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/Movement/Climb
+  Guid:
+    Data1: -877274681
+    Data2: 1288994753
+    Data3: 820639163
+    Data4: 2046246432
+  Banks:
+  - {fileID: -8113383383493620727}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 216
 --- !u!114 &-2650755030341633276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -597,12 +624,13 @@ MonoBehaviour:
   - {fileID: 4359257772976142496}
   - {fileID: -5075982307325625143}
   - {fileID: -5728364799822215822}
+  - {fileID: -2803446932690884509}
   EditorParameters: []
   MasterBanks:
   - {fileID: -8113383383493620727}
   StringsBanks:
   - {fileID: 8538905158116974900}
-  cacheTime: 638987906249077838
+  cacheTime: 638987931521399880
   cacheVersion: 131632
 --- !u!114 &900357396905546765
 MonoBehaviour:
@@ -1019,8 +1047,8 @@ MonoBehaviour:
   Path: Assets/Audio/FMOD Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638987906249077838
+  lastModified: 638987931521399880
   FileSizes:
   - Name: 
-    Value: 2222
+    Value: 2268
   Exists: 1
