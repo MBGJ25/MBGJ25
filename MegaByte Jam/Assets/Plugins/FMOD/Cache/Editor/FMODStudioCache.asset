@@ -89,7 +89,7 @@ MonoBehaviour:
   Path: Assets/Audio/FMOD Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638987780654885911
+  lastModified: 638987845150006662
   FileSizes: []
   Exists: 1
 --- !u!114 &-7550907842946750735
@@ -247,6 +247,33 @@ MonoBehaviour:
   IsGlobal: 0
   Labels: []
   Exists: 1
+--- !u!114 &-5368072185800758989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/AMB/ambience 2
+  m_EditorClassIdentifier: 
+  Path: event:/AMB/ambience 2
+  Guid:
+    Data1: -1649925391
+    Data2: 1258888396
+    Data3: 1585792173
+    Data4: -1039468260
+  Banks:
+  - {fileID: -8113383383493620727}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 8500
 --- !u!114 &-4617318446464656650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -509,13 +536,43 @@ MonoBehaviour:
   - {fileID: 2800380545846605594}
   - {fileID: -3216740476212653620}
   - {fileID: -2007802554912819843}
+  - {fileID: 4393699764285299922}
+  - {fileID: -5368072185800758989}
+  - {fileID: 287324843816318712}
   EditorParameters: []
   MasterBanks:
   - {fileID: -8113383383493620727}
   StringsBanks:
   - {fileID: 8538905158116974900}
-  cacheTime: 638987780654903261
+  cacheTime: 638987845150016779
   cacheVersion: 131632
+--- !u!114 &287324843816318712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/AMB/firepit2d
+  m_EditorClassIdentifier: 
+  Path: event:/AMB/firepit2d
+  Guid:
+    Data1: 2062287515
+    Data2: 1280752051
+    Data3: 988391848
+    Data4: 52940946
+  Banks:
+  - {fileID: -8113383383493620727}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 8500
 --- !u!114 &900357396905546765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -707,6 +764,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 1500
+--- !u!114 &4393699764285299922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/AMB/firepit
+  m_EditorClassIdentifier: 
+  Path: event:/AMB/firepit
+  Guid:
+    Data1: 197276752
+    Data2: 1174408172
+    Data3: 1676108450
+    Data4: -382112094
+  Banks:
+  - {fileID: -8113383383493620727}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 0
+  MaxDistance: 6.6
+  Length: 8500
 --- !u!114 &4960726043543739270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -823,8 +907,8 @@ MonoBehaviour:
   Path: Assets/Audio/FMOD Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638987780654903261
+  lastModified: 638987845150016779
   FileSizes:
   - Name: 
-    Value: 1910
+    Value: 2036
   Exists: 1

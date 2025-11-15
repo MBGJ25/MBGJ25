@@ -3676,6 +3676,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 54f485a3ad88be742ad51cad8b8f81fe, type: 2}
     - target: {fileID: 919132149155446097, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
       propertyPath: m_Name
       value: SM_Barrel_Campfire_V1.1 (1)
@@ -3695,6 +3703,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8164078558771037576, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1768049942}
+    - targetCorrespondingSourceObject: {fileID: 8164078558771037576, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1768049946}
   m_SourcePrefab: {fileID: 100100000, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
 --- !u!4 &66939212 stripped
 Transform:
@@ -29601,6 +29612,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: 264197512d95b4a31bdbcc23e94aaf56, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 264197512d95b4a31bdbcc23e94aaf56, type: 3}
       propertyPath: m_Name
       value: SM_Original_Campfire_V1.1 (3)
@@ -29612,6 +29627,10 @@ PrefabInstance:
     - target: {fileID: 8164078558771037576, guid: 264197512d95b4a31bdbcc23e94aaf56, type: 3}
       propertyPath: m_Layer
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8164078558771037576, guid: 264197512d95b4a31bdbcc23e94aaf56, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -35657,6 +35676,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 54f485a3ad88be742ad51cad8b8f81fe, type: 2}
     - target: {fileID: 919132149155446097, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
       propertyPath: m_Name
       value: SM_Barrel_Campfire_V1.1 (7)
@@ -35676,6 +35703,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8164078558771037576, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1187636858}
+    - targetCorrespondingSourceObject: {fileID: 8164078558771037576, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1187636862}
   m_SourcePrefab: {fileID: 100100000, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
 --- !u!1 &534264442 stripped
 GameObject:
@@ -44317,6 +44347,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -2432090755550338912, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+--- !u!114 &675791681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 675791675}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 197276752
+      Data2: 1174408172
+      Data3: 1676108450
+      Data4: -382112094
+    Path: event:/AMB/firepit
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 2
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 250
 --- !u!1 &676489332 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8164078558771037576, guid: d7908dcc4325b4787a3ea43f7b087a24, type: 3}
@@ -47289,6 +47350,10 @@ PrefabInstance:
       value: AudioManager
       objectReference: {fileID: 0}
     - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6517291465277415580, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
       propertyPath: EventPlayTrigger
       value: 1
       objectReference: {fileID: 0}
@@ -47344,7 +47409,8 @@ PrefabInstance:
       propertyPath: Params.Array.data[1].Value
       value: 2
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8411520063107827616, guid: 37b96ca69c4a1e345a5afdf08924fcfa, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -61749,7 +61815,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 945527720}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
   m_Name: 
@@ -67381,6 +67447,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -2432090755550338912, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+--- !u!114 &1021794749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1021794743}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 197276752
+      Data2: 1174408172
+      Data3: 1676108450
+      Data4: -382112094
+    Path: event:/AMB/firepit
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 2
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 250
 --- !u!1 &1021895886
 GameObject:
   m_ObjectHideFlags: 0
@@ -79311,6 +79408,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -2432090755550338912, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+--- !u!114 &1187636862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1187636856}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 197276752
+      Data2: 1174408172
+      Data3: 1676108450
+      Data4: -382112094
+    Path: event:/AMB/firepit
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 250
 --- !u!1 &1188744805 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8164078558771037576, guid: 4400733dbe339e94e90125142a8cbe3c, type: 3}
@@ -85982,7 +86110,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7823351807975455128, guid: 60542c78ea7861c4381d91d66fa28c9a, type: 3}
   m_PrefabInstance: {fileID: 1963116823}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1318391432}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 41504c86d9c4ebd41a7896c0fcc071e4, type: 3}
@@ -87369,6 +87497,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 318036127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1318391432 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7823351807975455078, guid: 60542c78ea7861c4381d91d66fa28c9a, type: 3}
+  m_PrefabInstance: {fileID: 1963116823}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1318391435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1318391432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nonRigidbodyVelocity: 0
+  attenuationObject: {fileID: 0}
 --- !u!4 &1318975807 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5b00d278e2bec4dde8a5995fd944d9a9, type: 3}
@@ -87699,6 +87846,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -2432090755550338912, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+--- !u!114 &1323357992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1323357986}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 197276752
+      Data2: 1174408172
+      Data3: 1676108450
+      Data4: -382112094
+    Path: event:/AMB/firepit
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 2
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 250
 --- !u!4 &1324230040 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 97dd3b1ca85a2b04fa3abfb69eac2f14, type: 3}
@@ -88044,6 +88222,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 54f485a3ad88be742ad51cad8b8f81fe, type: 2}
     - target: {fileID: 919132149155446097, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
       propertyPath: m_Name
       value: SM_Barrel_Campfire_V1.1 (6)
@@ -107429,6 +107615,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 54f485a3ad88be742ad51cad8b8f81fe, type: 2}
     - target: {fileID: 919132149155446097, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
       propertyPath: m_Name
       value: SM_Barrel_Campfire_V1.1 (3)
@@ -110326,6 +110520,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 54f485a3ad88be742ad51cad8b8f81fe, type: 2}
     - target: {fileID: 919132149155446097, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
       propertyPath: m_Name
       value: SM_Barrel_Campfire_V1.1 (4)
@@ -110345,6 +110547,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8164078558771037576, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1323357988}
+    - targetCorrespondingSourceObject: {fileID: 8164078558771037576, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1323357992}
   m_SourcePrefab: {fileID: 100100000, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
 --- !u!1001 &1640880513
 PrefabInstance:
@@ -117095,6 +117300,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -2432090755550338912, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+--- !u!114 &1768049946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1768049940}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 197276752
+      Data2: 1174408172
+      Data3: 1676108450
+      Data4: -382112094
+    Path: event:/AMB/firepit
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 2
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 250
 --- !u!1001 &1768658239
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -123143,6 +123379,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 54f485a3ad88be742ad51cad8b8f81fe, type: 2}
     - target: {fileID: 919132149155446097, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
       propertyPath: m_Name
       value: SM_Barrel_Campfire_V1.1 (2)
@@ -123162,6 +123406,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8164078558771037576, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1021794745}
+    - targetCorrespondingSourceObject: {fileID: 8164078558771037576, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1021794749}
   m_SourcePrefab: {fileID: 100100000, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
 --- !u!1 &1859608233
 GameObject:
@@ -130574,6 +130821,9 @@ PrefabInstance:
     - {fileID: 7823351806651475544, guid: 60542c78ea7861c4381d91d66fa28c9a, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7823351807975455078, guid: 60542c78ea7861c4381d91d66fa28c9a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1318391435}
     - targetCorrespondingSourceObject: {fileID: 7823351806585649513, guid: 60542c78ea7861c4381d91d66fa28c9a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2036072640}
@@ -131740,6 +131990,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 54f485a3ad88be742ad51cad8b8f81fe, type: 2}
     - target: {fileID: 919132149155446097, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
       propertyPath: m_Name
       value: SM_Barrel_Campfire_V1.1 (8)
@@ -131759,6 +132017,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8164078558771037576, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
       insertIndex: -1
       addedObject: {fileID: 675791677}
+    - targetCorrespondingSourceObject: {fileID: 8164078558771037576, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 675791681}
   m_SourcePrefab: {fileID: 100100000, guid: e6b5d2a0a05d249869b6c0a6e69e6527, type: 3}
 --- !u!1001 &1988221486
 PrefabInstance:
