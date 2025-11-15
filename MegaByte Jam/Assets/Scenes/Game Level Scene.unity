@@ -10153,7 +10153,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -0.222}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 342.9, y: 190}
+  m_AnchoredPosition: {x: 690, y: 391}
   m_SizeDelta: {x: 249.4585, y: 62.7349}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &155911205
@@ -46619,6 +46619,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collectibleText: {fileID: 155911205}
   totalStickers: 22
+  Collectible: 22
 --- !u!114 &631634519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67126,10 +67127,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -90423,6 +90424,72 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -2432090755550338912, guid: e3cbbec8d53ed0743abecc119c76c427, type: 3}
+--- !u!1001 &1206972366
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 42707081}
+    m_Modifications:
+    - target: {fileID: 1870581606715226220, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.45000002
+      objectReference: {fileID: 0}
+    - target: {fileID: 1870581606715226220, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.45000002
+      objectReference: {fileID: 0}
+    - target: {fileID: 1870581606715226220, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.45000002
+      objectReference: {fileID: 0}
+    - target: {fileID: 1870581606715226220, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 40.876
+      objectReference: {fileID: 0}
+    - target: {fileID: 1870581606715226220, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.6322489
+      objectReference: {fileID: 0}
+    - target: {fileID: 1870581606715226220, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -63.301
+      objectReference: {fileID: 0}
+    - target: {fileID: 1870581606715226220, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1870581606715226220, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1870581606715226220, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7042111501123478280, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1068232878, guid: f88aab771f6982449b8cedb921ea6cab, type: 3}
+    - target: {fileID: 7042111501123478280, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8889185829945641676, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
+      propertyPath: m_Name
+      value: Sticker_Collectible_Purple_Star
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
+--- !u!4 &1206972367 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1870581606715226220, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
+  m_PrefabInstance: {fileID: 1206972366}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1207147631
 GameObject:
   m_ObjectHideFlags: 0
@@ -90528,72 +90595,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1207147631}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1001 &1206972366
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 42707081}
-    m_Modifications:
-    - target: {fileID: 1870581606715226220, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.45000002
-      objectReference: {fileID: 0}
-    - target: {fileID: 1870581606715226220, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.45000002
-      objectReference: {fileID: 0}
-    - target: {fileID: 1870581606715226220, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.45000002
-      objectReference: {fileID: 0}
-    - target: {fileID: 1870581606715226220, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 40.876
-      objectReference: {fileID: 0}
-    - target: {fileID: 1870581606715226220, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2.6322489
-      objectReference: {fileID: 0}
-    - target: {fileID: 1870581606715226220, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -63.301
-      objectReference: {fileID: 0}
-    - target: {fileID: 1870581606715226220, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1870581606715226220, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1870581606715226220, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7042111501123478280, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 1068232878, guid: f88aab771f6982449b8cedb921ea6cab, type: 3}
-    - target: {fileID: 7042111501123478280, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8889185829945641676, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
-      propertyPath: m_Name
-      value: Sticker_Collectible_Purple_Star
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
---- !u!4 &1206972367 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1870581606715226220, guid: 0f41d3fd7a225e04792761d8c62b18e0, type: 3}
-  m_PrefabInstance: {fileID: 1206972366}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1207231028
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -103363,10 +103364,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -132636,9 +132637,9 @@ RectTransform:
   m_Father: {fileID: 909051301}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 342.9, y: 260.5}
-  m_SizeDelta: {x: -747.3837, y: -563.0191}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 1638.9, y: 1099}
+  m_SizeDelta: {x: 422.4785, y: 103.489}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1774137333
 MonoBehaviour:

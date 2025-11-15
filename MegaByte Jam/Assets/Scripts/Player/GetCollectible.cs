@@ -2,19 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
 
 public class GetCollectible : MonoBehaviour
 {
-
-    private int Collectible = 0;
-
     public TextMeshProUGUI collectibleText;
-    [SerializeField]private int totalStickers;
-
+    [SerializeField] private int totalStickers;
+    [SerializeField] private int Collectible = 0;
     private void Start()
     {
         collectibleText.text = Collectible.ToString() + "/" + totalStickers;
     }
+
+    private void FixedUpdate()
+    {
+        if (Collectible == totalStickers) SceneManager.LoadSceneAsync(2);    
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.transform.tag == "Collectible")
