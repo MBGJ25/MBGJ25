@@ -13,7 +13,8 @@ namespace PhysicsCharacterController
 
         private void Awake()
         {
-            if(lockCursor) Cursor.lockState = CursorLockMode.Locked;
+            if (lockCursor) Cursor.lockState = CursorLockMode.Locked;
+            else Cursor.lockState = CursorLockMode.None;
         }
     }
 }
