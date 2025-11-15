@@ -9,17 +9,19 @@ public class GetCollectible : MonoBehaviour
     private int Collectible = 0;
 
     public TextMeshProUGUI collectibleText;
+    [SerializeField]private int totalStickers;
 
     private void Start()
     {
-        collectibleText.text = Collectible.ToString() + "/10";
+        collectibleText.text = Collectible.ToString() + "/" + totalStickers;
     }
     private void OnTriggerEnter(Collider other)
     {
         if (other.transform.tag == "Collectible")
         {
+            FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/UI/GetCollectible");
             Collectible++;
-            collectibleText.text = Collectible.ToString() + "/10";
+            collectibleText.text = Collectible.ToString() + "/" + totalStickers;
             Debug.Log(Collectible);
             Destroy(other.gameObject);
         }
