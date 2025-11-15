@@ -10,6 +10,13 @@
             grindEmitter.EventInstance.setParameterByName("Is Idle", 0f);
         }
 
+        private void IsStatic()
+        {
+            if (movementSpeed == 0f)
+            {
+                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Movement/Bored");
+            }
+        }
 
 
 
