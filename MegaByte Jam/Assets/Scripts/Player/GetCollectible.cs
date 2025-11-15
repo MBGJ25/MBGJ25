@@ -19,6 +19,7 @@ public class GetCollectible : MonoBehaviour
     {
         if (other.transform.tag == "Collectible")
         {
+            FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/UI/GetCollectible");
             Collectible++;
             collectibleText.text = Collectible.ToString() + "/" + totalStickers;
             Debug.Log(Collectible);
