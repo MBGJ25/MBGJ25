@@ -56,5 +56,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "MegaByte Jam.sln"
+    "dotnet.defaultSolution": "MegaByte Jam.sln",
+    "dotnet.preferCSharpExtension": true
 }

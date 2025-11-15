@@ -10,12 +10,16 @@ public class GetCollectible : MonoBehaviour
 
     public TextMeshProUGUI collectibleText;
 
+    private void Start()
+    {
+        collectibleText.text = Collectible.ToString() + "/10";
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.transform.tag == "Collectible")
         {
             Collectible++;
-            collectibleText.text = "Coin: " + Collectible.ToString();
+            collectibleText.text = Collectible.ToString() + "/10";
             Debug.Log(Collectible);
             Destroy(other.gameObject);
         }
